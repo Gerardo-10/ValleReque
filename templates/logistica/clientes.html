@@ -47,7 +47,7 @@
 
             <!-- Tabla de clientes -->
             <div class="tabla-container">
-                <table class="tabla-clientes">
+                <table class="tabla-clientes" id="tabla_clientes">
                     <thead>
                     <tr>
                         <th class="columna-checkbox">
@@ -62,7 +62,7 @@
                         <th>Detalles</th>
                     </tr>
                     </thead>
-                    <tbody id="tabla_clientes">
+                    <tbody id="tabla_clientes_body">
                     {% for cliente in clientes %}
                         <tr data-estado="{{ cliente.estado | lower }}">
                             <td><input type="checkbox" class="checkbox-cliente" data-id="{{ cliente.id_cliente }}"></td>
@@ -76,7 +76,6 @@
                                 {% set clases_estado = {
                                     'Activo': 'activo',
                                     'Evaluado': 'evaluado',
-                                    'Finalizado': 'finalizado',
                                     'NoDisponible': 'no-disponible',
                                     'SinEvaluar': 'sin-evaluar',
                                     'PorEvaluar': 'por-evaluar'
@@ -166,67 +165,72 @@
                 </button>
             </div>
             <div class="modal-cuerpo">
-                <form id="formAgregarCliente">
+                <form id="formAgregarCliente" action="/insertar_cliente" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="nombreCliente">Nombres*</label>
-                            <input type="text" id="nombreCliente" placeholder="Ingrese nombres" required>
+                            <input type="text" id="nombreCliente" name="nombre" placeholder="Ingrese nombres" required>
                         </div>
                         <div class="form-grupo">
                             <label for="apellidoCliente">Apellidos*</label>
-                            <input type="text" id="apellidoCliente" placeholder="Ingrese apellidos" required>
+                            <input type="text" id="apellidoCliente" name="apellido" placeholder="Ingrese apellidos"
+                                   required>
                         </div>
                     </div>
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="dniCliente">DNI*</label>
-                            <input type="text" id="dniCliente" placeholder="Ingrese DNI" required>
+                            <input type="text" id="dniCliente" name="dni" placeholder="Ingrese DNI" required>
                         </div>
                         <div class="form-grupo">
                             <label for="telefonoCliente">Teléfono*</label>
-                            <input type="tel" id="telefonoCliente" placeholder="999999999" required>
+                            <input type="tel" id="telefonoCliente" name="telefono" placeholder="999999999" required>
                         </div>
                     </div>
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="ocupacionCliente">Ocupación*</label>
-                            <input type="text" id="ocupacionCliente" placeholder="Ingrese Ocupación" required>
+                            <input type="text" id="ocupacionCliente" name="ocupacion" placeholder="Ingrese Ocupación"
+                                   required>
                         </div>
                         <div class="form-grupo">
                             <label for="cargaFamiliarCliente">Carga Familiar*</label>
-                            <select id="cargaFamiliarCliente" required>
-                            <option value="">Seleccione una opción</option>
-                            <option value="si">Si</option>
-                            <option value="no">No</option>
-                        </select>
+                            <select id="cargaFamiliarCliente" name="carga_familiar" required>
+                                <option value="">Seleccione una opción</option>
+                                <option value="1">Si</option>
+                                <option value="0">No</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-grupo">
                         <label for="correoElectronicoCliente">Correo Electronico*</label>
-                        <input type="email" id="correoElectronicoCliente" placeholder="Ingrese dirección" required>
+                        <input type="email" id="correoElectronicoCliente" name="correo" placeholder="Ingrese dirección"
+                               required>
                     </div>
                     <div class="form-grupo">
                         <label for="direccionCliente">Dirección*</label>
-                        <input type="text" id="direccionCliente" placeholder="Ingrese dirección" required>
+                        <input type="text" id="direccionCliente" name="direccion" placeholder="Ingrese dirección"
+                               required>
                     </div>
                     <div class="form-grupo">
                         <label for="ingresoCliente">Ingreso Neto*</label>
-                        <input type="text" id="ingresoCliente" placeholder="S/0000" required>
+                        <input type="text" id="ingresoCliente" name="ingreso_neto" placeholder="S/0000" required>
                     </div>
                     <div class="form-grupo">
                         <label for="estadoCliente">Estado Inicial*</label>
-                        <select id="estadoCliente" required>
+                        <select id="estadoCliente" name="estado" required>
                             <option value="">Seleccione un estado</option>
-                            <option value="activo">Activo</option>
-                            <option value="evaluado">Evaluado</option>
-                            <option value="finalizado">Finalizado</option>
-                            <option value="no-disponible">No Disponible</option>
-                            <option value="sin-evaluar">Sin Evaluar</option>
+                            <option value="Activo">Activo</option>
+                            <option value="Evaluado">Evaluado</option>
+                            <option value="NoDisponible">No Disponible</option>
+                            <option value="SinEvaluar">Sin Evaluar</option>
                         </select>
                     </div>
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
-                        <button type="submit" class="btn-confirmar">Confirmar</button>
+                        <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
+                        <div id="modalOverlay" class="overlay"></div>
                     </div>
                 </form>
             </div>

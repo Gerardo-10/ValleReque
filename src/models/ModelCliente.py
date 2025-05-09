@@ -58,8 +58,13 @@ class ModelCliente:
                 data['estado'],
                 data['carga_familiar']
             ))
+
+            # Obtener el último ID insertado
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            id_cliente = cursor.fetchone()[0]
+
             db.connection.commit()
-            return True
+            return {**data, 'id_cliente': id_cliente}
         except Exception as e:
             print(f"[ERROR insert]: {e}")
             return False

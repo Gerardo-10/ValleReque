@@ -41,3 +41,65 @@ class ModelCliente:
             import traceback
             traceback.print_exc()
             return []
+
+    @classmethod
+    def insert(cls, db, data):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_cliente_insertar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                data['nombre'],
+                data['apellido'],
+                data['dni'],
+                data['direccion'],
+                data['correo'],
+                data['telefono'],
+                data['ocupacion'],
+                data['ingreso_neto'],
+                data['estado'],
+                data['carga_familiar']
+            ))
+
+            # Obtener el último ID insertado
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            id_cliente = cursor.fetchone()[0]
+
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR insert]: {e}")
+            return False
+
+    @classmethod
+    def update(cls, db, id_cliente, data):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_cliente_actualizar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                id_cliente,
+                data['nombre'],
+                data['apellido'],
+                data['dni'],
+                data['direccion'],
+                data['correo'],
+                data['telefono'],
+                data['ocupacion'],
+                data['ingreso_neto'],
+                data['estado'],
+                data['carga_familiar']
+            ))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR update]: {e}")
+            return False
+
+    @classmethod
+    def delete(cls, db, ids):
+        try:
+            cursor = db.connection.cursor()
+            for id_cliente in ids:
+                cursor.execute("CALL sp_cliente_eliminar(%s)", (id_cliente,))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR delete]: {e}")
+            return False

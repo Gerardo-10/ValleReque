@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, jsonify
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import config
@@ -120,17 +120,61 @@ def sidebar():
 def seguridad():
     return render_template('seguridad.html')
 
+
 @app.route('/clientes')
 @login_required
 def clientes():
     cliente = ModelCliente.get_all(db)
     return render_template('logistica/clientes.html', clientes=cliente)
 
+
+@app.route('/insertar_cliente', methods=['POST'])
+def insertar_cliente():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            # Solicitud fetch() desde JS
+            form = request.form
+            data = {
+                'nombre': form['nombre'],
+                'apellido': form['apellido'],
+                'dni': form['dni'],
+                'direccion': form['direccion'],
+                'correo': form['correo'],
+                'telefono': form['telefono'],
+                'ocupacion': form['ocupacion'],
+                'ingreso_neto': form['ingreso_neto'],
+                'estado': form['estado'],
+                'carga_familiar': form['carga_familiar']
+            }
+
+            cliente_insertado = ModelCliente.insert(db, data)
+            if cliente_insertado:
+                return jsonify({
+                    'success': True,
+                    'message': 'Cliente agregado exitosamente',
+                    'cliente': cliente_insertado
+                })
+            else:
+                return jsonify({
+                    'success': False,
+                    'message': 'Error al agregar cliente'
+                }), 500
+        else:
+            # En caso sea formulario tradicional
+            flash('Esta ruta solo acepta peticiones AJAX', 'danger')
+            return redirect(url_for('clientes'))
+
+    except Exception as e:
+        print(f"Error en insertar_cliente: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
 @app.route('/detalle_clientes/<int:id_cliente>')
 @login_required
 def detalle_clientes(id_cliente):
     cliente = ModelCliente.get_by_id(db, id_cliente)
     return render_template('logistica/detalle_clientes.html', cliente=cliente, )
+
 
 @app.route('/perfil')
 @login_required

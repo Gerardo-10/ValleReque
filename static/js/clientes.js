@@ -78,11 +78,69 @@ window.initClientesModals = function () {
 
     formAgregarCliente.addEventListener('submit', function (e) {
         e.preventDefault();
-        cerrarModal(modalAgregarCliente);
-        setTimeout(() => {
-            mostrarExito('Cliente Agregado Exitosamente', 'El nuevo cliente ha sido registrado en el sistema.');
-        }, 500);
+        const formData = new FormData(this);
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                if (data.success) {
+                    const cliente = data.cliente;
+
+                    const nuevaFila = document.createElement('tr');
+
+                    const clasesEstado = {
+                        'Activo': 'activo',
+                        'Evaluado': 'evaluado',
+                        'NoDisponible': 'no-disponible',
+                        'SinEvaluar': 'sin-evaluar',
+                        'PorEvaluar': 'por-evaluar'
+                    };
+
+                    const claseEstado = clasesEstado[cliente.estado] || 'sin-evaluar';
+
+                    nuevaFila.innerHTML = `
+                        <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
+                        <td>${cliente.id_cliente}</td>
+                        <td data-filtro="nombreCompleto">${cliente.nombre} ${cliente.apellido}</td>
+                        <td data-filtro="dni">${cliente.dni}</td>
+                        <td>${cliente.direccion}</td>
+                        <td>${cliente.telefono}</td>
+                        <td>${cliente.ingreso_neto}</td>
+                        <td>
+                            <span class="estado-badge ${claseEstado}">
+                                ${cliente.estado}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn-detalles-clientes" data-id="${cliente.id_cliente}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    `;
+
+                    document.getElementById('tabla_clientes_body').appendChild(nuevaFila);
+
+                    cerrarModal(modalAgregarCliente);
+                    mostrarExito('Cliente agregado', data.message);
+
+                    this.reset(); // Limpia el formulario después de agregar
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar formulario:', error);
+                alert('Error inesperado al enviar el formulario');
+            });
     });
+
 
     btnConfirmarEstado.addEventListener('click', function () {
         if (!estadoSeleccionado) {

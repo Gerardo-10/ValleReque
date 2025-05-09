@@ -78,6 +78,25 @@ window.initSecurityModals = function () {
 
     formAgregarEmpleado.addEventListener('submit', function (e) {
         e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('/empleado/agregar', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;  // Redirige si backend lo hace
+                } else {
+                    return response.text(); // O manejar respuesta personalizada
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocurrió un error al registrar al empleado.');
+            });
+
         cerrarModal(modalAgregarEmpleado);
         setTimeout(() => {
             mostrarExito('Empleado Agregado Exitosamente', 'El nuevo empleado ha sido registrado en el sistema.');
@@ -136,9 +155,8 @@ window.initSecurityModals = function () {
         filas.forEach(fila => {
             const estadoEmpleado = fila.getAttribute('data-estado');
 
-            // Solo muestra filas que coincidan con el estado seleccionado
-            const coincideEstado = (filtroEstado === 'activos' && estadoEmpleado === 'activo') ||
-                (filtroEstado === 'inactivos' && estadoEmpleado === 'inactivo');
+            // Comparación directa entre el estado del filtro y el del empleado
+            const coincideEstado = estadoEmpleado === filtroEstado;
 
             if (!coincideEstado) {
                 fila.style.display = 'none';
@@ -148,7 +166,6 @@ window.initSecurityModals = function () {
             let mostrar = false;
 
             if (!filtro) {
-                // Buscar en toda la fila si no se ha elegido filtro específico
                 mostrar = fila.textContent.toLowerCase().includes(textoBusqueda);
             } else {
                 const celda = fila.querySelector(`td[data-filtro="${filtro}"]`);

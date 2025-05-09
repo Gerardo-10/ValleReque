@@ -10,6 +10,7 @@ from flask_wtf.csrf import CSRFProtect
 from src.models.ModelCliente import ModelCliente
 from src.models.ModelEmpleado import ModelEmpleado
 from src.models.ModelUser import ModelUser
+from src.models.entities.Empleado import Empleado
 from src.models.entities.User import User
 
 # Configuración de logs
@@ -120,7 +121,8 @@ def sidebar():
 @app.route('/seguridad')
 @login_required
 def seguridad():
-    return render_template('seguridad.html')
+    empleados = ModelEmpleado.get_all(db)
+    return render_template('seguridad.html', empleados=empleados)
 
 
 @app.route('/clientes')
@@ -171,13 +173,15 @@ def insertar_cliente():
         print(f"Error en insertar_cliente: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
 @app.route('/eliminar_clientes', methods=['POST'])
 @login_required
 def eliminar_clientes():
     try:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             data = request.form  # Accede a los datos enviados en FormData
-            clientes_ids = json.loads(data.get('clientes', '[]'))  # Asegúrate de que el campo 'clientes' contiene un JSON
+            clientes_ids = json.loads(
+                data.get('clientes', '[]'))  # Asegúrate de que el campo 'clientes' contiene un JSON
 
             if not clientes_ids:
                 return jsonify({'success': False, 'message': 'No se enviaron IDs'}), 400

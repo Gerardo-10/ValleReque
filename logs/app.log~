@@ -1,121 +1,111 @@
-2025-05-05 21:14:00,172 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-05 21:14:01,281 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-05 21:14:02,779 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 00:49:59,408 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 00:50:00,760 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 00:54:03,741 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 00:54:05,157 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:07:06,106 - INFO - werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-05-06 01:07:06,109 - INFO - werkzeug - [33mPress CTRL+C to quit[0m
-2025-05-06 01:08:11,163 - INFO - werkzeug - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
- * Running on http://127.0.0.1:5000
-2025-05-06 01:08:11,164 - INFO - werkzeug - [33mPress CTRL+C to quit[0m
-2025-05-06 01:13:19,598 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:13:20,906 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:13:34,224 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:13:35,634 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:13:40,311 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:13:41,745 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:14:36,528 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:14:37,874 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:17:06,471 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:17:07,825 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:17:17,384 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:17:18,775 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:18:35,722 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:18:37,039 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:24:28,800 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:24:30,079 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:49:38,839 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:49:39,988 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:54:30,579 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:54:31,760 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 01:59:44,539 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 01:59:45,589 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 02:02:34,685 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 02:02:36,033 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 02:10:40,201 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 02:10:51,975 - INFO - appLogger - Intento de login para el usuario: Lenin
-2025-05-06 02:10:52,560 - WARNING - appLogger - Login fallido para el usuario: Lenin
-2025-05-06 02:10:57,842 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 02:10:59,000 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 02:14:18,899 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 02:14:20,199 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 12:17:17,529 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:17:24,940 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:31:50,896 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:32:15,562 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:32:52,891 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:57:30,765 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 12:58:33,888 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 13:01:01,777 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 13:03:24,017 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 13:03:24,956 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 13:03:53,689 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 13:03:54,613 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 13:12:33,988 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 13:12:35,215 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 16:52:34,940 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 16:52:36,657 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 16:53:37,776 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 16:53:44,672 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 16:53:46,043 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 16:53:46,338 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 16:53:47,631 - INFO - appLogger - Login exitoso para e   l usuario: Gerardo
-2025-05-06 17:37:29,487 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:45:04,959 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:45:05,995 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:45:06,574 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:07,186 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:12,808 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:45:13,735 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:45:14,324 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:14,946 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:42,689 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:47,146 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:45:48,117 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:45:48,730 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:45:49,329 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:49:38,253 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:49:43,043 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:49:44,009 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:49:44,641 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:49:45,320 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:49:55,740 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:50:03,737 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:50:04,664 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:50:05,239 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:50:05,849 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:50:14,683 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:50:15,259 - ERROR - appLogger - Error en load_user: User.__init__() takes 3 positional arguments but 6 were given
-2025-05-06 17:54:52,489 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:54:53,395 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 17:58:18,435 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 17:58:26,098 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:58:27,070 - WARNING - appLogger - Login fallido para el usuario: Gerardo
-2025-05-06 17:58:54,499 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 17:58:55,396 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:07:57,729 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:13:24,990 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:13:25,673 - WARNING - appLogger - Login fallido para el usuario: Gerardo
-2025-05-06 18:13:32,360 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:13:33,053 - WARNING - appLogger - Login fallido para el usuario: Gerardo
-2025-05-06 18:15:39,322 - INFO - appLogger - Intento de login para el usuario: s
-2025-05-06 18:15:40,002 - WARNING - appLogger - Login fallido para el usuario: s
-2025-05-06 18:15:44,965 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:15:45,787 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:18:19,709 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:18:20,547 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:23:54,146 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:23:55,106 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:26:13,870 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:26:14,791 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:26:22,185 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 18:28:00,228 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:28:01,090 - WARNING - appLogger - Login fallido para el usuario: Gerardo
-2025-05-06 18:28:09,345 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:28:10,199 - INFO - appLogger - Login exitoso para el usuario: Gerardo
-2025-05-06 18:28:14,891 - INFO - appLogger - Usuario cerró sesión: Gerardo
-2025-05-06 18:28:45,538 - INFO - appLogger - Intento de login para el usuario: Gerardo
-2025-05-06 18:28:46,511 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 18:31:51,244 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 18:31:52,186 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 18:32:07,431 - INFO - appLogger - Intento de login para el usuario: d
+2025-05-06 18:32:08,117 - WARNING - appLogger - Login fallido para el usuario: d
+2025-05-06 18:32:13,658 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 18:32:14,500 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 18:46:11,257 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 18:46:12,182 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 18:47:29,653 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 18:47:30,559 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 19:03:10,411 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 19:03:11,270 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 19:12:47,465 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 19:12:48,358 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 19:26:13,061 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 19:26:15,015 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 19:32:26,424 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 19:32:27,381 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 19:47:46,476 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 19:47:47,479 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 20:22:42,679 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 20:22:49,015 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 20:48:22,881 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 20:48:23,852 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 20:54:03,729 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 20:54:04,848 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 21:09:39,345 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 21:09:40,276 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-06 21:14:54,828 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-06 21:14:55,877 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-07 00:35:47,321 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-07 00:35:48,596 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-07 00:48:34,174 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-07 00:48:35,066 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-07 02:27:29,326 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-07 02:27:30,396 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-07 02:34:07,309 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-07 02:34:08,419 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-07 02:37:46,969 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-07 02:37:47,975 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 00:37:26,374 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 00:37:36,619 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-08 00:37:41,637 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 00:37:51,651 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-08 00:41:27,771 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 00:41:37,798 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-08 00:43:40,063 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 00:43:41,059 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 20:35:13,836 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 20:35:14,799 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 20:37:50,728 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 20:37:51,702 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 20:40:26,320 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 20:40:27,352 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 21:34:34,398 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 21:34:35,185 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 21:55:19,395 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 21:55:20,236 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-08 23:57:16,018 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-08 23:57:17,245 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 00:09:13,676 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:09:23,892 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-09 00:09:40,404 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:09:50,512 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-09 00:10:04,032 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:10:14,192 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-09 00:27:43,302 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:27:53,482 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-09 00:33:41,435 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:33:42,506 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 00:41:47,241 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:46:43,714 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 00:46:53,872 - WARNING - appLogger - Login fallido para el usuario: Gerardo
+2025-05-09 01:20:12,365 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 01:20:13,382 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 02:38:28,225 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 02:38:29,268 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 02:51:47,182 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 02:51:48,225 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 03:31:00,927 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 03:31:01,948 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 03:36:20,664 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 03:36:21,626 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 12:09:32,425 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 12:09:33,516 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 12:45:23,573 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 12:45:24,567 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 12:50:42,910 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 12:50:43,926 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 13:06:27,201 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 13:06:28,221 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 13:43:56,598 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 13:43:57,426 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 14:01:03,265 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 14:01:04,094 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 14:04:21,000 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 14:04:22,167 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 14:05:48,890 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 14:05:49,741 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 14:16:34,875 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 14:16:35,705 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 16:04:01,404 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 16:04:02,238 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 16:14:12,588 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 16:14:13,403 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 17:02:08,554 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 17:02:09,880 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 18:06:27,791 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 18:06:28,631 - INFO - appLogger - Login exitoso para el usuario: Gerardo
+2025-05-09 18:30:58,793 - INFO - appLogger - Intento de login para el usuario: Gerardo
+2025-05-09 18:30:59,617 - INFO - appLogger - Login exitoso para el usuario: Gerardo

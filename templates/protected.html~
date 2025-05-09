@@ -1,0 +1,7 @@
+{% extends './base.html' %}
+
+{% block title %}Valle Reque - Protegido{% endblock %}
+
+{% block body %}
+    <h1>Esta es una vista protegida, solo para usuarios </h1>
+{% endblock %}

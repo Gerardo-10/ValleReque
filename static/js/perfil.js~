@@ -1,0 +1,123 @@
+window.initPerfilModals = function () {
+    const btnAgregarEmpleado = document.getElementById('btnAgregarEmpleado');
+    const btnActualizarInfo = document.getElementById('btnActualizarInfo');
+    const btnCambiarPassword = document.getElementById('btnCambiarPassword');
+
+    const modalAgregarEmpleado = document.getElementById('modalAgregarEmpleado');
+    const modalActualizarInfo = document.getElementById('modalActualizarInfo');
+    const modalCambiarPassword = document.getElementById('modalCambiarPassword');
+    const modalExito = document.getElementById('modalExito');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    const cerrarModalAgregar = document.getElementById('cerrarModalAgregar');
+    const cerrarModalActualizar = document.getElementById('cerrarModalActualizar');
+    const cerrarModalPassword = document.getElementById('cerrarModalPassword');
+    const cerrarModalExito = document.getElementById('cerrarModalExito');
+
+    const btnCancelarAgregar = document.getElementById('btnCancelarAgregar');
+    const btnCancelarActualizar = document.getElementById('btnCancelarActualizar');
+    const btnCancelarPassword = document.getElementById('btnCancelarPassword');
+
+    const formAgregarEmpleado = document.getElementById('formAgregarEmpleado');
+    const formActualizarInfo = document.getElementById('formActualizarInfo');
+    const formCambiarPassword = document.getElementById('formCambiarPassword');
+
+    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+
+    function abrirModal(modal) {
+        modal.classList.add('activo');
+        modalOverlay.classList.add('activo');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal(modal) {
+        modal.classList.remove('activo');
+        modalOverlay.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+
+    function cerrarTodosLosModales() {
+        const modales = document.querySelectorAll('.modal');
+        modales.forEach(modal => modal.classList.remove('activo'));
+        modalOverlay.classList.remove('activo');
+        document.body.style.overflow = '';
+    }
+
+    function mostrarExito(titulo, mensaje, mostrarCredenciales = false) {
+        document.getElementById('tituloExito').textContent = titulo;
+        document.getElementById('mensajeExito').textContent = mensaje;
+
+        const credencialesContainer = document.getElementById('credencialesContainer');
+        if (mostrarCredenciales) {
+            const usuario = 'r.' + Math.random().toString(36).substring(2, 8);
+            const password = 'Pass' + Math.floor(Math.random() * 10000) + '!';
+            document.getElementById('usuarioGenerado').textContent = usuario;
+            document.getElementById('passwordGenerada').textContent = password;
+            credencialesContainer.style.display = 'block';
+        } else {
+            credencialesContainer.style.display = 'none';
+        }
+
+        abrirModal(modalExito);
+    }
+
+    if (formAgregarEmpleado) {
+        formAgregarEmpleado.addEventListener('submit', function (e) {
+            e.preventDefault();
+            cerrarModal(modalAgregarEmpleado);
+            setTimeout(() => {
+                mostrarExito('Empleado Agregado Exitosamente', 'Empleado registrado correctamente.', true);
+            }, 500);
+        });
+    }
+
+    if (formActualizarInfo) {
+        formActualizarInfo.addEventListener('submit', function (e) {
+            e.preventDefault();
+            cerrarModal(modalActualizarInfo);
+            setTimeout(() => {
+                mostrarExito('Información Actualizada', 'Datos actualizados correctamente.');
+            }, 500);
+        });
+    }
+
+    if (formCambiarPassword) {
+        formCambiarPassword.addEventListener('submit', function (e) {
+            e.preventDefault();
+            cerrarModal(modalCambiarPassword);
+            setTimeout(() => {
+                mostrarExito('Contraseña Actualizada', 'La contraseña fue cambiada exitosamente.');
+            }, 500);
+        });
+    }
+
+    togglePasswordBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const input = this.previousElementSibling;
+            const tipo = input.getAttribute('type');
+            input.setAttribute('type', tipo === 'password' ? 'text' : 'password');
+            this.innerHTML = tipo === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+        });
+    });
+
+    // Botones de apertura
+    btnAgregarEmpleado?.addEventListener('click', () => abrirModal(modalAgregarEmpleado));
+    btnActualizarInfo?.addEventListener('click', () => abrirModal(modalActualizarInfo));
+    btnCambiarPassword?.addEventListener('click', () => abrirModal(modalCambiarPassword));
+
+    // Botones de cierre
+    cerrarModalAgregar?.addEventListener('click', () => cerrarModal(modalAgregarEmpleado));
+    cerrarModalActualizar?.addEventListener('click', () => cerrarModal(modalActualizarInfo));
+    cerrarModalPassword?.addEventListener('click', () => cerrarModal(modalCambiarPassword));
+    cerrarModalExito?.addEventListener('click', () => cerrarModal(modalExito));
+
+    btnCancelarAgregar?.addEventListener('click', () => cerrarModal(modalAgregarEmpleado));
+    btnCancelarActualizar?.addEventListener('click', () => cerrarModal(modalActualizarInfo));
+    btnCancelarPassword?.addEventListener('click', () => cerrarModal(modalCambiarPassword));
+
+    modalOverlay?.addEventListener('click', cerrarTodosLosModales);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') cerrarTodosLosModales();
+    });
+};

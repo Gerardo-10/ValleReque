@@ -1,0 +1,31 @@
+from src.models.entities.Empleado import Empleado
+
+
+class ModelEmpleado:
+    @staticmethod
+    def get_by_empleado_id(db, id_empleado):
+        cursor = db.connection.cursor()
+        query = """
+                SELECT e.id_empleado,
+                       e.nombre_empleado,
+                       e.apellido_empleado,
+                       e.dni,
+                       e.direccion,
+                       e.telefono,
+                       e.correo_electronico,
+                       e.fecha_nacimiento,
+                       r.denominacion
+                FROM empleado e
+                         JOIN usuario u ON e.id_empleado = u.id_usuario
+                         JOIN Rol_Usuario ru ON u.id_usuario = ru.id_usuario
+                         JOIN rol r ON ru.id_rol = r.id_rol
+                WHERE e.id_empleado = %s
+                """
+        cursor.execute(query, (id_empleado,))
+        row = cursor.fetchone()
+        cursor.close()
+
+        if row:
+            return Empleado(*row)
+        else:
+            return None

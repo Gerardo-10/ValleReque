@@ -1,0 +1,209 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/detalle_clientes.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <a href="#" class="back-button">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1>Detalles</h1>
+        </div>
+
+        <!-- Main Card -->
+        <div class="card">
+            <!-- Client Header -->
+            <div class="client-header">
+                <div class="client-summary">
+                    <div class="summary-grid">
+                        <div>
+                            <p class="summary-label">N° de Refinanciamientos:</p>
+                            <p class="summary-value">0</p>
+                        </div>
+                        <div>
+                            <p class="summary-label">N° de Traspasos:</p>
+                            <p class="summary-value">1</p>
+                        </div>
+                        <div>
+                            <p class="summary-label">Cambio de titularidad:</p>
+                            <p class="summary-value">No</p>
+                        </div>
+                        <div>
+                            <p class="summary-label">Estado:</p>
+                            <p class="summary-value">{{ cliente.estado }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="client-info">
+                    <h2>{{ cliente.nombre }}</h2>
+                    <p>{{ cliente.correo }}</p>
+                </div>
+
+                <div class="client-photo">
+                    <img src="img/perfil.png" alt="Foto del cliente">
+                </div>
+            </div>
+
+            <!-- Personal Data -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Datos Personales</h3>
+                    <button class="edit-button" data-section="personal">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </div>
+
+                <div class="data-grid">
+                    <div class="data-item">
+                        <p class="data-label">Nombre</p>
+                        <p class="data-value">{{ cliente.nombre }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Apellido</p>
+                        <p class="data-value">{{ cliente.apellido }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Dirección</p>
+                        <p class="data-value">{{ cliente.direccion }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Ingreso Neto</p>
+                        <p class="data-value">{{ cliente.ingreso_neto }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">DNI</p>
+                        <p class="data-value">{{ cliente.dni }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Teléfono</p>
+                        <p class="data-value">{{ cliente.telefono }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Ocupación</p>
+                        <p class="data-value">{{ cliente.ocupacion }}</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Carga Familiar</p>
+                        <p class="data-value">{{ cliente.carga_familiar }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Family Data -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Familiar o Cónyuge</h3>
+                    <button class="edit-button" data-section="family">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                </div>
+
+                <div class="data-grid data-grid-3">
+                    <div class="data-item">
+                        <p class="data-label">Nombre</p>
+                        <p class="data-value">Juan Carlos</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">Apellido</p>
+                        <p class="data-value">Bodoque</p>
+                    </div>
+                    <div class="data-item">
+                        <p class="data-label">DNI</p>
+                        <p class="data-value">7548512</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events -->
+            <div class="section">
+                <div class="section-header">
+                    <h3>Eventos</h3>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-item">
+                            <p class="event-label">Proyecto</p>
+                            <p class="event-value">Valle Reque</p>
+                        </div>
+                        <div class="event-item">
+                            <p class="event-label">Fecha de contrato</p>
+                            <p class="event-value">13/12/2023</p>
+                        </div>
+                        <div class="event-item">
+                            <p class="event-label">Monto Amortizado</p>
+                            <p class="event-value">S/. 1,244.44</p>
+                        </div>
+                        <div class="event-item">
+                            <p class="event-label">Saldo pendiente</p>
+                            <p class="event-value">S/. 1,234.00</p>
+                        </div>
+                        <div class="event-item">
+                            <p class="event-label">Cuotas Vencidas</p>
+                            <p class="event-value">2</p>
+                        </div>
+                    </div>
+                    <div class="event-actions">
+                        <button class="action-button print-button" title="Imprimir">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button class="action-button export-button" title="Exportar">
+                            <i class="fas fa-file-export"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Editar Datos</h2>
+                <button class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-grid" id="formFields">
+                        <!-- Form fields will be generated dynamically -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-button">Cancelar</button>
+                        <button type="submit" class="save-button">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="modal-header">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2>Datos Actualizados</h2>
+                <button class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Los datos han sido actualizados correctamente.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay"></div>
+
+    <script src="../../static/js/detalle_clientes.js"></script>
+{% endblock %}

@@ -47,7 +47,7 @@
 
             <!-- Tabla de clientes -->
             <div class="tabla-container">
-                <table class="tabla-clientes">
+                <table class="tabla-clientes" id="tabla_clientes">
                     <thead>
                     <tr>
                         <th class="columna-checkbox"></th>
@@ -61,7 +61,7 @@
                         <th>Detalles</th>
                     </tr>
                     </thead>
-                    <tbody id="tabla_clientes">
+                    <tbody id="tabla_clientes_body">
                     {% for cliente in clientes %}
                         <tr data-estado="{{ cliente.estado | lower }}">
                             <td><input type="checkbox" class="checkbox-cliente" data-id="{{ cliente.id_cliente }}"></td>

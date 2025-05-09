@@ -76,13 +76,92 @@ window.initClientesModals = function () {
         });
     });
 
-    formAgregarCliente.addEventListener('submit', function (e) {
-        e.preventDefault();
-        cerrarModal(modalAgregarCliente);
-        setTimeout(() => {
-            mostrarExito('Cliente Agregado Exitosamente', 'El nuevo cliente ha sido registrado en el sistema.');
-        }, 500);
-    });
+    const agregarCliente = async () => {
+    const clienteData = {
+        nombre: document.getElementById('nombreCliente').value,
+        apellido: document.getElementById('apellidoCliente').value,
+        dni: document.getElementById('dniCliente').value,
+        direccion: document.getElementById('direccionCliente').value,
+        correo: document.getElementById('correoElectronicoCliente').value,
+        telefono: document.getElementById('telefonoCliente').value,
+        ocupacion: document.getElementById('ocupacionCliente').value,
+        ingreso_neto: parseFloat(document.getElementById('ingresoCliente').value),
+        estado_cliente: document.getElementById('estadoCliente').value,
+        carga_familiar: document.getElementById('cargaFamiliarCliente').checked ? 1 : 0,
+    };
+
+    try {
+        const response = await fetch('/clientes/agregar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(clienteData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            console.log('Cliente agregado correctamente:', data);
+        } else {
+            console.error('Error al agregar cliente:', data);
+        }
+    } catch (error) {
+        console.error('Error de solicitud:', error);
+    }
+};
+
+
+    function agregarFilaATabla(cliente) {
+        const tbody = document.getElementById('tabla_clientes');
+        const fila = document.createElement('tr');
+
+        // Esto depende del estado exacto que devuelves. Aquí se asume texto plano.
+        let estadoClase = {
+            'activo': 'activo',
+            'evaluado': 'evaluado',
+            'finalizado': 'finalizado',
+            'no-disponible': 'no-disponible',
+            'sin-evaluar': 'sin-evaluar',
+            'por-evaluar': 'por-evaluar'
+        }[cliente.estado] || 'sin-evaluar';
+
+        fila.innerHTML = `
+        <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
+        <td>${cliente.id_cliente}</td>
+        <td data-filtro="nombreCompleto">${cliente.nombre} ${cliente.apellido}</td>
+        <td data-filtro="dni">${cliente.dni}</td>
+        <td>${cliente.direccion}</td>
+        <td>${cliente.telefono}</td>
+        <td>${cliente.ingreso_neto}</td>
+        <td>
+            <span class="estado-badge ${estadoClase}">
+                ${cliente.estado}
+            </span>
+        </td>
+        <td style="text-align: center;">
+            <button class="btn-detalles-clientes" data-id="nuevo"><i class="fas fa-eye"></i></button>
+        </td>
+    `;
+
+        fila.setAttribute('data-estado', cliente.estado.toLowerCase());
+        tbody.appendChild(fila);
+
+        fila.querySelector('.checkbox-cliente').addEventListener('change', actualizarClientesSeleccionados);
+
+    }
+
+    function estadoClase(estado) {
+        const clases = {
+            activo: 'activo',
+            evaluado: 'evaluado',
+            finalizado: 'finalizado',
+            'no-disponible': 'no-disponible',
+            'sin-evaluar': 'sin-evaluar',
+            'por-evaluar': 'por-evaluar'
+        };
+        return clases[estado.toLowerCase()] || 'sin-evaluar';
+    }
 
     btnConfirmarEstado.addEventListener('click', function () {
         if (!estadoSeleccionado) {
@@ -158,16 +237,4 @@ window.initClientesModals = function () {
             fila.style.display = mostrar ? '' : 'none';
         });
     }
-
-    const botonesDetalles = document.querySelectorAll(".btn-detalles-clientes");
-
-    botonesDetalles.forEach(boton => {
-        boton.addEventListener("click", () => {
-            const idCliente = boton.getAttribute("data-id");
-            cargarVista(`/detalle_clientes/${idCliente}`, () => {
-                console.log("Vista de detalle cargada");
-                // Aquí podrías inicializar algo más si necesitas
-            });
-        });
-    });
 }

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response
+from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, jsonify
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import config
@@ -120,17 +120,77 @@ def sidebar():
 def seguridad():
     return render_template('seguridad.html')
 
+
 @app.route('/clientes')
 @login_required
 def clientes():
-    clientes = ModelCliente.get_all(db)
-    return render_template('logistica/clientes.html', clientes=clientes)
+    cliente = ModelCliente.get_all(db)
+    return render_template('logistica/clientes.html', clientes=cliente)
+
+
+@app.route('/clientes/agregar', methods=['POST'])
+def agregar_cliente():
+    data = request.get_json()  # Asegúrate de que Flask pueda procesar JSON
+
+    if not data:
+        return jsonify({'error': 'No se recibieron datos válidos'}), 400
+
+    # Desestructura los datos de la solicitud
+    nombre = data.get('nombre')
+    apellido = data.get('apellido')
+    dni = data.get('dni')
+    direccion = data.get('direccion')
+    correo = data.get('correo')
+    telefono = data.get('telefono')
+    ocupacion = data.get('ocupacion')
+    ingreso_neto = data.get('ingreso_neto')
+    estado_cliente = data.get('estado_cliente')
+    carga_familiar = data.get('carga_familiar')
+
+    # Llama al procedimiento almacenado para insertar el cliente
+    try:
+        cursor = db.cursor()
+        cursor.callproc('sp_cliente_insertar', (nombre, apellido, dni, direccion, correo, telefono, ocupacion, ingreso_neto, estado_cliente, carga_familiar))
+        db.commit()  # Asegúrate de hacer commit a los cambios
+        return jsonify({'success': True}), 200
+    except Exception as e:
+        db.rollback()  # Si hay un error, haz rollback
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/clientes/editar/<int:id>', methods=['POST'])
+@login_required
+def editar_cliente(id):
+    data = request.get_json()
+    success = ModelCliente.update(db, id, data)
+    return jsonify({'success': success})
+
+
+@app.route('/clientes/eliminar', methods=['POST'])
+@login_required
+def eliminar_clientes():
+    data = request.get_json()
+    success = ModelCliente.delete(db, data['ids'])
+    return jsonify({'success': success})
+
+
+@app.route('/clientes/cambiar_estado', methods=['POST'])
+@login_required
+def cambiar_estado_cliente():
+    data = request.get_json()
+    cliente_id = data['id_cliente']
+    nuevo_estado = data['estado']
+
+    success = ModelCliente.update_estado(db, cliente_id, nuevo_estado)  # Llamamos a la función que actualiza el estado en la base de datos
+
+    return jsonify({'success': success})
 
 @app.route('/detalle_clientes/<int:id_cliente>')
 @login_required
 def detalle_clientes(id_cliente):
     cliente = ModelCliente.get_by_id(db, id_cliente)
     return render_template('logistica/detalle_clientes.html', cliente=cliente, )
+
 
 @app.route('/perfil')
 @login_required

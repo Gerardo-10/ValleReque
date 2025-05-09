@@ -85,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         initActiveSubmenus();
-        initCardEffects();
     }
 
     function initActiveSubmenus() {

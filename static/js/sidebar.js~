@@ -48,6 +48,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Aquí puedes inicializar scripts específicos del detalle
             });
         }
+
+        const botonVolver = e.target.closest(".back-button");
+        if (botonVolver) {
+            e.preventDefault(); // Evita el comportamiento predeterminado del <a href="#">
+            cargarVista("/clientes", initClientesModals);
+        }
     });
 
     const sidebar = document.querySelector('.sidebar');

@@ -24,4 +24,20 @@ class ModelCliente:
             return None
 
     @classmethod
-    
+    def get_all(cls, db):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_clientes_todos()")  # Asegúrate de tener este SP creado en tu BD
+            rows = cursor.fetchall()
+
+            # Liberar el resto del resultado del procedimiento si existe
+            while cursor.nextset():
+                pass
+
+            clientes = [Cliente(*row) for row in rows]
+            return clientes
+        except Exception as e:
+            print(f"[ERROR get_all Cliente]: {e}")
+            import traceback
+            traceback.print_exc()
+            return []

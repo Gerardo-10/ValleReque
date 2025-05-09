@@ -64,7 +64,7 @@
                     </thead>
                     <tbody id="tabla_clientes">
                     {% for cliente in clientes %}
-                        <tr data-estado="activos">
+                        <tr data-estado="{{ cliente.estado | lower }}">
                             <td><input type="checkbox" class="checkbox-cliente" data-id="{{ cliente.id_cliente }}"></td>
                             <td>{{ cliente.id_cliente }}</td>
                             <td data-filtro="nombreCompleto">{{ cliente.nombre }} {{ cliente.apellido }}</td>
@@ -186,6 +186,24 @@
                             <label for="telefonoCliente">Teléfono*</label>
                             <input type="tel" id="telefonoCliente" placeholder="999999999" required>
                         </div>
+                    </div>
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="ocupacionCliente">Ocupación*</label>
+                            <input type="text" id="ocupacionCliente" placeholder="Ingrese Ocupación" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="cargaFamiliarCliente">Carga Familiar*</label>
+                            <select id="cargaFamiliarCliente" required>
+                            <option value="">Seleccione una opción</option>
+                            <option value="si">Si</option>
+                            <option value="no">No</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="correoElectronicoCliente">Correo Electronico*</label>
+                        <input type="email" id="correoElectronicoCliente" placeholder="Ingrese dirección" required>
                     </div>
                     <div class="form-grupo">
                         <label for="direccionCliente">Dirección*</label>

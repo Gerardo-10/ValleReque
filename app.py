@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, request, redirect, url_for, flash, session, make_response, jsonify
 from flask_mysqldb import MySQL
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
@@ -129,6 +131,7 @@ def clientes():
 
 
 @app.route('/insertar_cliente', methods=['POST'])
+@login_required
 def insertar_cliente():
     try:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -167,6 +170,31 @@ def insertar_cliente():
     except Exception as e:
         print(f"Error en insertar_cliente: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/eliminar_clientes', methods=['POST'])
+@login_required
+def eliminar_clientes():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            data = request.form  # Accede a los datos enviados en FormData
+            clientes_ids = json.loads(data.get('clientes', '[]'))  # Asegúrate de que el campo 'clientes' contiene un JSON
+
+            if not clientes_ids:
+                return jsonify({'success': False, 'message': 'No se enviaron IDs'}), 400
+
+            print(f"[INFO] IDs recibidos: {clientes_ids}")
+
+            success = ModelCliente.delete(db, clientes_ids)
+            if success:
+                return jsonify({'success': True, 'message': 'Clientes eliminados correctamente'})
+            else:
+                return jsonify({'success': False, 'message': 'Error al eliminar clientes'}), 500
+        else:
+            flash('Esta ruta solo acepta peticiones AJAX', 'danger')
+            return redirect(url_for('clientes'))
+    except Exception as e:
+        print(f"[ERROR eliminar_clientes]: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 
 @app.route('/detalle_clientes/<int:id_cliente>')

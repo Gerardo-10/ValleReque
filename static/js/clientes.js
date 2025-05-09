@@ -21,6 +21,11 @@ window.initClientesModals = function () {
     const checkboxSeleccionarTodos = document.getElementById('seleccionarTodos');
     const checkboxesClientes = document.querySelectorAll('.checkbox-cliente');
 
+    const btnEliminar = document.getElementById('btnEliminar');
+    const modalEliminarCliente = document.getElementById('modalConfirmarEliminacion');
+    const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
+    const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+
     // Variables de estado
     let clientesSeleccionados = [];
     let estadoSeleccionado = null;
@@ -131,6 +136,49 @@ window.initClientesModals = function () {
                     mostrarExito('Cliente agregado', data.message);
 
                     this.reset(); // Limpia el formulario después de agregar
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar formulario:', error);
+                alert('Error inesperado al enviar el formulario');
+            });
+    });
+
+    btnEliminar.addEventListener('click', () => {
+        if (clientesSeleccionados.length === 0) {
+            alert('Por favor, seleccione al menos un cliente');
+            return;
+        }
+        abrirModal(modalEliminarCliente);
+    });
+
+    btnCancelarEliminar.addEventListener('click', () => cerrarModal(modalEliminarCliente));
+
+    btnConfirmarEliminar.addEventListener('click', () => {
+        const formData = new FormData();
+        formData.append('clientes', JSON.stringify(clientesSeleccionados));
+
+        fetch('/eliminar_clientes', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    clientesSeleccionados.forEach(id => {
+                        const fila = document.querySelector(`tr[data-id="${id}"]`);
+                        if (fila) {
+                            fila.remove();
+                        }
+                    });
+                    cerrarModal(modalEliminarCliente);
+                    mostrarExito('Clientes eliminados', data.message);
                 } else {
                     alert('Error: ' + data.message);
                 }

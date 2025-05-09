@@ -237,7 +237,7 @@
     </div>
 
     <!-- Modal para eliminar cliente -->
-    <div class="modal" id="modalConfirmarEliminacion">
+    <div class="modal" id="modalEliminarCliente">
         <div class="modal-content">
             <h3>¿Estás seguro de eliminar los clientes seleccionados?</h3>
             <p>Esta acción no se puede deshacer.</p>

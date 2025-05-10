@@ -112,31 +112,30 @@ window.initClientesModals = function () {
                         'Activo': 'activo',
                         'Evaluado': 'evaluado',
                         'NoDisponible': 'no-disponible',
-                        'SinEvaluar': 'sin-evaluar',
-                        'PorEvaluar': 'por-evaluar'
+                        'SinEvaluar': 'sin-evaluar'
                     };
 
                     const claseEstado = clasesEstado[cliente.estado] || 'sin-evaluar';
 
                     nuevaFila.innerHTML = `
-                    <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
-                    <td>${cliente.id_cliente}</td>
-                    <td data-filtro="nombreCompleto">${cliente.nombre} ${cliente.apellido}</td>
-                    <td data-filtro="dni">${cliente.dni}</td>
-                    <td>${cliente.direccion}</td>
-                    <td>${cliente.telefono}</td>
-                    <td>${cliente.ingreso_neto}</td>
-                    <td>
-                        <span class="estado-badge ${claseEstado}">
-                            ${cliente.estado}
-                        </span>
-                    </td>
-                    <td style="text-align: center;">
-                        <button class="btn-detalles-clientes" data-id="${cliente.id_cliente}">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                    </td>
-                `;
+                        <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
+                        <td>${cliente.id_cliente}</td>
+                        <td data-filtro="nombreCompleto">${cliente.nombre} ${cliente.apellido}</td>
+                        <td data-filtro="dni">${cliente.dni}</td>
+                        <td>${cliente.direccion}</td>
+                        <td>${cliente.telefono}</td>
+                        <td>${cliente.ingreso_neto}</td>
+                        <td>
+                            <span class="estado-badge ${claseEstado}">
+                                ${cliente.estado}
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                            <button class="btn-detalles-clientes" data-id="${cliente.id_cliente}">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </td>
+                    `;
 
                     document.getElementById('tabla_clientes_body').appendChild(nuevaFila);
 

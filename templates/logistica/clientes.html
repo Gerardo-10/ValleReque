@@ -76,11 +76,10 @@
                                     'Activo': 'activo',
                                     'Evaluado': 'evaluado',
                                     'NoDisponible': 'no-disponible',
-                                    'SinEvaluar': 'sin-evaluar',
-                                    'PorEvaluar': 'por-evaluar'
+                                    'SinEvaluar': 'sin-evaluar'
                                 } %}
 
-                                <span class="estado-badge {{ clases_estado.get(cliente.estado, 'sin-evaluar') }}">
+                                <span class="estado-badge {{ clases_estado.get(cliente.estado) }}">
                                     {{ cliente.estado }}
                                 </span>
                             </td>

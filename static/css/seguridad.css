@@ -1,19 +1,4 @@
 :root {
-    --color-primario: #4CAF50;
-    --color-primario-hover: #3d8b40;
-    --color-secundario: #2196F3;
-    --color-secundario-hover: #1976D2;
-    --color-gradiente: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
-    --color-texto: #333333;
-    --color-texto-secundario: #666666;
-    --color-texto-claro: #888888;
-    --color-borde: #e0e0e0;
-    --color-fondo: #f5f7fa;
-    --color-fondo-tarjeta: #ffffff;
-    --color-exito: #4CAF50;
-    --color-error: #f44336;
-    --color-advertencia: #ff9800;
-    --color-activo: #4CAF50;
     --color-inactivo: #f44336;
     --sombra-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
     --sombra-md: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -193,19 +178,6 @@ tbody tr:hover {
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
-.btn-eliminar {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: white;
-    border: 1px solid var(--color-borde);
-    border-radius: var(--radio-md);
-    color: var(--color-texto-secundario);
-    cursor: pointer;
-    transition: var(--transicion);
-}
 
 .btn-eliminar:hover {
     background-color: var(--color-fondo);
@@ -280,20 +252,6 @@ tbody tr:hover {
     color: var(--color-inactivo);
 }
 
-.btn-detalles {
-    background: none;
-    border: none;
-    color: var(--color-texto-secundario);
-    cursor: pointer;
-    transition: var(--transicion);
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin: 0 auto;
-}
 
 .btn-detalles:hover {
     background-color: rgba(33, 150, 243, 0.1);
@@ -339,57 +297,16 @@ tbody tr:hover {
     transform: translateY(-2px);
 }
 
-/* Modales */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transicion);
-}
 
+/* Modal */
 .modal.activo {
     opacity: 1;
     visibility: visible;
 }
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transicion);
-}
-
 .modal-overlay.activo {
     opacity: 1;
     visibility: visible;
-}
-
-.modal-contenido {
-    background-color: white;
-    border-radius: var(--radio-lg);
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--sombra-lg);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-    position: relative;
-    z-index: 1001;
 }
 
 .modal.activo .modal-contenido {
@@ -422,24 +339,6 @@ tbody tr:hover {
 
 .modal-icono i {
     font-size: 22px;
-}
-
-.modal-cerrar {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: var(--color-texto-secundario);
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: var(--transicion);
 }
 
 .modal-cerrar:hover {
@@ -522,19 +421,6 @@ tbody tr:hover {
 .estado-nombre.inactivo {
     background-color: rgba(244, 67, 54, 0.1);
     color: var(--color-inactivo);
-}
-
-.btn-confirmar-estado {
-    background: var(--color-gradiente);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: var(--radio-md);
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transicion);
-    width: 100%;
-    margin-top: 20px;
 }
 
 .btn-confirmar-estado:hover {

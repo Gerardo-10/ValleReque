@@ -1,18 +1,4 @@
 :root {
-    --color-primario: #4CAF50;
-    --color-primario-hover: #3d8b40;
-    --color-secundario: #2196F3;
-    --color-secundario-hover: #1976D2;
-    --color-gradiente: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
-    --color-texto: #333333;
-    --color-texto-secundario: #666666;
-    --color-texto-claro: #888888;
-    --color-borde: #e0e0e0;
-    --color-fondo: #f5f7fa;
-    --color-fondo-tarjeta: #ffffff;
-    --color-exito: #4CAF50;
-    --color-error: #f44336;
-    --color-advertencia: #ff9800;
     --sombra-sm: 0 2px 4px rgba(0,0,0,0.05);
     --sombra-md: 0 4px 8px rgba(0,0,0,0.1);
     --sombra-lg: 0 8px 16px rgba(0,0,0,0.15);
@@ -164,7 +150,7 @@ body {
 }
 
 .info-item {
-    margin-bottom: 15px;
+    margin-bottom: 0;
 }
 
 .info-item label {

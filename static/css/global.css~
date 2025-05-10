@@ -1,0 +1,17 @@
+:root {
+    --color-primario: #4CAF50;
+    --color-primario-hover: #3d8b40;
+    --color-secundario: #2196F3;
+    --color-secundario-hover: #1976D2;
+    --color-gradiente: linear-gradient(135deg, #4CAF50 0%, #2196F3 100%);
+    --color-texto: #333333;
+    --color-texto-secundario: #666666;
+    --color-texto-claro: #888888;
+    --color-borde: #e0e0e0;
+    --color-fondo: #f5f7fa;
+    --color-fondo-tarjeta: #ffffff;
+    --color-exito: #4CAF50;
+    --color-error: #f44336;
+    --color-advertencia: #ff9800;
+    --color-activo: #4CAF50;
+}

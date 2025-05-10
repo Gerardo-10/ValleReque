@@ -7,7 +7,7 @@ def get_connection():
     try:
         connection = mysql.connector.connect(
             host='137.131.136.183',
-            database='BDValleReque',
+            database='DBValleReque',
             user='useremote',
             password='12345@Remote'
         )

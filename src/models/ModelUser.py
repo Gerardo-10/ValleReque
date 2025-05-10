@@ -8,11 +8,11 @@ class ModelUser:
             cursor = db.connection.cursor()
             cursor.callproc('sp_login_validacion', [username])
             row = cursor.fetchone()
-
             if row is not None:
-                id_usuario, nombre_usuario, password_hash = row
-                print(f"[DEBUG] Usuario encontrado: {nombre_usuario}")
-                print(f"[DEBUG] Hash en BD: {password_hash} / Password ingresado: {password}")
+                id_usuario, nombre_usuario, password_hash, estado = row
+                if not estado:  # Estado 0 = inactivo
+                    print("[DEBUG] Usuario inactivo o no autorizado")
+                    return None
                 if User.check_password(password_hash, password):
                     print("[DEBUG] Contraseña correcta")
                     return User(id_usuario=id_usuario, nombre_usuario=nombre_usuario)

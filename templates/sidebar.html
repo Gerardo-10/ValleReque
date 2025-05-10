@@ -12,7 +12,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <a href="{{ url_for('sidebar') }}"><img
+                    <a href="{{ url_for('home_routes.sidebar') }}"><img
                             src="{{ url_for('static', filename='img/logo_principal_simplificado.png') }}"
                             alt="Logo Valle Reque"
                             class="logo-img"></a>
@@ -147,7 +147,7 @@
                                     <i class="fas fa-cog"></i>
                                     <span>Configuración</span>
                                 </a>
-                                <a class="dropdown-item" href="{{ url_for('logout') }}">
+                                <a class="dropdown-item" href="{{ url_for('auth_routes.logout') }}">
                                     <i class="fas fa-sign-out-alt"></i>
                                     <span>Cerrar Sesión</span>
                                 </a>

@@ -5,8 +5,8 @@
 {% block body %}
     {% if current_user.is_authenticated %}
         <h1>Bienvenido, {{ current_user.username }}</h1>
-        <a class="btn btn-danger" href="{{ url_for('logout') }}" >Cerrar Sesión</a>
-        <a class="btn btn-primary" href="{{ url_for('sidebar') }}">Página Principal del Sistema</a>
+        <a class="btn btn-danger" href="{{ url_for('auth_routes.logout') }}" >Cerrar Sesión</a>
+        <a class="btn btn-primary" href="{{ url_for('home_routes.sidebar') }}">Página Principal del Sistema</a>
     {% else %}
         <p>No estás autenticado.</p>
     {% endif %}

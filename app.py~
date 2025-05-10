@@ -1,7 +1,7 @@
 import os
 import logging
 from logging.handlers import RotatingFileHandler
-from flask import Flask
+from flask import Flask, redirect, url_for, flash, render_template
 from flask_mysqldb import MySQL
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 
 from config import config
 from src.routes import register_routes
-from src.routes.error_routes import register_error_handlers
 from src.models.ModelUser import ModelUser
 
 # Cargar variables de entorno
@@ -53,9 +52,20 @@ def load_user(user_id):
         logger.error(f"[ERROR load_user]: {e}")
         return None
 
+# Manejadores de errores
+def errors_401(error):
+    logger.warning("Acceso no autorizado (401)")
+    flash("Debes iniciar sesión para acceder a esta página.", "danger")
+    return redirect(url_for('auth_routes.login'))
+
+def errors_404(error):
+    logger.error("Página no encontrada (404)")
+    return render_template('errors/404.html'), 404
+
 # Registrar rutas y errores
 register_routes(app)
-register_error_handlers(app)  # 👈 Registrar errores desde archivo externo
+app.register_error_handler(401, errors_401)
+app.register_error_handler(404, errors_404)
 
 # Ejecutar la app
 if __name__ == '__main__':

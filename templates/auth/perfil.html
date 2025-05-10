@@ -64,7 +64,9 @@
                         </div>
                         <div class="info-item">
                             <label>Estado</label>
-                            <p class="estado-activo">{{ estado }}</p>
+                            <p class="estado-activo">
+                                {{ 'Activo' if estado == 1 else 'Inactivo' }}
+                            </p>
                         </div>
                     </div>
                 </div>

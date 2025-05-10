@@ -15,7 +15,7 @@ def home():
 @login_required
 def sidebar():
     empleado = ModelEmpleado.get_by_empleado_id(current_app.db, current_user.id_usuario)
-    rol, estado = ModelUser.obtener_rol_estado_usuario(current_app.db, current_user.id_usuario)
+    rol, estado = ModelUser.obtener_datos_usuario(current_app.db, current_user.id_usuario)
     return render_template('sidebar.html', empleado=empleado, rol=rol, estado=estado)
 
 @home_routes.route('/protected')

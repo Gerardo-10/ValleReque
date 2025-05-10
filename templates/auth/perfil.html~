@@ -12,7 +12,7 @@
                 </div>
                 <div class="usuario-info-basica">
                     <h2>{{ empleado.nombre }} {{ empleado.apellido }}</h2>
-                    <p class="usuario-rol">{{ empleado.rol }}</p>
+                    <p class="usuario-rol">{{ rol }}</p>
                     <div class="usuario-contacto">
                         <span><i class="fas fa-envelope"></i> {{ empleado.correo }}</span>
                         <span><i class="fas fa-phone"></i> {{ empleado.telefono }}</span>

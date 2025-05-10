@@ -43,7 +43,7 @@ class ModelUser:
     def obtener_rol_estado_usuario(cls, db, id_usuario):
         try:
             cursor = db.connection.cursor()
-            cursor.callproc('sp_obtener_rol_estado_usuario', [id_usuario])
+            cursor.callproc('sp_obtener_datos_usuario', [id_usuario])
             row = cursor.fetchone()
 
             if row is not None:

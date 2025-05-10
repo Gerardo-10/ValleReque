@@ -16,5 +16,5 @@ def seguridad():
 @login_required
 def perfil():
     empleado = ModelEmpleado.get_by_empleado_id(current_app.db, current_user.id_usuario)
-    rol, estado = ModelUser.obtener_datos_usuario(current_app.db, current_user.id_usuario)
+    rol, estado = ModelUser.obtener_rol_estado_usuario(current_app.db, current_user.id_usuario)
     return render_template('auth/perfil.html', empleado=empleado, rol=rol, estado=estado)

@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
+    window.cargarVista = cargarVista;
+
     const seguridadLink = document.getElementById("seguridad-link");
     const clientesLink = document.getElementById("clientes-link");
     const perfilLink = document.getElementById("perfil-link");

@@ -74,7 +74,7 @@ class ModelCliente:
         try:
             cursor = db.connection.cursor()
             cursor.execute("CALL sp_actualizar_cliente(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                id_cliente,
+                int(id_cliente),
                 data['nombre'],
                 data['apellido'],
                 data['dni'],
@@ -82,9 +82,9 @@ class ModelCliente:
                 data['correo'],
                 data['telefono'],
                 data['ocupacion'],
-                data['ingreso_neto'],
+                float(data['ingreso_neto']),
                 data['estado'],
-                data['carga_familiar']
+                int(data['carga_familiar'])
             ))
             db.connection.commit()
             return True

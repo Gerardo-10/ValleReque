@@ -150,6 +150,7 @@ window.initDetalleCliente = function () {
     document.getElementById('editForm').addEventListener('submit', function (e) {
         e.preventDefault();
 
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
         const formData = new FormData(e.target);
         const data = Object.fromEntries(formData.entries());
 
@@ -161,24 +162,37 @@ window.initDetalleCliente = function () {
         fetch('/actualizar_clientes', {
             method: 'POST',
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-CSRFToken": csrfToken
             },
             body: JSON.stringify(data)
         })
-            .then(res => res.json())
-            .then(result => {
+        .then(async res => {
+            const contentType = res.headers.get("content-type");
+            if (contentType && contentType.includes("application/json")) {
+                const result = await res.json();
                 if (result.success) {
-                    alert("Datos actualizados correctamente");
                     closeModal(editModal);
-                    cargarVista(`/detalle_clientes/${data.id_cliente}`);
+                    // Verificar si cargarVista está disponible
+                    if (typeof cargarVista === "function") {
+                        cargarVista(`/detalle_clientes/${data.id_cliente}`, initDetalleCliente);
+                    } else {
+                        console.warn("cargarVista no está definida. Redireccionando manualmente.");
+                        window.location.href = `/detalle_clientes/${data.id_cliente}`;
+                    }
                 } else {
-                    alert("Error al actualizar");
+                    alert("Error al actualizar: " + (result.message || ''));
                 }
-            })
-            .catch(error => {
-                console.error("Error en la solicitud:", error);
-                alert("Ocurrió un error inesperado.");
-            });
+            } else {
+                const text = await res.text();
+                console.error("Respuesta inesperada del servidor:", text);
+                alert("Ocurrió un error inesperado (no se recibió JSON).");
+            }
+        })
+        .catch(error => {
+            console.error("Error en la solicitud:", error);
+            alert("Ocurrió un error inesperado.");
+        });
     });
 
 

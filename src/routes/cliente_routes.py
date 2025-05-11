@@ -83,11 +83,26 @@ def detalle_clientes(id_cliente):
 @cliente_routes.route('/actualizar_clientes', methods=['POST'])
 @login_required
 def actualizar_cliente():
-    data = request.get_json()
-    id_cliente = data.get('id_cliente')
+    try:
+        data = request.get_json(force=True)
+        print("JSON recibido:", data)
 
-    success = ModelCliente.update(current_app.db, id_cliente, data)
-    return jsonify({'success': success})
+        id_cliente = data.get('id_cliente')
+        if not id_cliente:
+            return jsonify({'success': False, 'message': 'Falta el ID del cliente'}), 400
+
+        success = ModelCliente.update(current_app.db, id_cliente, data)
+
+        if success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'Fallo al actualizar en la base de datos'}), 500
+
+    except Exception as e:
+        print("❌ Error en actualizar_cliente:", e)
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+
 
 
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])

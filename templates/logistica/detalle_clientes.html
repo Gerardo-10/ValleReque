@@ -179,6 +179,7 @@
             </div>
             <div class="modal-body">
                 <form id="editForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-grid" id="formFields">
                         <!-- Form fields will be generated dynamically -->
                     </div>

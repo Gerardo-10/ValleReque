@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, request, jsonify, redirect, url_for, flash
 from flask_login import login_required, current_user
 
 from src.models.ModelEmpleado import ModelEmpleado
@@ -18,3 +18,37 @@ def perfil():
     empleado = ModelEmpleado.get_by_empleado_id(current_app.db, current_user.id_usuario)
     rol, estado = ModelUser.obtener_rol_estado_usuario(current_app.db, current_user.id_usuario)
     return render_template('auth/perfil.html', empleado=empleado, rol=rol, estado=estado)
+
+@empleado_routes.route('/insertar_empleado', methods=['POST'])
+@login_required
+def insertar_empleado():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            form = request.form
+            data = {
+                'area': form['area'],
+                'nombre': form['nombre'],
+                'apellido': form['apellido'],
+                'dni': form['dni'],
+                'direccion': form['direccion'],
+                'telefono': form['telefono'],
+                'correo': form['correo'],
+                'fecha_nacimiento': form['fecha_nacimiento'],
+                }
+
+            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, data, data['area'])
+
+            if success:
+                return jsonify({
+                    'success': True,
+                    'message': message,
+                    'empleado': empleado_insertado
+                })
+            else:
+                return jsonify({'success': False, 'message': message}), 500
+        else:
+            flash('Esta ruta solo acepta peticiones AJAX', 'danger')
+            return redirect(url_for('cliente_routes.clientes'))
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
+

@@ -1,0 +1,245 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seguridad.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="contenedor-principal">
+            <!-- Cabecera con título -->
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h1>Empleados</h1><br>
+                </div>
+            </header>
+
+            <br>
+
+            <!-- Barra de búsqueda y filtros -->
+            <div class="barra-herramientas">
+                <div class="busqueda-container">
+                    <input type="text" id="buscarEmpleado" placeholder="Buscar empleado">
+                    <button class="btn-buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroEmpleados">
+                        <option value="">Filtrar por...</option>
+                        <option value="nombre">Nombre</option>
+                        <option value="apellido">Apellido</option>
+                        <option value="dni">DNI</option>
+                        <option value="area">Área</option>
+                    </select>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroEmpleadosEstado">
+                        <option value="activos" selected>Activos</option>
+                        <option value="inactivos">Inactivos</option>
+                    </select>
+                </div>
+                <button class="btn-eliminar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+
+            <!-- Tabla de empleados -->
+            <div class="tabla-container">
+                <table class="tabla-empleados" id="tabla_empleados">
+                    <thead>
+                    <tr>
+                        <th class="columna-checkbox"></th>
+                        <th>ID</th>
+                        <th class="columna-nombre">Nombres</th>
+                        <th class="columna-nombre">Apellidos</th>
+                        <th>DNI</th>
+                        <th>Área</th>
+                        <th>Estado</th>
+                        <th>Detalles</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tabla_empleados_body">
+                    {% for empleado in empleados %}
+                        <tr data-estado="activos">
+                            <td><input type="checkbox" class="checkbox-empleado" data-id="{{ empleado.id_empleado }}">
+                            </td>
+                            <td>{{ empleado.id_empleado }}</td>
+                            <td data-filtro="nombre">{{ empleado.nombre }}</td>
+                            <td data-filtro="apellido">{{ empleado.apellido }}</td>
+                            <td data-filtro="dni">{{ empleado.dni }}</td>
+                            <td data-filtro="area">{{ empleado.area }}</td>
+                            <td>
+                                {% set clases_estado = {
+                                    1: 'activo',
+                                    0: 'inactivo'
+                                } %}
+                                {% set estado_texto = 'Activo' if empleado.estado == 1 else 'Inactivo' %}
+
+                                <span class="estado-badge {{ clases_estado.get(empleado.estado) }}">
+                                    {{ estado_texto }}
+                                </span>
+                            </td>
+                            <td style="text-align: center;" data-id="{{ empleado.id_empleado }}" data-tipo="empleado">
+                                <button class="btn-detalles"><i class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-container">
+                <button class="btn-cambiar-estado" id="btnCambiarEstado">Cambiar Estado</button>
+                <button class="btn-agregar" id="btnAgregar">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para cambiar estado -->
+    <div class="modal" id="modalCambiarEstado">
+        <div class="modal-contenido modal-estado">
+            <div class="modal-encabezado">
+                <h2>Cambiar Estado</h2>
+                <button class="modal-cerrar" id="cerrarModalEstado">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <div class="opciones-estado">
+                    <div class="opcion-estado" data-estado="activo">
+                        <div class="check-circle">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="estado-nombre activo">Activo</div>
+                    </div>
+                    <div class="opcion-estado" data-estado="inactivo">
+                        <div class="check-circle">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="estado-nombre inactivo">Inactivo</div>
+                    </div>
+                </div>
+                <div class="modal-pie">
+                    <button class="btn-confirmar-estado" id="btnConfirmarEstado">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para agregar empleado -->
+    <div class="modal" id="modalAgregarEmpleado">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2>Agregar Nuevo Empleado</h2>
+                <button class="modal-cerrar" id="cerrarModalAgregar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <form id="formAgregarEmpleado" method="POST" action="">
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="nombreEmpleado">Nombres*</label>
+                            <input type="text" id="nombreEmpleado" name="nombreEmpleado" placeholder="Ingrese nombres"
+                                   required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="apellidoEmpleado">Apellidos*</label>
+                            <input type="text" id="apellidoEmpleado" name="apellidoEmpleado"
+                                   placeholder="Ingrese apellidos" required>
+                        </div>
+                    </div>
+
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="dniEmpleado">DNI*</label>
+                            <input type="text" id="dniEmpleado" name="dniEmpleado" placeholder="Ingrese DNI" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="fechaNacimientoEmpleado">Fecha de Nacimiento*</label>
+                            <input type="date" id="fechaNacimientoEmpleado" name="fechaNacimientoEmpleado" required>
+                        </div>
+                    </div>
+
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="direccionEmpleado">Dirección*</label>
+                            <input type="text" id="direccionEmpleado" name="direccionEmpleado"
+                                   placeholder="Ingrese dirección" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="telefonoEmpleado">Teléfono*</label>
+                            <input type="text" id="telefonoEmpleado" name="telefonoEmpleado"
+                                   placeholder="Ingrese teléfono" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="correoEmpleado">Correo Electrónico*</label>
+                        <input type="email" id="correoEmpleado" name="correoEmpleado" placeholder="ejemplo@correo.com"
+                               required>
+                    </div>
+
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="areaEmpleado">Área*</label>
+                            <select id="areaEmpleado" name="areaEmpleado" required>
+                                <option value="">Seleccione un área</option>
+                                <option value="administracion">Administración</option>
+                                <option value="ventas">Ventas</option>
+                                <!-- Agrega más áreas según tu base de datos -->
+                            </select>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="rolEmpleado">Rol*</label>
+                            <select id="rolEmpleado" name="rolEmpleado" required>
+                                <option value="">Seleccione un rol</option>
+                                <option value="admin">Administrador</option>
+                                <option value="usuario">Usuario</option>
+                                <!-- Puedes agregar más roles según tu sistema -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- El estado se establecerá automáticamente en "Activo" en el backend -->
+
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal de éxito -->
+    <div class="modal" id="modalExito">
+        <div class="modal-contenido modal-exito">
+            <div class="modal-encabezado">
+                <div class="icono-exito">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 id="tituloExito">Operación Exitosa</h2>
+                <button class="modal-cerrar" id="cerrarModalExito">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <p id="mensajeExito">La operación se ha completado con éxito.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para modales -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+
+    <script src="../static/js/seguridad.js"></script>
+{% endblock %}

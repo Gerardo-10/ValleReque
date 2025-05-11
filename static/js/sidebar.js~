@@ -40,18 +40,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener("click", function (e) {
-        const boton = e.target.closest(".btn-detalles-clientes");
+        const boton = e.target.closest(".btn-detalles");
         if (boton) {
-            const idCliente = boton.dataset.id;
-            cargarVista(`/detalle_clientes/${idCliente}`, () => {
-                console.log("Vista de detalle cargada");
-                // Aquí puedes inicializar scripts específicos del detalle
-            });
+            const id = boton.dataset.id;
+            const tipo = boton.dataset.tipo;
+
+            if (tipo === "cliente") {
+                cargarVista(`/detalle_clientes/${id}`, () => {
+                    console.log("Vista de detalle de cliente cargada");
+                    // initDetalleCliente(); // si tienes una función específica
+                });
+            } else if (tipo === "empleado") {
+                cargarVista(`/detalle_empleados/${id}`, () => {
+                    console.log("Vista de detalle de empleado cargada");
+                    // initDetalleEmpleado(); // si tienes una función específica
+                });
+            }
         }
 
         const botonVolver = e.target.closest(".back-button");
         if (botonVolver) {
-            e.preventDefault(); // Evita el comportamiento predeterminado del <a href="#">
+            e.preventDefault();
             cargarVista("/clientes", initClientesModals);
         }
     });
@@ -85,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         initActiveSubmenus();
-        initCardEffects();
     }
 
     function initActiveSubmenus() {

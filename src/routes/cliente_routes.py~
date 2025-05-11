@@ -92,7 +92,7 @@ def obtener_cliente(id_cliente):
     if cliente is None:
         return jsonify(None), 404
 
-
+    # Convertimos el objeto Cliente a dict
     cliente_dict = {
         'id_cliente': cliente.id_cliente,
         'nombre': cliente.nombre,

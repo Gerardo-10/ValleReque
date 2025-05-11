@@ -1,5 +1,4 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // DOM
+window.initDetalleCliente = function () {
     const editButtons = document.querySelectorAll('.edit-button');
     const printButton = document.querySelector('.print-button');
     const exportButton = document.querySelector('.export-button');
@@ -162,4 +161,85 @@ document.addEventListener('DOMContentLoaded', function () {
             closeAllModals();
         }
     });
-});
+
+    document.addEventListener("click", function (e) {
+        const editBtn = e.target.closest(".edit-button");
+        if (editBtn && editBtn.dataset.section === "personal") {
+            const clienteId = window.location.pathname.split("/").pop(); // Extrae ID de URL
+
+            fetch(`/obtener_cliente/${clienteId}`)
+                .then(response => response.json())
+                .then(cliente => {
+                    if (!cliente) {
+                        alert("No se pudo cargar la información del cliente.");
+                        return;
+                    }
+
+                    mostrarModalConDatos(cliente); // Aquí llenas los campos del formulario
+                    document.getElementById("editModal").style.display = "block";
+                })
+                .catch(err => {
+                    console.error("Error obteniendo datos del cliente:", err);
+                    alert("Error al cargar los datos.");
+                });
+        }
+
+        if (e.target.closest(".close-button") || e.target.closest(".cancel-button")) {
+            document.getElementById("editModal").style.display = "none";
+        }
+    });
+
+    function mostrarModalConDatos(cliente) {
+        const formGrid = document.getElementById("formFields");
+        formGrid.innerHTML = `
+            <input type="hidden" name="id_cliente" value="${cliente.id_cliente}">
+            <label>Nombre: <input name="nombre" value="${cliente.nombre}" required></label>
+            <label>Apellido: <input name="apellido" value="${cliente.apellido}" required></label>
+            <label>DNI: <input name="dni" value="${cliente.dni}" required></label>
+            <label>Dirección: <input name="direccion" value="${cliente.direccion}" required></label>
+            <label>Correo: <input name="correo" value="${cliente.correo}" required></label>
+            <label>Teléfono: <input name="telefono" value="${cliente.telefono}" required></label>
+            <label>Ocupación: <input name="ocupacion" value="${cliente.ocupacion}" required></label>
+            <label>Ingreso Neto: <input type="number" name="ingreso_neto" value="${cliente.ingreso_neto}" required></label>
+            <label>Estado: 
+                <select name="estado">
+                    <option value="1" ${cliente.estado == 1 ? "selected" : ""}>Activo</option>
+                    <option value="0" ${cliente.estado == 0 ? "selected" : ""}>Inactivo</option>
+                </select>
+            </label>
+            <label>Carga Familiar: 
+                <select name="carga_familiar">
+                    <option value="1" ${cliente.carga_familiar == 1 ? "selected" : ""}>Sí</option>
+                    <option value="0" ${cliente.carga_familiar == 0 ? "selected" : ""}>No</option>
+                </select>
+            </label>
+        `;
+    }
+
+    document.getElementById("editForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch('/actualizar_clientes', {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(data)
+        })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    alert("Datos actualizados correctamente");
+                    document.getElementById("editModal").style.display = "none";
+                    cargarVista(`/detalle_clientes/${data.id_cliente}`);
+                } else {
+                    alert("Error al actualizar");
+                }
+            })
+            .catch(error => {
+                console.error("Error en la solicitud:", error);
+                alert("Ocurrió un error inesperado.");
+            });
+    });
+}

@@ -131,7 +131,7 @@ window.initClientesModals = function () {
                             </span>
                         </td>
                         <td style="text-align: center;">
-                            <button class="btn-detalles-clientes" data-id="${cliente.id_cliente}">
+                            <button class="btn-detalles" data-id="${cliente.id_cliente}">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
@@ -236,6 +236,7 @@ window.initClientesModals = function () {
     actualizarClientesSeleccionados();
 
     const inputBuscar = document.getElementById('buscarCliente');
+
     inputBuscar.addEventListener('input', filtrarClientes);
     document.getElementById('filtroClientes').addEventListener('change', filtrarClientes);
     document.getElementById('filtroClientesEstado').addEventListener('change', filtrarClientes);
@@ -243,14 +244,14 @@ window.initClientesModals = function () {
     function filtrarClientes() {
         const textoBusqueda = inputBuscar.value.toLowerCase();
         const filtro = document.getElementById('filtroClientes').value;
-        const filtroEstado = document.getElementById('filtroClientesEstado').value;
+        const filtroEstado = document.getElementById('filtroClientesEstado').value.toLowerCase();
         const filas = document.querySelectorAll('.tabla-clientes tbody tr');
 
         filas.forEach(fila => {
-            const estadoCliente = fila.getAttribute('data-estado');
+            const estadoCliente = fila.getAttribute('data-estado').toLowerCase();
 
-            // Solo muestra filas que coincidan exactamente con el estado seleccionado
-            const coincideEstado = estadoCliente === filtroEstado;
+            // Mostrar todos si se selecciona "todos"
+            const coincideEstado = (filtroEstado === 'todos') || (estadoCliente === filtroEstado);
 
             if (!coincideEstado) {
                 fila.style.display = 'none';

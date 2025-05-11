@@ -27,7 +27,7 @@
                 <div class="filtro-container">
                     <select id="filtroClientes">
                         <option value="">Filtrar por...</option>
-                        <option value="nombreCompleto">Nombre</option>
+                        <option value="nombre">Nombre</option>
                         <option value="dni">DNI</option>
                     </select>
                 </div>

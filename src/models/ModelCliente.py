@@ -27,7 +27,7 @@ class ModelCliente:
     def get_all(cls, db):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_clientes_todos()")  # Asegúrate de tener este SP creado en tu BD
+            cursor.execute("CALL sp_listar_clientes()")  # Asegúrate de tener este SP creado en tu BD
             rows = cursor.fetchall()
 
             # Liberar el resto del resultado del procedimiento si existe
@@ -46,7 +46,7 @@ class ModelCliente:
     def insert(cls, db, data):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_insertar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+            cursor.execute("CALL sp_crear_cliente(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                 data['nombre'],
                 data['apellido'],
                 data['dni'],

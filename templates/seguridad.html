@@ -60,31 +60,32 @@
                         <th>Detalles</th>
                     </tr>
                     </thead>
-                   <tbody id="tabla_empleados_body">
-                        {% for empleado in empleados %}
-                            <tr data-estado="{{ 'activos' if empleado.estado == 1 else 'inactivos' }}">
-                                <td>
-                                    <input type="checkbox" class="checkbox-empleado" data-id="{{ empleado.id_empleado }}">
-                                </td>
-                                <td>{{ empleado.id_empleado }}</td>
-                                <td data-filtro="nombre">{{ empleado.nombres }}</td>
-                                <td data-filtro="apellido">{{ empleado.apellidos }}</td>
-                                <td data-filtro="dni">{{ empleado.dni }}</td>
-                                <td data-filtro="area">{{ empleado.area }}</td>
-                                <td>
-                                    {% set clases_estado = {
+                    <tbody id="tabla_empleados_body">
+                    {% for empleado in empleados %}
+                        <tr data-estado="{{ 'activos' if empleado.estado == 1 else 'inactivos' }}">
+                            <td>
+                                <input type="checkbox" class="checkbox-empleado" data-id="{{ empleado.id_empleado }}">
+                            </td>
+                            <td>{{ empleado.id_empleado }}</td>
+                            <td data-filtro="nombre">{{ empleado.nombres }}</td>
+                            <td data-filtro="apellido">{{ empleado.apellidos }}</td>
+                            <td data-filtro="dni">{{ empleado.dni }}</td>
+                            <td data-filtro="area">{{ empleado.area }}</td>
+                            <td>
+                                {% set clases_estado = {
                                         1: 'activo',
                                         0: 'inactivo'
                                     } %}
-                                    <span class="estado-badge {{ clases_estado.get(empleado.estado) }}">
+                                <span class="estado-badge {{ clases_estado.get(empleado.estado) }}">
                                         {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
                                     </span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <button class="btn-detalles"><i class="fas fa-eye"></i></button>
-                                </td>
-                            </tr>
-                        {% endfor %}
+                            </td>
+                            <td style="text-align: center;">
+                                <button class="btn-detalles" data-id="{{ empleado.id_empleado }}" data-tipo="empleado"><i
+                                        class="fas fa-eye"></i></button>
+                            </td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -155,7 +156,7 @@
                                    placeholder="Ingrese apellidos" required>
                         </div>
                     </div>
-x
+                    x
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="dniEmpleado">DNI*</label>

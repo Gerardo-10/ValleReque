@@ -60,32 +60,31 @@
                         <th>Detalles</th>
                     </tr>
                     </thead>
-                    <tbody id="tabla_empleados_body">
-                    {% for empleado in empleados %}
-                        <tr data-estado="activos">
-                            <td><input type="checkbox" class="checkbox-empleado" data-id="{{ empleado.id_empleado }}">
-                            </td>
-                            <td>{{ empleado.id_empleado }}</td>
-                            <td data-filtro="nombre">{{ empleado.nombre }}</td>
-                            <td data-filtro="apellido">{{ empleado.apellido }}</td>
-                            <td data-filtro="dni">{{ empleado.dni }}</td>
-                            <td data-filtro="area">{{ empleado.area }}</td>
-                            <td>
-                                {% set clases_estado = {
-                                    1: 'activo',
-                                    0: 'inactivo'
-                                } %}
-                                {% set estado_texto = 'Activo' if empleado.estado == 1 else 'Inactivo' %}
-
-                                <span class="estado-badge {{ clases_estado.get(empleado.estado) }}">
-                                    {{ estado_texto }}
-                                </span>
-                            </td>
-                            <td style="text-align: center;" data-id="{{ empleado.id_empleado }}" data-tipo="empleado">
-                                <button class="btn-detalles"><i class="fas fa-eye"></i></button>
-                            </td>
-                        </tr>
-                    {% endfor %}
+                   <tbody id="tabla_empleados_body">
+                        {% for empleado in empleados %}
+                            <tr data-estado="{{ 'activos' if empleado.estado == 1 else 'inactivos' }}">
+                                <td>
+                                    <input type="checkbox" class="checkbox-empleado" data-id="{{ empleado.id_empleado }}">
+                                </td>
+                                <td>{{ empleado.id_empleado }}</td>
+                                <td data-filtro="nombre">{{ empleado.nombres }}</td>
+                                <td data-filtro="apellido">{{ empleado.apellidos }}</td>
+                                <td data-filtro="dni">{{ empleado.dni }}</td>
+                                <td data-filtro="area">{{ empleado.area }}</td>
+                                <td>
+                                    {% set clases_estado = {
+                                        1: 'activo',
+                                        0: 'inactivo'
+                                    } %}
+                                    <span class="estado-badge {{ clases_estado.get(empleado.estado) }}">
+                                        {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
+                                    </span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <button class="btn-detalles"><i class="fas fa-eye"></i></button>
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
             </div>
@@ -142,76 +141,69 @@
                 </button>
             </div>
             <div class="modal-cuerpo">
-                <form id="formAgregarEmpleado" method="POST" action="">
+                <form id="formAgregarEmpleado" method="POST" action="/insertar_empleado">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="nombreEmpleado">Nombres*</label>
-                            <input type="text" id="nombreEmpleado" name="nombreEmpleado" placeholder="Ingrese nombres"
+                            <input type="text" id="nombreEmpleado" name="nombre" placeholder="Ingrese nombres"
                                    required>
                         </div>
                         <div class="form-grupo">
                             <label for="apellidoEmpleado">Apellidos*</label>
-                            <input type="text" id="apellidoEmpleado" name="apellidoEmpleado"
+                            <input type="text" id="apellidoEmpleado" name="apellido"
                                    placeholder="Ingrese apellidos" required>
                         </div>
                     </div>
-
+x
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="dniEmpleado">DNI*</label>
-                            <input type="text" id="dniEmpleado" name="dniEmpleado" placeholder="Ingrese DNI" required>
+                            <input type="text" id="dniEmpleado" name="dni" placeholder="Ingrese DNI" required>
                         </div>
                         <div class="form-grupo">
                             <label for="fechaNacimientoEmpleado">Fecha de Nacimiento*</label>
-                            <input type="date" id="fechaNacimientoEmpleado" name="fechaNacimientoEmpleado" required>
+                            <input type="date" id="fechaNacimientoEmpleado" name="fecha_nacimiento" required>
                         </div>
                     </div>
 
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="direccionEmpleado">Dirección*</label>
-                            <input type="text" id="direccionEmpleado" name="direccionEmpleado"
+                            <input type="text" id="direccionEmpleado" name="direccion"
                                    placeholder="Ingrese dirección" required>
                         </div>
                         <div class="form-grupo">
                             <label for="telefonoEmpleado">Teléfono*</label>
-                            <input type="text" id="telefonoEmpleado" name="telefonoEmpleado"
+                            <input type="text" id="telefonoEmpleado" name="telefono"
                                    placeholder="Ingrese teléfono" required>
                         </div>
                     </div>
 
                     <div class="form-grupo">
                         <label for="correoEmpleado">Correo Electrónico*</label>
-                        <input type="email" id="correoEmpleado" name="correoEmpleado" placeholder="ejemplo@correo.com"
+                        <input type="email" id="correoEmpleado" name="correo" placeholder="ejemplo@correo.com"
                                required>
                     </div>
 
-                    <div class="form-fila">
-                        <div class="form-grupo">
-                            <label for="areaEmpleado">Área*</label>
-                            <select id="areaEmpleado" name="areaEmpleado" required>
-                                <option value="">Seleccione un área</option>
-                                <option value="administracion">Administración</option>
-                                <option value="ventas">Ventas</option>
-                                <!-- Agrega más áreas según tu base de datos -->
-                            </select>
-                        </div>
-                        <div class="form-grupo">
-                            <label for="rolEmpleado">Rol*</label>
-                            <select id="rolEmpleado" name="rolEmpleado" required>
-                                <option value="">Seleccione un rol</option>
-                                <option value="admin">Administrador</option>
-                                <option value="usuario">Usuario</option>
-                                <!-- Puedes agregar más roles según tu sistema -->
-                            </select>
-                        </div>
+                    <div class="form-grupo">
+                        <label for="areaEmpleado">Área*</label>
+                        <select id="areaEmpleado" name="area" required>
+                            <option value="" disabled>Seleccione un área</option>
+                            <option value="1">Administración</option>
+                            <option value="2">Ventas</option>
+                            <option value="3">Legal</option>
+                            <option value="4">Contabilidad</option>
+                            <!-- Agrega más áreas según tu base de datos -->
+                        </select>
                     </div>
 
                     <!-- El estado se establecerá automáticamente en "Activo" en el backend -->
 
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
-                        <button type="submit" class="btn-confirmar">Confirmar</button>
+                        <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
+                        <div id="modalOverlay" class="overlay"></div>
                     </div>
                 </form>
             </div>

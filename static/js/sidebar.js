@@ -51,9 +51,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     initDetalleCliente();
                 });
             } else if (tipo === "empleado") {
-                cargarVista(`/detalle_empleados/${id}`, () => {
+                cargarVista(`/detalle_empleado/${id}`, () => {
                     console.log("Vista de detalle de empleado cargada");
-                    // initDetalleEmpleado(); // si tienes una función específica
+                    initDetalleEmpleado();
                 });
             }
         }

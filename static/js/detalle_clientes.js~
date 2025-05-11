@@ -156,8 +156,6 @@ window.initDetalleCliente = function () {
         data.carga_familiar = data.carga_familiar === 'Sí' ? 1 : 0;
         data.ingreso_neto = parseFloat(data.ingreso_neto);
 
-        console.log("Enviando datos JSON:", JSON.stringify(data));
-
         fetch('/actualizar_clientes', {
             method: 'POST',
             headers: {

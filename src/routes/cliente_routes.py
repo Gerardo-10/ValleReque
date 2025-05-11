@@ -6,11 +6,13 @@ from src.models.ModelCliente import ModelCliente
 
 cliente_routes = Blueprint('cliente_routes', __name__)
 
+
 @cliente_routes.route('/clientes')
 @login_required
 def clientes():
     cliente = ModelCliente.get_all(current_app.db)
     return render_template('logistica/clientes.html', clientes=cliente)
+
 
 @cliente_routes.route('/insertar_cliente', methods=['POST'])
 @login_required
@@ -47,6 +49,7 @@ def insertar_cliente():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
 @cliente_routes.route('/eliminar_clientes', methods=['POST'])
 @login_required
 def eliminar_clientes():
@@ -69,11 +72,13 @@ def eliminar_clientes():
     except Exception as e:
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
+
 @cliente_routes.route('/detalle_clientes/<int:id_cliente>')
 @login_required
 def detalle_clientes(id_cliente):
     cliente = ModelCliente.get_by_id(current_app.db, id_cliente)
     return render_template('logistica/detalle_clientes.html', cliente=cliente)
+
 
 @cliente_routes.route('/actualizar_clientes', methods=['POST'])
 @login_required
@@ -84,6 +89,7 @@ def actualizar_cliente():
     success = ModelCliente.update(current_app.db, id_cliente, data)
     return jsonify({'success': success})
 
+
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])
 @login_required
 def obtener_cliente(id_cliente):
@@ -91,7 +97,6 @@ def obtener_cliente(id_cliente):
 
     if cliente is None:
         return jsonify(None), 404
-
 
     cliente_dict = {
         'id_cliente': cliente.id_cliente,
@@ -108,5 +113,3 @@ def obtener_cliente(id_cliente):
     }
 
     return jsonify(cliente_dict)
-
-

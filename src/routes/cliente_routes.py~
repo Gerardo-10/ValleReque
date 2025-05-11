@@ -6,11 +6,13 @@ from src.models.ModelCliente import ModelCliente
 
 cliente_routes = Blueprint('cliente_routes', __name__)
 
+
 @cliente_routes.route('/clientes')
 @login_required
 def clientes():
     cliente = ModelCliente.get_all(current_app.db)
     return render_template('logistica/clientes.html', clientes=cliente)
+
 
 @cliente_routes.route('/insertar_cliente', methods=['POST'])
 @login_required
@@ -47,6 +49,7 @@ def insertar_cliente():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
 @cliente_routes.route('/eliminar_clientes', methods=['POST'])
 @login_required
 def eliminar_clientes():
@@ -69,20 +72,50 @@ def eliminar_clientes():
     except Exception as e:
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
+
 @cliente_routes.route('/detalle_clientes/<int:id_cliente>')
 @login_required
 def detalle_clientes(id_cliente):
     cliente = ModelCliente.get_by_id(current_app.db, id_cliente)
     return render_template('logistica/detalle_clientes.html', cliente=cliente)
 
+
 @cliente_routes.route('/actualizar_clientes', methods=['POST'])
 @login_required
 def actualizar_cliente():
-    data = request.get_json()
-    id_cliente = data.get('id_cliente')
+    if not request.is_json:
+        return jsonify({"success": False, "error": "Tipo de contenido no válido"}), 400
 
-    success = ModelCliente.update(current_app.db, id_cliente, data)
+    data = request.get_json()
+    print("Datos recibidos:", data)  # Agregar esto para ver los datos
+
+    # Validar que los parámetros esenciales están presentes
+    required_fields = ['id_cliente', 'nombre', 'apellido', 'dni', 'direccion', 'correo', 'telefono', 'ocupacion',
+                       'ingreso_neto', 'estado_cliente', 'carga_familiar']
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"success": False, "error": f"Falta el campo: {field}"}), 400
+
+    # Validar tipos de datos
+    try:
+        data['ingreso_neto'] = float(data['ingreso_neto'])
+        data['carga_familiar'] = 1 if data['carga_familiar'] == 'Sí' else 0
+    except ValueError as e:
+        return jsonify({"success": False, "error": f"Error de conversión de datos: {e}"}), 400
+
+    # Validar que el estado sea uno de los valores permitidos
+    allowed_estados = ['SinEvaluar', 'NoDisponible', 'Evaluado', 'Activo']
+    if data['estado_cliente'] not in allowed_estados:
+        return jsonify({"success": False, "error": f"Estado no válido: {data['estado_cliente']}"}), 400
+
+    # Llamar al procedimiento almacenado
+    try:
+        success = ModelCliente.update(current_app.db, data['id_cliente'], data)
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Error al actualizar cliente: {e}"}), 500
+
     return jsonify({'success': success})
+
 
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])
 @login_required
@@ -92,7 +125,6 @@ def obtener_cliente(id_cliente):
     if cliente is None:
         return jsonify(None), 404
 
-    # Convertimos el objeto Cliente a dict
     cliente_dict = {
         'id_cliente': cliente.id_cliente,
         'nombre': cliente.nombre,
@@ -108,5 +140,3 @@ def obtener_cliente(id_cliente):
     }
 
     return jsonify(cliente_dict)
-
-

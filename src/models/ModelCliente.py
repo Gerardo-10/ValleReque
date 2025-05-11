@@ -6,7 +6,7 @@ class ModelCliente:
     def get_by_id(cls, db, id_cliente):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_por_id(%s)", (id_cliente,)) # Llama a un procedimiento almacenado
+            cursor.execute("CALL sp_cliente_por_id(%s)", (id_cliente,))  # Llama a un procedimiento almacenado
             row = cursor.fetchone()
 
             # Liberar el resto del resultado del procedimiento si existe
@@ -73,7 +73,7 @@ class ModelCliente:
     def update(cls, db, id_cliente, data):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_actualizar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+            cursor.execute("CALL sp_actualizar_cliente(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                 id_cliente,
                 data['nombre'],
                 data['apellido'],
@@ -89,7 +89,7 @@ class ModelCliente:
             db.connection.commit()
             return True
         except Exception as e:
-            print(f"[ERROR update]: {e}")
+            print(f"[ERROR update cliente {id_cliente}]: {e}")
             return False
 
     @classmethod

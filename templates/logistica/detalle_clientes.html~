@@ -87,7 +87,13 @@
                     </div>
                     <div class="data-item">
                         <p class="data-label">Carga Familiar</p>
-                        <p class="data-value">{{ cliente.carga_familiar }}</p>
+                        <p class="data-value">
+                            {% if cliente.carga_familiar == 1 %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

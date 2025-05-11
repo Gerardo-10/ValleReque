@@ -26,67 +26,76 @@ class ModelEmpleado:
         else:
             return None
 
-    @staticmethod
-    def get_all(db):
-        cursor = db.connection.cursor()
-        query = """
-                SELECT e.id_empleado,
-                       e.nombre_empleado,
-                       e.apellido_empleado,
-                       e.dni,
-                       e.direccion,
-                       e.telefono,
-                       e.correo_electronico,
-                       e.fecha_nacimiento,
-                       a.nombre,
-                       u.estado
-                FROM empleado e
-                         JOIN area a ON e.id_area = a.id_area
-                         JOIN usuario u ON e.id_empleado = u.id_empleado;
-                """
-        cursor.execute(query)
-        rows = cursor.fetchall()
-        cursor.close()
-
-        empleados = []
-        for row in rows:
-            emp = Empleado(*row[:8])  # los 8 primeros campos van al constructor
-            emp.area = row[8]
-            emp.estado = row[9]
-            empleados.append(emp)
-        return empleados
-
-    @staticmethod
-    def insert(db, empleado, id_area):
+    @classmethod
+    def get_all(cls, db):
         try:
             cursor = db.connection.cursor()
-            query = """
-                    INSERT INTO empleado (nombre_empleado, \
-                                          apellido_empleado, \
-                                          dni, \
-                                          direccion, \
-                                          telefono, \
-                                          correo_electronico, \
-                                          fecha_nacimiento, \
-                                          id_area) \
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s) \
-                    """
-            cursor.execute(query, (
-                empleado.nombre,
-                empleado.apellido,
-                empleado.dni,
-                empleado.direccion,
-                empleado.telefono,
-                empleado.correo,
-                empleado.fecha_nacimiento,
-                id_area
-            ))
-            db.connection.commit()
-            cursor.close()
-            return True
+            cursor.execute("CALL sp_listar_empleados()")
+            rows = cursor.fetchall()
+            while cursor.nextset():
+                pass
+            empleados = []
+            for row in rows:
+                empleado = {
+                    "id_empleado": row[0],
+                    "nombres": row[1],
+                    "apellidos": row[2],
+                    "dni": row[3],
+                    "area": row[8],  # nombre del área, si lo cambias en el SP
+                    "estado": row[9]
+                }
+                empleados.append(empleado)
+                print(empleados)
+            return empleados
+        except Exception as e:
+            print(f"[ERROR get_all Empleado]: {e}")
+            import traceback
+            traceback.print_exc()
+            return []
+
+    @classmethod
+    def insert(cls, db, empleado, id_area):
+        try:
+            with db.connection.cursor() as cursor:
+                sql = """
+                CALL sp_crear_empleado(
+                    %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                """
+                cursor.execute(sql, (
+                    id_area,
+                    empleado['nombre'],
+                    empleado['apellido'],
+                    empleado['dni'],
+                    empleado['direccion'],
+                    empleado['telefono'],
+                    empleado['correo'],
+                    empleado['fecha_nacimiento']
+                ))
+
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                new_id = cursor.fetchone()[0]
+                empleado["id_empleado"] = new_id
+
+                # Obtener nombre del área
+                cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
+                area_row = cursor.fetchone()
+                empleado["id_empleado"] = new_id
+
+                # Obtener nombre del área
+                cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
+                area_row = cursor.fetchone()
+                empleado["area"] = area_row[0] if area_row else "Desconocido"
+
+                # Estado fijo como entero (por defecto 1 = Activo)
+                empleado["estado"] = 1
+
+                db.connection.commit()
+                return True, "Empleado creado con éxito", empleado
+
         except Exception as ex:
-            print(f"Error en insert: {ex}")
-            return False
+            db.connection.rollback()
+            return False, f"Error: {str(ex)}", None
 
     @staticmethod
     def update(db, empleado, id_area):

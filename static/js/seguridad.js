@@ -77,12 +77,65 @@ window.initSecurityModals = function () {
     });
 
     formAgregarEmpleado.addEventListener('submit', function (e) {
-        e.preventDefault();
-        cerrarModal(modalAgregarEmpleado);
-        setTimeout(() => {
-            mostrarExito('Empleado Agregado Exitosamente', 'El nuevo empleado ha sido registrado en el sistema.');
-        }, 500);
+    e.preventDefault();
+    const formData = new FormData(this);
+
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+        }
+    })
+    .then(async res => {
+        if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`Error HTTP ${res.status}: ${errorText}`);
+        }
+        return res.json();
+    })
+    .then(data => {
+        console.log(data);
+        if (data.success) {
+            const empleado = data.empleado;
+            const estadoTexto = empleado.estado === 1 ? 'Activo' : 'Inactivo';
+            const estadoClase = empleado.estado === 1 ? 'activo' : 'inactivo';
+
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.innerHTML = `
+                <td><input type="checkbox" class="checkbox-empleado" data-id="${empleado.id_empleado}"></td>
+                <td>${empleado.id_empleado}</td>
+                <td data-filtro="nombre">${empleado.nombre}</td>
+                <td data-filtro="apellido">${empleado.apellido}</td>
+                <td data-filtro="dni">${empleado.dni}</td>
+                <td data-filtro="area">${empleado.area}</td>
+                <td>
+                    <span class="estado-badge ${estadoClase}">
+                        ${estadoTexto}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-detalles" data-id=${empleado.id_empleado}>
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            `;
+
+            document.getElementById('tabla_empleados_body').appendChild(nuevaFila);
+
+            cerrarModal(modalAgregarEmpleado);
+            mostrarExito('Empleado agregado', data.message);
+            this.reset();
+        } else {
+            alert('Error: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error al enviar formulario:', error);
+        alert('Error inesperado al enviar el formulario: ' + error.message);
     });
+});
 
     btnConfirmarEstado.addEventListener('click', function () {
         if (!estadoSeleccionado) {

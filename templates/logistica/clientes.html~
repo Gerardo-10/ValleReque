@@ -76,8 +76,8 @@
                                 {% set clases_estado = {
                                     'Activo': 'activo',
                                     'Evaluado': 'evaluado',
-                                    'NoDisponible': 'no-disponible',
-                                    'SinEvaluar': 'sin-evaluar'
+                                    'No Disponible': 'no-disponible',
+                                    'Sin Evaluar': 'sin-evaluar'
                                 } %}
 
                                 <span class="estado-badge {{ clases_estado.get(cliente.estado) }}">
@@ -124,12 +124,6 @@
                             <i class="fas fa-check"></i>
                         </div>
                         <div class="estado-nombre evaluado">Evaluado</div>
-                    </div>
-                    <div class="opcion-estado" data-estado="finalizado">
-                        <div class="check-circle">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <div class="estado-nombre finalizado">Finalizado</div>
                     </div>
                     <div class="opcion-estado" data-estado="no-disponible">
                         <div class="check-circle">

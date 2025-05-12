@@ -1,5 +1,6 @@
 {% block customCSS %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/seguridad.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -12,7 +13,7 @@
                 </div>
                 <div class="usuario-info-basica">
                     <h2>{{ empleado.nombre }} {{ empleado.apellido }}</h2>
-                    <p class="usuario-rol">{{ empleado.rol }}}</p>
+                    <p class="usuario-rol">{{ empleado.rol }}</p>
                     <div class="usuario-contacto">
                         <span><i class="fas fa-envelope"></i> {{ empleado.correo }}</span>
                         <span><i class="fas fa-phone"></i> {{ empleado.telefono }}</span>
@@ -67,7 +68,7 @@
                         </div>
                         <div class="info-item">
                             <label>Estado</label>
-                            <p class="{{ 'estado-activo' if empleado.estado == 1 else 'estado-inactivo' }}">
+                            <p class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
                                 {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
                             </p>
                         </div>

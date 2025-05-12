@@ -15,8 +15,9 @@ class ModelEmpleado:
                        e.correo_electronico,
                        e.fecha_nacimiento,
                        u.nombre_usuario,
+                       r.denominacion,
                        u.estado,
-                       r.denominacion
+                       u.id_usuario
                 FROM empleado e
                          inner join usuario u ON e.id_empleado = u.id_empleado
                          inner join Rol_Usuario ru on u.id_usuario = ru.id_usuario

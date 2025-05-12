@@ -6,14 +6,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.text();
             })
             .then(html => {
-                document.getElementById("dynamic-content").innerHTML = html;
-                setTimeout(() => {
+                const dynamicContent = document.getElementById("dynamic-content");
+                dynamicContent.innerHTML = html;
+
+                // Esperamos al siguiente frame para asegurar que el DOM fue procesado
+                requestAnimationFrame(() => {
                     if (typeof initFunction === "function") {
-                        initFunction();
+                        try {
+                            initFunction();
+                        } catch (e) {
+                            console.error(`Error ejecutando ${initFunction.name}:`, e);
+                        }
                     } else {
-                        console.error(`La función ${initFunction.name} no está disponible.`);
+                        console.error(`La función ${initFunction?.name || 'desconocida'} no está disponible.`);
                     }
-                }, 50);
+                });
             })
             .catch(error => {
                 console.error(`Error cargando contenido de ${endpoint}:`, error);
@@ -66,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cargarVista("/clientes", initClientesModals);
         }
     });
+
 
     const sidebar = document.querySelector('.sidebar');
     const mainContent = document.querySelector('.main-content');

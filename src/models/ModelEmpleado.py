@@ -19,9 +19,9 @@ class ModelEmpleado:
                        u.estado,
                        u.id_usuario
                 FROM empleado e
-                         inner join usuario u ON e.id_empleado = u.id_empleado
-                         inner join Rol_Usuario ru on u.id_usuario = ru.id_usuario
-                         inner join rol r ON ru.id_rol = r.id_rol
+                         LEFT JOIN usuario u ON e.id_empleado = u.id_empleado
+                         LEFT JOIN Rol_Usuario ru on u.id_usuario = ru.id_usuario
+                         LEFT JOIN rol r ON ru.id_rol = r.id_rol
                 WHERE e.id_empleado = %s
                 """
         cursor.execute(query, (id_empleado,))

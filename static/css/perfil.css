@@ -181,6 +181,22 @@ body {
     border-radius: 50%;
 }
 
+.estado-inactivo {
+    color: var(--color-no-disponible) !important;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.estado-inactivo::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-no-disponible) !important;
+    border-radius: 50%;
+}
+
 .btn-accion {
     background-color: var(--color-fondo-tarjeta);
     color: var(--color-secundario);

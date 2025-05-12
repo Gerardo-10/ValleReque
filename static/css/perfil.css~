@@ -181,6 +181,22 @@ body {
     border-radius: 50%;
 }
 
+.estado-inactivo {
+    color: var(--color-no-disponible);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.estado-inactivo::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-no-disponible);
+    border-radius: 50%;
+}
+
 .btn-accion {
     background-color: var(--color-fondo-tarjeta);
     color: var(--color-secundario);
@@ -203,57 +219,18 @@ body {
     border-color: transparent;
 }
 
-/* Modales */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transicion);
-}
+
 
 .modal.activo {
     opacity: 1;
     visibility: visible;
 }
 
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 999;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transicion);
-}
+
 
 .modal-overlay.activo {
     opacity: 1;
     visibility: visible;
-}
-
-.modal-contenido {
-    background-color: white;
-    border-radius: var(--radio-lg);
-    width: 90%;
-    max-width: 600px;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--sombra-lg);
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-    position: relative;
-    z-index: 1001;
 }
 
 .modal.activo .modal-contenido {
@@ -286,24 +263,6 @@ body {
 
 .modal-icono i {
     font-size: 22px;
-}
-
-.modal-cerrar {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 18px;
-    color: var(--color-texto-secundario);
-    cursor: pointer;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: var(--transicion);
 }
 
 .modal-cerrar:hover {

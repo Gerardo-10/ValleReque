@@ -236,8 +236,8 @@ window.initClientesModals = function () {
     actualizarClientesSeleccionados();
 
     const inputBuscar = document.getElementById('buscarCliente');
+
     inputBuscar.addEventListener('input', filtrarClientes);
-    document.getElementById('buscarCliente').addEventListener('input', filtrarClientes);
     document.getElementById('filtroClientes').addEventListener('change', filtrarClientes);
     document.getElementById('filtroClientesEstado').addEventListener('change', filtrarClientes);
 
@@ -250,7 +250,7 @@ window.initClientesModals = function () {
         filas.forEach(fila => {
             const estadoCliente = fila.getAttribute('data-estado').toLowerCase();
 
-            // Si está en "todos", no filtra por estado
+            // Mostrar todos si se selecciona "todos"
             const coincideEstado = (filtroEstado === 'todos') || (estadoCliente === filtroEstado);
 
             if (!coincideEstado) {
@@ -261,7 +261,6 @@ window.initClientesModals = function () {
             let mostrar = false;
 
             if (!filtro) {
-                // Si no se elige un filtro específico (nombre/dni), busca en todo el contenido
                 mostrar = fila.textContent.toLowerCase().includes(textoBusqueda);
             } else {
                 const celda = fila.querySelector(`td[data-filtro="${filtro}"]`);

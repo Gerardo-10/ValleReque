@@ -83,38 +83,26 @@ def detalle_clientes(id_cliente):
 @cliente_routes.route('/actualizar_clientes', methods=['POST'])
 @login_required
 def actualizar_cliente():
-    if not request.is_json:
-        return jsonify({"success": False, "error": "Tipo de contenido no válido"}), 400
-
-    data = request.get_json()
-    print("Datos recibidos:", data)  # Agregar esto para ver los datos
-
-    # Validar que los parámetros esenciales están presentes
-    required_fields = ['id_cliente', 'nombre', 'apellido', 'dni', 'direccion', 'correo', 'telefono', 'ocupacion',
-                       'ingreso_neto', 'estado_cliente', 'carga_familiar']
-    for field in required_fields:
-        if field not in data:
-            return jsonify({"success": False, "error": f"Falta el campo: {field}"}), 400
-
-    # Validar tipos de datos
     try:
-        data['ingreso_neto'] = float(data['ingreso_neto'])
-        data['carga_familiar'] = 1 if data['carga_familiar'] == 'Sí' else 0
-    except ValueError as e:
-        return jsonify({"success": False, "error": f"Error de conversión de datos: {e}"}), 400
+        data = request.get_json(force=True)
+        print("JSON recibido:", data)
 
-    # Validar que el estado sea uno de los valores permitidos
-    allowed_estados = ['SinEvaluar', 'NoDisponible', 'Evaluado', 'Activo']
-    if data['estado_cliente'] not in allowed_estados:
-        return jsonify({"success": False, "error": f"Estado no válido: {data['estado_cliente']}"}), 400
+        id_cliente = data.get('id_cliente')
+        if not id_cliente:
+            return jsonify({'success': False, 'message': 'Falta el ID del cliente'}), 400
 
-    # Llamar al procedimiento almacenado
-    try:
-        success = ModelCliente.update(current_app.db, data['id_cliente'], data)
+        success = ModelCliente.update(current_app.db, id_cliente, data)
+
+        if success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'Fallo al actualizar en la base de datos'}), 500
+
     except Exception as e:
-        return jsonify({"success": False, "error": f"Error al actualizar cliente: {e}"}), 500
+        print("❌ Error en actualizar_cliente:", e)
+        return jsonify({'success': False, 'message': str(e)}), 500
 
-    return jsonify({'success': success})
+
 
 
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])

@@ -54,7 +54,7 @@ def insertar_empleado():
                 return jsonify({'success': False, 'message': message}), 500
         else:
             flash('Esta ruta solo acepta peticiones AJAX', 'danger')
-            return redirect(url_for('cliente_routes.clientes'))
+            return redirect(url_for('empleado_routes.seguridad'))
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 

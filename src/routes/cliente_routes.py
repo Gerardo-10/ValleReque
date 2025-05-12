@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for, current_app
 from flask_login import login_required
 import json
+import logging
 
 from src.models.ModelCliente import ModelCliente
 
@@ -70,6 +71,7 @@ def eliminar_clientes():
             flash('Esta ruta solo acepta peticiones AJAX', 'danger')
             return redirect(url_for('cliente_routes.clientes'))
     except Exception as e:
+        logging.error(f"Error al eliminar clientes: {e}")  # Agregar log para capturar el error
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 
@@ -101,8 +103,6 @@ def actualizar_cliente():
     except Exception as e:
         print("❌ Error en actualizar_cliente:", e)
         return jsonify({'success': False, 'message': str(e)}), 500
-
-
 
 
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])

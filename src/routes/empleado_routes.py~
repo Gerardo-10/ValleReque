@@ -6,13 +6,11 @@ from src.models.ModelUser import ModelUser
 
 empleado_routes = Blueprint('empleado_routes', __name__)
 
-
 @empleado_routes.route('/seguridad')
 @login_required
 def seguridad():
     empleados = ModelEmpleado.get_all(current_app.db)
     return render_template('seguridad.html', empleados=empleados)
-
 
 @empleado_routes.route('/perfil')
 @login_required
@@ -21,15 +19,11 @@ def perfil():
     rol, estado = ModelUser.obtener_rol_estado_usuario(current_app.db, current_user.id_usuario)
     return render_template('auth/perfil.html', empleado=empleado, rol=rol, estado=estado)
 
-
 @empleado_routes.route('/detalle_empleado/<int:id_empleado>')
 @login_required
 def empleado(id_empleado):
     empleado = ModelEmpleado.get_by_empleado_id(current_app.db, id_empleado)
-    if not empleado:
-        return "Empleado no encontrado", 404
     return render_template('detalle_empleado.html', empleado=empleado)
-
 
 @empleado_routes.route('/insertar_empleado', methods=['POST'])
 @login_required
@@ -46,7 +40,7 @@ def insertar_empleado():
                 'telefono': form['telefono'],
                 'correo': form['correo'],
                 'fecha_nacimiento': form['fecha_nacimiento'],
-            }
+                }
 
             success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, data, data['area'])
 
@@ -63,3 +57,4 @@ def insertar_empleado():
             return redirect(url_for('cliente_routes.clientes'))
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
+

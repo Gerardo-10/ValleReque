@@ -97,7 +97,7 @@ class ModelCliente:
         try:
             cursor = db.connection.cursor()
             for id_cliente in ids:
-                cursor.execute("CALL sp_cliente_eliminar(%s)", (id_cliente,))
+                cursor.execute("CALL sp_eliminar_cliente(%s)", (id_cliente,))
             db.connection.commit()
             return True
         except Exception as e:

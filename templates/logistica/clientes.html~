@@ -64,7 +64,7 @@
                     </thead>
                     <tbody id="tabla_clientes_body">
                     {% for cliente in clientes %}
-                        <tr data-estado="{{ cliente.estado | lower }}">
+                        <tr data-id="{{ cliente.id_cliente }}" data-estado="{{ cliente.estado | lower }}">
                             <td><input type="checkbox" class="checkbox-cliente" data-id="{{ cliente.id_cliente }}"></td>
                             <td>{{ cliente.id_cliente }}</td>
                             <td data-filtro="nombreCompleto">{{ cliente.nombre }} {{ cliente.apellido }}</td>
@@ -196,7 +196,7 @@
                         <div class="form-grupo">
                             <label for="cargaFamiliarCliente">Carga Familiar*</label>
                             <select id="cargaFamiliarCliente" name="carga_familiar" required>
-                                <option value="">Seleccione una opción</option>
+                                <option value="" disabled>Seleccione una opción</option>
                                 <option value="1">Si</option>
                                 <option value="0">No</option>
                             </select>
@@ -219,7 +219,7 @@
                     <div class="form-grupo">
                         <label for="estadoCliente">Estado Inicial*</label>
                         <select id="estadoCliente" name="estado" required>
-                            <option value="">Seleccione un estado</option>
+                            <option value="" disabled>Seleccione un estado</option>
                             <option value="Activo">Activo</option>
                             <option value="Evaluado">Evaluado</option>
                             <option value="NoDisponible">No Disponible</option>
@@ -238,13 +238,19 @@
 
     <!-- Modal para eliminar cliente -->
     <div class="modal" id="modalConfirmarEliminacion">
-        <div class="modal-content">
-            <h3>¿Estás seguro de eliminar los clientes seleccionados?</h3>
-            <p>Esta acción no se puede deshacer.</p>
-            <div class="modal-actions">
-                <button id="btnCancelarEliminar" class="btn btn-secundario">Cancelar</button>
-                <button id="btnConfirmarEliminar" class="btn btn-danger">Sí, eliminar</button>
-                <div id="modalOverlay" class="overlay"></div>
+        <div class="modal-contenido">
+            <div class="modal-encabezado d-flex align-items-center gap-2">
+                <i class="fas fa-trash-alt text-danger"></i>
+                <h2 class="h5 mb-0">Eliminar Cliente</h2>
+            </div>
+            <div class="modal-cuerpo">
+                <h3>¿Estás seguro de eliminar los clientes seleccionados?</h3>
+                <p class="text-danger">Esta acción no se puede deshacer.</p>
+                <div class="modal-pie">
+                    <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+                    <button type="submit" class="btn-confirmar" id="btnCancelarEliminar">Confirmar</button>
+                    <div id="modalOverlay" class="overlay"></div>
+                </div>
             </div>
         </div>
     </div>

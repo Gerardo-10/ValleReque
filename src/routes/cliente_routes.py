@@ -3,6 +3,8 @@ from flask_login import login_required
 import json
 import logging
 
+from sqlalchemy.testing import db
+
 from src.models.ModelCliente import ModelCliente
 
 cliente_routes = Blueprint('cliente_routes', __name__)
@@ -103,6 +105,34 @@ def actualizar_cliente():
     except Exception as e:
         print("❌ Error en actualizar_cliente:", e)
         return jsonify({'success': False, 'message': str(e)}), 500
+
+
+@cliente_routes.route('/actualizar_estado_clientes', methods=['POST'])
+def actualizar_estado_clientes():
+    try:
+        # Recibe los datos de la solicitud
+        clientes = request.form.get('clientes')  # lista de IDs de clientes
+        estado = request.form.get('estado')  # nuevo estado para los clientes
+
+        # Validar datos
+        if not clientes or not estado:
+            return jsonify(success=False, message='Datos incompletos'), 400
+
+        # Log de los datos recibidos (opcional)
+        print(f'Recibido clientes: {clientes}, estado: {estado}')
+
+        # Convertir la cadena de clientes a lista
+        clientes = json.loads(clientes)
+
+        # Llamar al método del modelo para actualizar el estado
+        if ModelCliente.update_status(current_app.db, clientes, estado):
+            return jsonify(success=True, message='Estado actualizado correctamente')
+        else:
+            return jsonify(success=False, message='Error al actualizar el estado de los clientes'), 500
+
+    except Exception as e:
+        print('Error interno en actualizar_estado_clientes:', e)
+        return jsonify(success=False, message='Error interno: ' + str(e)), 500
 
 
 @cliente_routes.route('/obtener_cliente/<int:id_cliente>', methods=['GET'])

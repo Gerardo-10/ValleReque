@@ -1,3 +1,5 @@
+import json
+
 from src.models.entities.Cliente import Cliente
 
 
@@ -90,6 +92,24 @@ class ModelCliente:
             return True
         except Exception as e:
             print(f"[ERROR update cliente {id_cliente}]: {e}")
+            return False
+
+    @classmethod
+    def update_status(cls, db, clientes, nuevo_estado):
+        try:
+            # Convertir la lista de IDs de clientes a JSON
+            clientes_json = json.dumps(clientes)
+
+            # Crear cursor y llamar al procedimiento almacenado
+            cursor = db.connection.cursor()
+            cursor.callproc('sp_actualizar_estado_cliente', [clientes_json, nuevo_estado])
+
+            # Confirmar cambios en la base de datos
+            db.connection.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            print(f"[ERROR update_status]: {e}")
             return False
 
     @classmethod

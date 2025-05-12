@@ -248,7 +248,7 @@
                 <p class="text-danger">Esta acción no se puede deshacer.</p>
                 <div class="modal-pie">
                     <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
-                    <button type="submit" class="btn-confirmar" id="btnCancelarEliminar">Confirmar</button>
+                    <button type="submit" class="btn-confirmar" id="btnConfirmarEliminar" >Confirmar</button>
                     <div id="modalOverlay" class="overlay"></div>
                 </div>
             </div>

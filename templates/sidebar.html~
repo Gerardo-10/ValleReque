@@ -25,13 +25,12 @@
             </div>
 
             <nav class="sidebar-nav">
-                <div class="nav-section {% if rol != 'Administrador' %}d-none{% endif %}">
+                <div class="nav-section">
                     <a href="#" class="nav-item" id="seguridad-link">
                         <i class="fas fa-shield-alt"></i>
                         <span>Seguridad</span>
                     </a>
                 </div>
-
 
                 <div class="nav-section">
                     <a href="#" class="nav-item">

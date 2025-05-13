@@ -23,7 +23,105 @@ window.initDetalleEmpleado = function () {
     const formActualizarInfo = document.getElementById('formActualizarInfo');
     const formCambiarPassword = document.getElementById('formCambiarPassword');
 
+    const btnActualizarCuenta = document.getElementById('btnActualizarCuenta');
+    const modalActualizarCuenta = document.getElementById('modalActualizarCuenta');
+    const cerrarModalActualizarCuenta = document.getElementById('cerrarModalActualizarCuenta');
+
     const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+
+    if (btnActualizarCuenta) {
+        btnActualizarCuenta.addEventListener('click', function () {
+            // Cargar datos desde los atributos data-*
+            const idEmpleado = this.dataset.id;
+            const rol = this.dataset.rol;
+            const area = this.dataset.area;
+            const estado = this.dataset.estado;
+
+            // Asignar valores al formulario del modal
+            document.getElementById('idActualizarCuenta').value = idEmpleado;
+            document.getElementById('rolActualizar').value = rol;
+            document.getElementById('areaActualizar').value = area;
+            document.getElementById('estadoActualizar').value = estado;
+
+            // Mostrar el modal (asumiendo clase .mostrar o como tú manejes el display)
+            modalActualizarCuenta.classList.add('mostrar');
+        });
+    }
+
+    if (formActualizarCuenta) {
+        formActualizarCuenta.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const idEmpleado = document.getElementById('idActualizarCuenta').value;
+            const rol = document.getElementById('rolActualizar').value;
+            const area = document.getElementById('areaActualizar').value;
+            const estado = document.getElementById('estadoActualizar').value;
+
+            if (!idEmpleado) {
+                alert('Error: No se encontró el ID del empleado.');
+                return;
+            }
+
+            const data = {
+                id_empleado: idEmpleado,
+                rol: rol,
+                area: area,
+                estado: estado
+            };
+
+            fetch('/actualizar_cuenta_empleado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': formActualizarCuenta.querySelector('input[name="csrf_token"]').value
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                })
+                .then(respuesta => {
+                    if (respuesta.success) {
+                        // Cerrar modal y mostrar éxito
+                        modalActualizarCuenta.classList.remove('mostrar');
+                        mostrarExito('Cuenta Actualizada', 'La información de la cuenta ha sido actualizada correctamente.');
+
+                        // Actualizar datos en la vista (DOM)
+                        document.getElementById('rolEmpleado').textContent = respuesta.rol_texto;
+                        document.getElementById('areaEmpleado').textContent = respuesta.area_texto;
+                        document.getElementById('estadoEmpleado').textContent = respuesta.estado_texto;
+                        document.getElementById('estadoEmpleado').className = 'estado-' + (estado == 1 ? 'activo' : 'inactivo');
+                    } else {
+                        alert('Error: ' + respuesta.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al actualizar la cuenta.');
+                });
+        });
+    }
+
+    // Opcional: cerrar modal con botón
+    document.getElementById('btnCancelarActualizarCuenta').addEventListener('click', function () {
+        modalActualizarCuenta.classList.remove('mostrar');
+    });
+    document.getElementById('cerrarModalActualizarCuenta').addEventListener('click', function () {
+        modalActualizarCuenta.classList.remove('mostrar');
+    });
+
+    if (cerrarModalActualizarCuenta) {
+        cerrarModalActualizarCuenta.addEventListener('click', () => cerrarModal(modalActualizarCuenta));
+    }
+
+    // También cerrar con el botón "Cancelar"
+    const btnCancelarActualizarCuenta = document.getElementById('btnCancelarActualizar');
+    if (btnCancelarActualizarCuenta) {
+        btnCancelarActualizarCuenta.addEventListener('click', () => cerrarModal(modalActualizarCuenta));
+    }
 
     // Funciones para manejar modales
     function abrirModal(modal) {
@@ -52,35 +150,12 @@ window.initDetalleEmpleado = function () {
     }
 
     // Función para mostrar modal de éxito
-    function mostrarExito(titulo, mensaje, mostrarCredenciales = false) {
-        const tituloExito = document.getElementById('tituloExito');
-        const mensajeExito = document.getElementById('mensajeExito');
-        const credencialesContainer = document.getElementById('credencialesContainer');
+    function mostrarError(titulo, mensaje) {
+        alert(titulo + '\n' + mensaje);
+    }
 
-        if (tituloExito && mensajeExito) {
-            tituloExito.textContent = titulo;
-            mensajeExito.textContent = mensaje;
-        }
-
-        if (mostrarCredenciales && credencialesContainer) {
-            // Generar credenciales aleatorias para demostración
-            const usuario = 'r.' + Math.random().toString(36).substring(2, 8);
-            const password = 'Pass' + Math.floor(Math.random() * 10000) + '!';
-
-            const usuarioGenerado = document.getElementById('usuarioGenerado');
-            const passwordGenerada = document.getElementById('passwordGenerada');
-
-            if (usuarioGenerado && passwordGenerada) {
-                usuarioGenerado.textContent = usuario;
-                passwordGenerada.textContent = password;
-            }
-
-            credencialesContainer.style.display = 'block';
-        } else if (credencialesContainer) {
-            credencialesContainer.style.display = 'none';
-        }
-
-        abrirModal(modalExito);
+    function mostrarExito(titulo, mensaje) {
+        alert(titulo + '\n' + mensaje);
     }
 
     // Manejar envío de formularios
@@ -299,8 +374,11 @@ window.initDetalleEmpleado = function () {
         abrirModal(modalActualizarInfo);
     });
 
-    function mostrarError(titulo, mensaje) {
-    alert(titulo + '\n' + mensaje);
-    console.error(titulo, mensaje);
-}
+    document.getElementById('btnActualizarCuenta').addEventListener('click', function () {
+        const rol = this.dataset.rol;
+        const area = this.dataset.area;
+        const estado = this.dataset.estado;
+
+        console.log(rol, area, estado);
+    });
 };

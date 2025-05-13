@@ -27,27 +27,27 @@
                     <div class="info-grupo">
                         <div class="info-item">
                             <label>Nombre Completo</label>
-                            <p id="nombreEmpleado" >{{ empleado.nombre }} {{ empleado.apellido }}</p>
+                            <p id="nombreEmpleado">{{ empleado.nombre }} {{ empleado.apellido }}</p>
                         </div>
                         <div class="info-item">
                             <label>Fecha de Nacimiento</label>
-                            <p id="fechaNacimientoEmpleado" >{{ empleado.fecha_nacimiento }}</p>
+                            <p id="fechaNacimientoEmpleado">{{ empleado.fecha_nacimiento }}</p>
                         </div>
                         <div class="info-item">
                             <label>Dirección</label>
-                            <p id="direccionEmpleado" >{{ empleado.direccion }}</p>
+                            <p id="direccionEmpleado">{{ empleado.direccion }}</p>
                         </div>
                         <div class="info-item">
                             <label>Correo Electrónico</label>
-                            <p id="correoEmpleado" >{{ empleado.correo }}</p>
+                            <p id="correoEmpleado">{{ empleado.correo }}</p>
                         </div>
                         <div class="info-item">
                             <label>Teléfono</label>
-                            <p id="telefonoEmpleado" >{{ empleado.telefono }}</p>
+                            <p id="telefonoEmpleado">{{ empleado.telefono }}</p>
                         </div>
                         <div class="info-item">
                             <label>DNI</label>
-                            <p id="dniEmpleado" >{{ empleado.dni }}</p>
+                            <p id="dniEmpleado">{{ empleado.dni }}</p>
                         </div>
                     </div>
                     <button class="btn-accion" id="btnActualizarInfo"
@@ -66,25 +66,31 @@
                     <div class="info-grupo">
                         <div class="info-item">
                             <label>Nombre de Usuario</label>
-                            <p id="usuarioEmpleado" >{{ empleado.nombre_usuario }}</p>
+                            <p id="usuarioEmpleado">{{ empleado.nombre_usuario }}</p>
                         </div>
                         <div class="info-item">
                             <label>Rol del Sistema</label>
-                            <p id="rolEmpleado" >{{ empleado.rol }}</p>
+                            <p id="rolEmpleado">{{ empleado.rol }}</p>
                         </div>
                         <div class="info-item">
                             <label>Área</label>
-                            <p id="areaEmpleado" >{{ empleado.area }}</p>
+                            <p id="areaEmpleado">{{ empleado.area }}</p>
                         </div>
                         <div class="info-item">
                             <label>Estado</label>
-                            <p id="estadoEmpleado" class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
+                            <p id="estadoEmpleado"
+                               class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
                                 {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
                             </p>
                         </div>
                     </div>
-                    <button class="btn-accion mb-2" id="btnActualizarCuenta">
-                        <i class="fas fa-key"></i> Actualizar Cuenta
+                    <button class="btn-accion mb-2" id="btnActualizarCuenta"
+                            data-id="{{ empleado.id_empleado }}"
+                            data-nombre-usuario="{{ empleado.nombre_usuario }}"
+                            data-rol="{{ empleado.rol }}"
+                            data-area="{{ empleado.area }}"
+                            data-estado="{{ empleado.estado }}">
+                        <i class="fas fa-edit"></i> Actualizar Cuenta
                     </button>
                     <button class="btn-accion" id="btnCambiarPassword">
                         <i class="fas fa-key"></i> Actualizar Contraseña
@@ -140,6 +146,60 @@
                     </div>
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarActualizar">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Actualizar Cuenta -->
+    <div class="modal" id="modalActualizarCuenta">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h2>Actualizar Cuenta</h2>
+                <button class="modal-cerrar" data-close-modal="modalActualizarCuenta">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <form id="formActualizarCuenta">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="idActualizarCuenta" value="{{ empleado.id_empleado }}">
+                    <div class="form-grupo">
+                        <label for="rolActualizar">Rol del Sistema</label>
+                        <select id="rolActualizar" name="rol" required>
+                            <option value="" disabled selected>Seleccione un rol</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Usuario</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="areaActualizar">Área</label>
+                        <select id="areaActualizar" name="area" required>
+                            <option value="" disabled selected>Seleccione un área</option>
+                            <option value="1">Administración</option>
+                            <option value="2">Ventas</option>
+                            <option value="3">Legal</option>
+                            <option value="4">Contabilidad</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo">
+                        <label for="estadoActualizar">Estado</label>
+                        <select id="estadoActualizar" name="estado" required>
+                            <option value="" disabled selected>Seleccione un estado</option>
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" data-close-modal="modalActualizarCuenta">Cancelar</button>
                         <button type="submit" class="btn-confirmar">Guardar Cambios</button>
                     </div>
                 </form>

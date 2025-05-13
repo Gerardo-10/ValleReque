@@ -50,7 +50,13 @@
                             <p>{{ empleado.dni }}</p>
                         </div>
                     </div>
-                    <button class="btn-accion" id="btnActualizarInfo">
+                    <button class="btn-accion" id="btnActualizarInfo"
+                            data-nombre="{{ empleado.nombre }}"
+                            data-apellido="{{ empleado.apellido }}"
+                            data-correo="{{ empleado.correo }}"
+                            data-telefono="{{ empleado.telefono }}"
+                            data-fecha-nacimiento="{{ empleado.fecha_nacimiento }}"
+                            data-direccion="{{ empleado.direccion }}">
                         <i class="fas fa-edit"></i> Actualizar Información
                     </button>
                 </div>

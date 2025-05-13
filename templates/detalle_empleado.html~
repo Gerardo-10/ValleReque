@@ -1,6 +1,6 @@
 {% block customCSS %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/seguridad.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 {% endblock %}
 
 {% block body %}

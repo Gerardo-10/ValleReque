@@ -1,0 +1,32 @@
+class Empleado:
+    def __init__(self, id_empleado, nombre_empleado, apellido_empleado, dni,
+                 direccion, telefono, correo_electronico, fecha_nacimiento,
+                 nombre_usuario, rol, estado, id_usuario):
+        self.id_empleado = id_empleado
+        self.nombre = nombre_empleado
+        self.apellido = apellido_empleado
+        self.dni = dni
+        self.direccion = direccion
+        self.telefono = telefono
+        self.correo = correo_electronico
+        self.fecha_nacimiento = fecha_nacimiento
+        self.nombre_usuario = nombre_usuario
+        self.rol = rol
+        self.estado = estado
+        self.id_usuario = id_usuario
+
+    def to_dict(self):
+        return {
+            'id_empleado': self.id_empleado,
+            'nombre_empleado': self.nombre,
+            'apellido_empleado': self.apellido,
+            'dni': self.dni,
+            'direccion': self.direccion,
+            'telefono': self.telefono,
+            'correo_electronico': self.correo,
+            'fecha_nacimiento': str(self.fecha_nacimiento),
+            'nombre_usuario': self.nombre_usuario,
+            'denominacion': self.rol,
+            'estado': self.estado,
+            'id_usuario': self.id_usuario
+        }

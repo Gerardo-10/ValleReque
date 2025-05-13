@@ -197,24 +197,4 @@ window.initDetalleEmpleado = function () {
         }
     });
 
-    btnActualizarInfo.addEventListener('click', function () {
-        // Obtener los valores desde los atributos data-*
-        const nombre = this.getAttribute('data-nombre');
-        const apellido = this.getAttribute('data-apellido');
-        const correo = this.getAttribute('data-correo');
-        const telefono = this.getAttribute('data-telefono');
-        const fechaNacimiento = this.getAttribute('data-fecha-nacimiento');
-        const direccion = this.getAttribute('data-direccion');
-
-        // Setear los valores en el formulario del modal
-        document.getElementById('nombreActualizar').value = nombre;
-        document.getElementById('apellidoActualizar').value = apellido;
-        document.getElementById('emailActualizar').value = correo;
-        document.getElementById('telefonoActualizar').value = telefono;
-        document.getElementById('fechaNacActualizar').value = fechaNacimiento;
-        document.getElementById('direccionActualizar').value = direccion;
-
-        // Abrir el modal
-        abrirModal(modalActualizarInfo);
-    });
 };

@@ -79,6 +79,14 @@ def cambiar_estado_empleados():
         ids = datos.get("ids", [])
         nuevo_estado = datos.get("estado")
 
+        # Traducción si es texto (opcional)
+        if nuevo_estado == 'activo':
+            nuevo_estado = 1
+        elif nuevo_estado == 'inactivo':
+            nuevo_estado = 0
+        else:
+            nuevo_estado = int(nuevo_estado)
+
         if not ids or nuevo_estado is None:
             return jsonify({"success": False, "message": "Datos incompletos."}), 400
 

@@ -199,7 +199,8 @@
                     </div>
 
                     <div class="modal-pie">
-                        <button type="button" class="btn-cancelar" data-close-modal="modalActualizarCuenta">Cancelar</button>
+                        <button type="button" class="btn-cancelar" data-close-modal="modalActualizarCuenta">Cancelar
+                        </button>
                         <button type="submit" class="btn-confirmar">Guardar Cambios</button>
                     </div>
                 </form>
@@ -222,34 +223,38 @@
             <div class="modal-cuerpo">
                 <form id="formCambiarPassword">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <input type="hidden" id="idActualizarCuenta" value="{{ empleado.id_empleado }}">
+                    <input type="hidden" id="idActualizarCuenta" name="id_empleado" value="{{ empleado.id_empleado }}">
+
                     <div class="form-grupo">
                         <label for="passwordActual">Contraseña Actual*</label>
                         <div class="input-password">
-                            <input type="password" id="passwordActual" required>
+                            <input type="password" id="passwordActual" name="password_actual" required>
                             <button type="button" class="toggle-password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
+
                     <div class="form-grupo">
                         <label for="passwordNueva">Nueva Contraseña*</label>
                         <div class="input-password">
-                            <input type="password" id="passwordNueva" required>
+                            <input type="password" id="passwordNueva" name="password_nueva" required>
                             <button type="button" class="toggle-password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
+
                     <div class="form-grupo">
                         <label for="passwordConfirmar">Confirmar Contraseña*</label>
                         <div class="input-password">
-                            <input type="password" id="passwordConfirmar" required>
+                            <input type="password" id="passwordConfirmar" name="password_confirmar" required>
                             <button type="button" class="toggle-password">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
+
                     <div class="requisitos-password">
                         <p>La contraseña debe cumplir con los siguientes requisitos:</p>
                         <ul>
@@ -259,11 +264,13 @@
                             <li>Al menos un carácter especial</li>
                         </ul>
                     </div>
+
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarPassword">Cancelar</button>
                         <button type="submit" class="btn-confirmar">Cambiar Contraseña</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>

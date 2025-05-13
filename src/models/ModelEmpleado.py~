@@ -1,0 +1,242 @@
+from werkzeug.security import generate_password_hash, check_password_hash
+
+from src.models.entities.Empleado import Empleado
+
+
+class ModelEmpleado:
+    @classmethod
+    def get_by_empleado_id(cls, db, id_empleado):
+        try:
+            cursor = db.connection.cursor()
+            query = """
+                    SELECT e.id_empleado,
+                           e.nombre_empleado,
+                           e.apellido_empleado,
+                           e.dni,
+                           e.direccion,
+                           e.telefono,
+                           e.correo_electronico,
+                           e.fecha_nacimiento,
+                           u.nombre_usuario,
+                           r.denominacion AS rol_denominacion,
+                           u.estado       AS usuario_estado,
+                           u.id_usuario,
+                           a.nombre       AS area_nombre
+                    FROM empleado e
+                             LEFT JOIN area a ON e.id_area = a.id_area
+                             LEFT JOIN usuario u ON e.id_empleado = u.id_empleado
+                             LEFT JOIN Rol_Usuario ru on u.id_usuario = ru.id_usuario
+                             LEFT JOIN rol r ON ru.id_rol = r.id_rol
+                    WHERE e.id_empleado = %s
+                    """
+            cursor.execute(query, (id_empleado,))
+            row = cursor.fetchone()
+            cursor.close()
+
+            if row:
+                # Se asume que el constructor de Empleado recibe todos los valores correctamente
+                return Empleado(*row)
+            else:
+                return None
+        except Exception as e:
+            print(f"Error al obtener empleado: {e}")
+            return None
+
+    @classmethod
+    def get_all(cls, db):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_listar_empleados()")
+            rows = cursor.fetchall()
+            while cursor.nextset():
+                pass
+            empleados = []
+            for row in rows:
+                empleado = {
+                    "id_empleado": row[0],
+                    "nombres": row[1],
+                    "apellidos": row[2],
+                    "dni": row[3],
+                    "area": row[8],  # nombre del área, si lo cambias en el SP
+                    "estado": row[9]
+                }
+                empleados.append(empleado)
+                print(empleados)
+            return empleados
+        except Exception as e:
+            print(f"[ERROR get_all Empleado]: {e}")
+            import traceback
+            traceback.print_exc()
+            return []
+
+    @classmethod
+    def insert(cls, db, empleado, id_area):
+        try:
+            with db.connection.cursor() as cursor:
+                # Generar contraseña por defecto '123456' con hash seguro
+                password_hash = generate_password_hash('123456')
+
+                sql = """
+                CALL sp_crear_empleado(
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                """
+                cursor.execute(sql, (
+                    id_area,
+                    empleado['nombre'],
+                    empleado['apellido'],
+                    empleado['dni'],
+                    empleado['direccion'],
+                    empleado['telefono'],
+                    empleado['correo'],
+                    empleado['fecha_nacimiento'],
+                    password_hash  # ✅ nuevo parámetro enviado al SP
+                ))
+
+                cursor.execute("SELECT LAST_INSERT_ID()")
+                new_id = cursor.fetchone()[0]
+                empleado["id_empleado"] = new_id
+
+                # Obtener nombre del área
+                cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
+                area_row = cursor.fetchone()
+                empleado["area"] = area_row[0] if area_row else "Desconocido"
+
+                empleado["estado"] = 1
+
+                db.connection.commit()
+                return True, "Empleado creado con éxito", empleado
+
+        except Exception as e:
+            print(f"[ERROR AL INSERTAR EMPLEADO]: {e}")
+            import traceback
+            traceback.print_exc()
+            return False, str(e), None
+
+    @classmethod
+    def update(cls, db, id_empleado, data):
+        try:
+            cursor = db.connection.cursor()
+            query = """
+                    UPDATE empleado
+                    SET nombre_empleado    = %s,
+                        apellido_empleado  = %s,
+                        direccion          = %s,
+                        telefono           = %s,
+                        correo_electronico = %s,
+                        fecha_nacimiento   = %s
+                    WHERE id_empleado = %s
+                    """
+            cursor.execute(query, (
+                data.get('nombre'),
+                data.get('apellido'),
+                data.get('direccion'),
+                data.get('telefono'),
+                data.get('correo'),
+                data.get('fecha_nacimiento'),
+                id_empleado
+            ))
+            db.connection.commit()
+            cursor.close()
+            return True
+        except Exception as ex:
+            print(f"Error en update: {ex}")
+            return False
+
+    @classmethod
+    def update_password(cls, db, id_empleado, current_password, new_password):
+        try:
+            with db.connection.cursor() as cursor:
+                cursor.execute("""
+                               SELECT u.pwd
+                               FROM usuario u
+                               WHERE u.id_empleado = %s
+                               """, (id_empleado,))
+                row = cursor.fetchone()
+
+                if not row:
+                    return False, "Usuario no encontrado"
+
+                hash_actual = row[0]
+
+                # Verificar contraseña actual
+                if not check_password_hash(hash_actual, current_password):
+                    return False, "La contraseña actual no es correcta"
+
+                # Generar hash nuevo (usa una función fuerte por defecto como PBKDF2)
+                hash_nuevo = generate_password_hash(new_password)
+
+                cursor.execute("""
+                               UPDATE usuario
+                               SET pwd = %s
+                               WHERE id_empleado = %s
+                               """, (hash_nuevo, id_empleado))
+
+                db.connection.commit()
+                return True, "Contraseña actualizada correctamente"
+        except Exception as ex:
+            print(f"[ERROR] Error en update_password: {ex}")
+            import traceback
+            traceback.print_exc()
+            return False, "Error interno"
+
+    @staticmethod
+    def delete(db, id_empleado):
+        try:
+            cursor = db.connection.cursor()
+            query = "DELETE FROM empleado WHERE id_empleado = %s"
+            cursor.execute(query, (id_empleado,))
+            db.connection.commit()
+            cursor.close()
+            return True
+        except Exception as ex:
+            print(f"Error en delete: {ex}")
+            return False
+
+    @classmethod
+    def cambiar_estado_empleados(cls, db, ids, nuevo_estado):
+        try:
+            cursor = db.connection.cursor()
+            print(f"▶️ Ejecutando SP con ids={ids} y estado={nuevo_estado}")
+            for id_empleado in ids:
+                cursor.execute("CALL sp_actualizar_estado_empleado_rol(%s, %s)", (id_empleado, nuevo_estado))
+            db.connection.commit()
+            cursor.close()
+            return True, "Estados actualizados correctamente."
+        except Exception as ex:
+            db.connection.rollback()
+            print(f"Error al cambiar estados: {ex}")
+            return False, str(ex)
+
+    @classmethod
+    def update_cuenta(cls, db, id_empleado, data):
+        try:
+            cursor = db.connection.cursor()
+            query = """
+                    UPDATE empleado
+                    SET nombre_empleado    = %s,
+                        apellido_empleado  = %s,
+                        direccion          = %s,
+                        telefono           = %s,
+                        correo_electronico = %s,
+                        fecha_nacimiento   = %s
+                    WHERE id_empleado = %s
+                    """
+
+            cursor.execute(query, (
+                data.get('nombre'),
+                data.get('apellido'),
+                data.get('direccion'),
+                data.get('telefono'),
+                data.get('correo'),
+                data.get('fecha_nacimiento'),
+                id_empleado
+            ))
+
+            db.connection.commit()  # Asegura que los cambios se guarden
+            cursor.close()
+            return True
+        except Exception as ex:
+            db.connection.rollback()  # Si ocurre un error, revertir la transacción
+            print(f"Error en update: {ex}")
+            return False

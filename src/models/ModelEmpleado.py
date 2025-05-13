@@ -4,8 +4,8 @@ from src.models.entities.Empleado import Empleado
 
 
 class ModelEmpleado:
-    @staticmethod
-    def get_by_empleado_id(db, id_empleado):
+    @classmethod
+    def get_by_empleado_id(cls, db, id_empleado):
         cursor = db.connection.cursor()
         query = """
                 SELECT e.id_empleado,
@@ -202,3 +202,39 @@ class ModelEmpleado:
             db.connection.rollback()
             print(f"Error al cambiar estados: {ex}")
             return False, str(ex)
+
+    @classmethod
+    def actualizar_cuenta(cls, db, id_empleado, id_rol, id_area, estado):
+        try:
+            cursor = db.connection.cursor()
+
+            # 1. Actualizar estado en usuario
+            cursor.execute("""
+                           UPDATE usuario
+                           SET estado = %s
+                           WHERE id_empleado = %s
+                           """, (estado, id_empleado))
+
+            # 2. Actualizar id_area en empleado
+            cursor.execute("""
+                           UPDATE empleado
+                           SET id_area = %s
+                           WHERE id_empleado = %s
+                           """, (id_area, id_empleado))
+
+            # 3. Actualizar rol en Rol_Usuario (asumiendo que hay 1 por usuario)
+            cursor.execute("""
+                           UPDATE Rol_Usuario ru
+                               INNER JOIN usuario u ON ru.id_usuario = u.id_usuario
+                           SET ru.id_rol = %s
+                           WHERE u.id_empleado = %s
+                           """, (id_rol, id_empleado))
+
+            db.connection.commit()
+            cursor.close()
+            return True
+
+        except Exception as ex:
+            print(f"Error en actualizar_cuenta: {ex}")
+            db.connection.rollback()
+            return False

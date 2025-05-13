@@ -159,3 +159,32 @@ def actualizar_contrasena():
         import traceback
         traceback.print_exc()
         return jsonify({'success': False, 'message': 'Error interno'})
+
+
+@empleado_routes.route('/actualizar_cuenta_empleado', methods=['POST'])
+def actualizar_cuenta_empleado():
+    try:
+        data = request.get_json()
+        print("Data JSON recibida en actualizar_cuenta_empleado:", data)
+
+        id_empleado = data.get('id_empleado')
+        id_rol = data.get('id_rol')
+        id_area = data.get('id_area')
+        estado = data.get('estado')
+
+        resultado = ModelEmpleado.actualizar_cuenta(
+            current_app.db,
+            id_empleado,
+            id_rol,
+            id_area,
+            estado
+        )
+
+        if resultado:
+            return jsonify({'success': True, 'message': 'Cuenta actualizada correctamente'})
+        else:
+            return jsonify({'success': False, 'message': 'Error al actualizar la cuenta'}), 400
+
+    except Exception as e:
+        print("Error en actualizar_cuenta_empleado:", str(e))
+        return jsonify({'success': False, 'message': 'Error interno del servidor', 'error': str(e)}), 500

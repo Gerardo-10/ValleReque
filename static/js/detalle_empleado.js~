@@ -101,6 +101,7 @@ window.initDetalleEmpleado = function () {
         const form = document.getElementById('formActualizarCuenta');
         const formData = new FormData(form);
 
+        // Convertir FormData a un objeto JSON
         const data = Object.fromEntries(formData.entries());
 
         console.log("Datos que enviaré:", data);
@@ -111,34 +112,34 @@ window.initDetalleEmpleado = function () {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': form.querySelector('input[name="csrf_token"]').value
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data) // Convertir a JSON
         })
             .then(response => {
                 if (!response.ok) {
                     return response.text().then(text => {
-                        throw new Error(text)
+                        throw new Error(text);
                     });
                 }
                 return response.json();
             })
             .then(result => {
+                // Si la actualización fue exitosa
                 if (result.success) {
                     alert("Cuenta actualizada exitosamente.");
 
-                    // 👇 Actualizar visualmente la info en la página
+                    // Actualizar la información en la página
                     document.getElementById('rolEmpleado').textContent = obtenerNombreRol(data.id_rol);
                     document.getElementById('areaEmpleado').textContent = obtenerNombreArea(data.id_area);
 
-                    const estadoText = data.estado == "1" ? 'Activo' : 'Inactivo';
-                    const estadoClass = data.estado == "1" ? 'estado-activo' : 'estado-inactivo';
+                    const estadoText = data.estado === "1" ? 'Activo' : 'Inactivo';
+                    const estadoClass = data.estado === "1" ? 'estado-activo' : 'estado-inactivo';
 
                     const estadoEmpleado = document.getElementById('estadoEmpleado');
                     estadoEmpleado.textContent = estadoText;
                     estadoEmpleado.className = estadoClass;
 
-                    // 👇 Opcionalmente cierra el modal si quieres
+                    // Opcional: Cerrar el modal si lo deseas
                     document.querySelector('[data-close-modal="modalActualizarCuenta"]').click();
-
                 } else {
                     alert("Error al actualizar la cuenta: " + result.message);
                 }
@@ -148,6 +149,7 @@ window.initDetalleEmpleado = function () {
                 alert("Hubo un error con la solicitud: " + error.message);
             });
     });
+
 
     // Funciones auxiliares para traducir ID a texto:
     function obtenerNombreRol(idRol) {

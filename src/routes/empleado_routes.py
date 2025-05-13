@@ -52,3 +52,26 @@ def insertar_empleado():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
+
+@empleado_routes.route('/cambiar_estado_empleados', methods=['POST'])
+@login_required
+def cambiar_estado_empleados():
+    try:
+        datos = request.get_json()
+        print("🚀 Recibido en ruta:", datos)
+
+        ids = datos.get("ids", [])
+        nuevo_estado = datos.get("estado")
+
+        if not ids or nuevo_estado is None:
+            return jsonify({"success": False, "message": "Datos incompletos."}), 400
+
+        success, message = ModelEmpleado.cambiar_estado_empleados(current_app.db, ids, nuevo_estado)
+
+        if success:
+            return jsonify({"success": True, "message": message})
+        else:
+            return jsonify({"success": False, "message": message}), 500
+    except Exception as e:
+        return jsonify({"success": False, "message": str(e)}), 500
+

@@ -143,3 +143,19 @@ class ModelEmpleado:
         except Exception as ex:
             print(f"Error en delete: {ex}")
             return False
+
+    @classmethod
+    def cambiar_estado_empleados(cls,db, ids, nuevo_estado):
+        try:
+            cursor = db.connection.cursor()
+            print(f"▶️ Ejecutando SP con ids={ids} y estado={nuevo_estado}")
+            for id_empleado in ids:
+                cursor.execute("CALL sp_actualizar_estado_empleado_rol(%s, %s)", (id_empleado, nuevo_estado))
+            db.connection.commit()
+            cursor.close()
+            return True, "Estados actualizados correctamente."
+        except Exception as ex:
+            db.connection.rollback()
+            print(f"Error al cambiar estados: {ex}")
+            return False, str(ex)
+

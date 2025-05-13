@@ -6,7 +6,6 @@ from flask_mysqldb import MySQL
 from flask_login import LoginManager
 from flask_wtf.csrf import CSRFProtect
 from dotenv import load_dotenv
-
 from config import config
 from src.routes import register_routes
 from src.routes.error_routes import register_error_handlers

@@ -92,7 +92,6 @@ def actualizar_empleado():
     try:
         data = request.get_json()
         id_empleado = data.get('id_empleado')
-        print(f"Datos recibidos: {data}")
         if not id_empleado:
             return jsonify({'success': False, 'message': 'Falta el ID del empleado'}), 400
 

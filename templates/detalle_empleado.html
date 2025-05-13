@@ -27,27 +27,27 @@
                     <div class="info-grupo">
                         <div class="info-item">
                             <label>Nombre Completo</label>
-                            <p>{{ empleado.nombre }} {{ empleado.apellido }}</p>
+                            <p id="nombreEmpleado" >{{ empleado.nombre }} {{ empleado.apellido }}</p>
                         </div>
                         <div class="info-item">
                             <label>Fecha de Nacimiento</label>
-                            <p>{{ empleado.fecha_nacimiento }}</p>
+                            <p id="fechaNacimientoEmpleado" >{{ empleado.fecha_nacimiento }}</p>
                         </div>
                         <div class="info-item">
                             <label>Dirección</label>
-                            <p>{{ empleado.direccion }}</p>
+                            <p id="direccionEmpleado" >{{ empleado.direccion }}</p>
                         </div>
                         <div class="info-item">
                             <label>Correo Electrónico</label>
-                            <p>{{ empleado.correo }}</p>
+                            <p id="correoEmpleado" >{{ empleado.correo }}</p>
                         </div>
                         <div class="info-item">
                             <label>Teléfono</label>
-                            <p>{{ empleado.telefono }}</p>
+                            <p id="telefonoEmpleado" >{{ empleado.telefono }}</p>
                         </div>
                         <div class="info-item">
                             <label>DNI</label>
-                            <p>{{ empleado.dni }}</p>
+                            <p id="dniEmpleado" >{{ empleado.dni }}</p>
                         </div>
                     </div>
                     <button class="btn-accion" id="btnActualizarInfo"
@@ -87,66 +87,6 @@
         </div>
     </div>
 
-    <!-- Modal para Agregar Empleado -->
-    <div class="modal" id="modalAgregarEmpleado">
-        <div class="modal-contenido">
-            <div class="modal-encabezado">
-                <div class="modal-icono">
-                    <i class="fas fa-user-plus"></i>
-                </div>
-                <h2>Agregar Nuevo Empleado</h2>
-                <button class="modal-cerrar" id="cerrarModalAgregar">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-cuerpo">
-                <form id="formAgregarEmpleado">
-                    <div class="form-grupo">
-                        <label for="nombreEmpleado">Nombre*</label>
-                        <input type="text" id="nombreEmpleado" placeholder="Ingrese nombre" required>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="apellidoEmpleado">Apellidos*</label>
-                        <input type="text" id="apellidoEmpleado" placeholder="Ingrese apellidos" required>
-                    </div>
-                    <div class="form-fila">
-                        <div class="form-grupo">
-                            <label for="emailEmpleado">Correo Electrónico*</label>
-                            <input type="email" id="emailEmpleado" placeholder="correo@ejemplo.com" required>
-                        </div>
-                        <div class="form-grupo">
-                            <label for="telefonoEmpleado">Teléfono*</label>
-                            <input type="tel" id="telefonoEmpleado" placeholder="978657452" required>
-                        </div>
-                    </div>
-                    <div class="form-fila">
-                        <div class="form-grupo">
-                            <label for="fechaNacEmpleado">Fecha de Nacimiento*</label>
-                            <input type="date" id="fechaNacEmpleado" required>
-                        </div>
-                        <div class="form-grupo">
-                            <label for="rolEmpleado">Rol*</label>
-                            <select id="rolEmpleado" required>
-                                <option value="">Seleccione un rol</option>
-                                <option value="administrador">Administrador</option>
-                                <option value="asesor">Asesor</option>
-                                <option value="usuario">Usuario</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="direccionEmpleado">Dirección</label>
-                        <input type="text" id="direccionEmpleado" placeholder="Ingrese dirección">
-                    </div>
-                    <div class="modal-pie">
-                        <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
-                        <button type="submit" class="btn-confirmar">Confirmar</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- Modal para Actualizar Información -->
     <div class="modal" id="modalActualizarInfo">
         <div class="modal-contenido">
@@ -161,33 +101,35 @@
             </div>
             <div class="modal-cuerpo">
                 <form id="formActualizarInfo">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="idActualizar" value="{{ empleado.id_empleado }}">
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="nombreActualizar">Nombre*</label>
-                            <input type="text" id="nombreActualizar" value="......." required>
+                            <input type="text" id="nombreActualizar" name="nombre" required>
                         </div>
                         <div class="form-grupo">
                             <label for="apellidoActualizar">Apellidos*</label>
-                            <input type="text" id="apellidoActualizar" value="......." required>
+                            <input type="text" id="apellidoActualizar" name="apellido" required>
                         </div>
                     </div>
                     <div class="form-grupo">
                         <label for="emailActualizar">Correo Electrónico*</label>
-                        <input type="email" id="emailActualizar" value="...@gmail.com" required>
+                        <input type="email" id="emailActualizar" name="correo" required>
                     </div>
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="fechaNacActualizar">Fecha de Nacimiento*</label>
-                            <input type="date" id="fechaNacActualizar" value="1998-01-25" required>
+                            <input type="date" id="fechaNacActualizar" name="fecha_nacimiento" required>
                         </div>
                         <div class="form-grupo">
                             <label for="telefonoActualizar">Teléfono*</label>
-                            <input type="tel" id="telefonoActualizar" value="978657452" required>
+                            <input type="tel" id="telefonoActualizar" name="telefono" required>
                         </div>
                     </div>
                     <div class="form-grupo">
                         <label for="direccionActualizar">Dirección</label>
-                        <input type="text" id="direccionActualizar" value="Antenor Orrego #563">
+                        <input type="text" id="direccionActualizar" name="direccion" required>
                     </div>
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarActualizar">Cancelar</button>

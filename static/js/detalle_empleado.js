@@ -102,14 +102,68 @@ window.initDetalleEmpleado = function () {
     if (formActualizarInfo) {
         formActualizarInfo.addEventListener('submit', function (e) {
             e.preventDefault();
-            // Aquí iría la lógica para actualizar datos
-            cerrarModal(modalActualizarInfo);
-            setTimeout(() => {
-                mostrarExito(
-                    'Información Actualizada',
-                    'Los datos del empleado han sido actualizados correctamente.'
-                );
-            }, 500);
+
+            // Obtener los valores directamente del DOM
+            const idEmpleado = document.getElementById('idActualizar').value;
+            const nombre = document.getElementById('nombreActualizar').value;
+            const apellido = document.getElementById('apellidoActualizar').value;
+            const correo = document.getElementById('emailActualizar').value;
+            const fecha_nacimiento = document.getElementById('fechaNacActualizar').value;
+            const telefono = document.getElementById('telefonoActualizar').value;
+            const direccion = document.getElementById('direccionActualizar').value;
+
+            // Validación básica
+            if (!idEmpleado) {
+                alert('Error: No se encontró el ID del empleado.');
+                return;
+            }
+
+            // Preparar el objeto a enviar
+            const data = {
+                id_empleado: idEmpleado,
+                nombre: nombre,
+                apellido: apellido,
+                correo: correo,
+                fecha_nacimiento: fecha_nacimiento,
+                telefono: telefono,
+                direccion: direccion
+            };
+
+            fetch('/actualizar_empleado', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': formActualizarInfo.querySelector('input[name="csrf_token"]').value
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud');
+                    }
+                    return response.json();
+                })
+                .then(respuesta => {
+                    if (respuesta.success) {
+                        cerrarModal(modalActualizarInfo);
+                        mostrarExito('Información Actualizada', 'Los datos del empleado han sido actualizados correctamente.');
+
+                        // ✅ Actualizar datos en la vista (DOM)
+                        document.getElementById('nombreEmpleado').textContent = nombre + ' ' + apellido;
+                        document.getElementById('correoEmpleado').textContent = correo;
+                        document.getElementById('telefonoEmpleado').textContent = telefono;
+                        document.getElementById('fechaNacimientoEmpleado').textContent = fecha_nacimiento;
+                        document.getElementById('direccionEmpleado').textContent = direccion;
+
+
+                    } else {
+                        alert('Error: ' + respuesta.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Ocurrió un error al actualizar.');
+                });
         });
     }
 
@@ -217,4 +271,5 @@ window.initDetalleEmpleado = function () {
         // Abrir el modal
         abrirModal(modalActualizarInfo);
     });
+
 };

@@ -104,32 +104,28 @@ class ModelEmpleado:
             db.connection.rollback()
             return False, f"Error: {str(ex)}", None
 
-    @staticmethod
-    def update(db, empleado, id_area):
+    @classmethod
+    def update(cls, db, id_empleado, data):
         try:
             cursor = db.connection.cursor()
             query = """
                     UPDATE empleado
                     SET nombre_empleado    = %s,
                         apellido_empleado  = %s,
-                        dni                = %s,
                         direccion          = %s,
                         telefono           = %s,
                         correo_electronico = %s,
-                        fecha_nacimiento   = %s,
-                        id_area            = %s
-                    WHERE id_empleado = %s \
+                        fecha_nacimiento   = %s
+                    WHERE id_empleado = %s
                     """
             cursor.execute(query, (
-                empleado.nombre,
-                empleado.apellido,
-                empleado.dni,
-                empleado.direccion,
-                empleado.telefono,
-                empleado.correo,
-                empleado.fecha_nacimiento,
-                id_area,
-                empleado.id_empleado
+                data.get('nombre'),
+                data.get('apellido'),
+                data.get('direccion'),
+                data.get('telefono'),
+                data.get('correo'),
+                data.get('fecha_nacimiento'),
+                id_empleado
             ))
             db.connection.commit()
             cursor.close()
@@ -152,7 +148,7 @@ class ModelEmpleado:
             return False
 
     @classmethod
-    def cambiar_estado_empleados(cls,db, ids, nuevo_estado):
+    def cambiar_estado_empleados(cls, db, ids, nuevo_estado):
         try:
             cursor = db.connection.cursor()
             print(f"▶️ Ejecutando SP con ids={ids} y estado={nuevo_estado}")
@@ -165,4 +161,3 @@ class ModelEmpleado:
             db.connection.rollback()
             print(f"Error al cambiar estados: {ex}")
             return False, str(ex)
-

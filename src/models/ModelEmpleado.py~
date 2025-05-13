@@ -4,8 +4,8 @@ from src.models.entities.Empleado import Empleado
 
 
 class ModelEmpleado:
-    @staticmethod
-    def get_by_empleado_id(db, id_empleado):
+    @classmethod
+    def get_by_empleado_id(cls, db, id_empleado):
         cursor = db.connection.cursor()
         query = """
                 SELECT e.id_empleado,

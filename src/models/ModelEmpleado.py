@@ -56,7 +56,6 @@ class ModelEmpleado:
                     "estado": row[9]
                 }
                 empleados.append(empleado)
-                print(empleados)
             return empleados
         except Exception as e:
             print(f"[ERROR get_all Empleado]: {e}")

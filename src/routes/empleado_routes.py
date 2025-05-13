@@ -35,8 +35,12 @@ def insertar_empleado():
     try:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             form = request.form
-            data = {
-                'area': form['area'],
+
+            # Capturar id_area y convertirlo a int
+            id_area = int(form['area'])
+
+            # Armar el diccionario de empleado (sin el área)
+            empleado = {
                 'nombre': form['nombre'],
                 'apellido': form['apellido'],
                 'dni': form['dni'],
@@ -46,7 +50,8 @@ def insertar_empleado():
                 'fecha_nacimiento': form['fecha_nacimiento'],
             }
 
-            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, data, data['area'])
+            # Llamar al modelo correctamente con id_area como entero
+            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, empleado, id_area)
 
             if success:
                 return jsonify({
@@ -55,12 +60,13 @@ def insertar_empleado():
                     'empleado': empleado_insertado
                 })
             else:
-                return jsonify({'success': False, 'message': message}), 500
+                return jsonify({'success': False, 'message': message}), 400  # Mejor 400 si es error controlado
         else:
-            flash('Esta ruta solo acepta peticiones AJAX', 'danger')
-            return redirect(url_for('empleado_routes.seguridad'))
+            # Retornar error más limpio para no AJAX
+            return jsonify({'success': False, 'message': 'Esta ruta solo acepta peticiones AJAX'}), 405
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+        # Mejorar mensaje de error capturando el traceback opcionalmente
+        return jsonify({'success': False, 'message': f'Error inesperado: {str(e)}'}), 500
 
 
 @empleado_routes.route('/cambiar_estado_empleados', methods=['POST'])

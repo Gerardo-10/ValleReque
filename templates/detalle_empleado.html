@@ -66,21 +66,25 @@
                     <div class="info-grupo">
                         <div class="info-item">
                             <label>Nombre de Usuario</label>
-                            <p>{{ empleado.nombre_usuario }}</p>
+                            <p id="usuarioEmpleado" >{{ empleado.nombre_usuario }}</p>
                         </div>
                         <div class="info-item">
                             <label>Rol del Sistema</label>
-                            <p>{{ empleado.rol }}</p>
+                            <p id="rolEmpleado" >{{ empleado.rol }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Área</label>
+                            <p id="areaEmpleado" >{{ empleado.area }}</p>
                         </div>
                         <div class="info-item">
                             <label>Estado</label>
-                            <p class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
+                            <p id="estadoEmpleado" class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
                                 {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
                             </p>
                         </div>
                     </div>
                     <button class="btn-accion" id="btnCambiarPassword">
-                        <i class="fas fa-key"></i> Cambiar Contraseña
+                        <i class="fas fa-key"></i> Modificar Cuenta
                     </button>
                 </div>
             </div>
@@ -140,20 +144,22 @@
         </div>
     </div>
 
-    <!-- Modal para Cambiar Contraseña -->
+    <!-- Modal para Modificar Cuenta del Empleado -->
     <div class="modal" id="modalCambiarPassword">
         <div class="modal-contenido">
             <div class="modal-encabezado">
                 <div class="modal-icono">
                     <i class="fas fa-key"></i>
                 </div>
-                <h2>Cambiar Contraseña</h2>
+                <h2>Modificar Cuenta</h2>
                 <button class="modal-cerrar" id="cerrarModalPassword">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <div class="modal-cuerpo">
                 <form id="formCambiarPassword">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" id="idActualizarCuenta" value="{{ empleado.id_empleado }}">
                     <div class="form-grupo">
                         <label for="passwordActual">Contraseña Actual*</label>
                         <div class="input-password">

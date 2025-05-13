@@ -35,8 +35,10 @@ def insertar_empleado():
     try:
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
             form = request.form
-            data = {
-                'area': form['area'],
+
+            id_area = int(form['area'])
+
+            empleado = {
                 'nombre': form['nombre'],
                 'apellido': form['apellido'],
                 'dni': form['dni'],
@@ -46,7 +48,8 @@ def insertar_empleado():
                 'fecha_nacimiento': form['fecha_nacimiento'],
             }
 
-            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, data, data['area'])
+            # Llamar al modelo correctamente con id_area como entero
+            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, empleado, id_area)
 
             if success:
                 return jsonify({
@@ -56,11 +59,11 @@ def insertar_empleado():
                 })
             else:
                 return jsonify({'success': False, 'message': message}), 500
-        else:
+            else:
             flash('Esta ruta solo acepta peticiones AJAX', 'danger')
             return redirect(url_for('empleado_routes.seguridad'))
-    except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+except Exception as e:
+    return jsonify({'success': False, 'message': str(e)}), 500
 
 
 @empleado_routes.route('/cambiar_estado_empleados', methods=['POST'])
@@ -92,6 +95,7 @@ def actualizar_empleado():
     try:
         data = request.get_json()
         id_empleado = data.get('id_empleado')
+        print(f"Datos recibidos: {data}")
         if not id_empleado:
             return jsonify({'success': False, 'message': 'Falta el ID del empleado'}), 400
 

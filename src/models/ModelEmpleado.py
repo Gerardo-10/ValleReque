@@ -1,3 +1,5 @@
+from werkzeug.security import generate_password_hash
+
 from src.models.entities.Empleado import Empleado
 
 
@@ -17,8 +19,10 @@ class ModelEmpleado:
                        u.nombre_usuario,
                        r.denominacion,
                        u.estado,
-                       u.id_usuario
+                       u.id_usuario,
+                       a.nombre
                 FROM empleado e
+                         LEFT JOIN area a ON e.id_area = a.id_area
                          LEFT JOIN usuario u ON e.id_empleado = u.id_empleado
                          LEFT JOIN Rol_Usuario ru on u.id_usuario = ru.id_usuario
                          LEFT JOIN rol r ON ru.id_rol = r.id_rol
@@ -64,9 +68,12 @@ class ModelEmpleado:
     def insert(cls, db, empleado, id_area):
         try:
             with db.connection.cursor() as cursor:
+                # Generar contraseña por defecto '123456' con hash seguro
+                password_hash = generate_password_hash('123456')
+
                 sql = """
                 CALL sp_crear_empleado(
-                    %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s
                 )
                 """
                 cursor.execute(sql, (
@@ -77,7 +84,8 @@ class ModelEmpleado:
                     empleado['direccion'],
                     empleado['telefono'],
                     empleado['correo'],
-                    empleado['fecha_nacimiento']
+                    empleado['fecha_nacimiento'],
+                    password_hash  # ✅ nuevo parámetro enviado al SP
                 ))
 
                 cursor.execute("SELECT LAST_INSERT_ID()")
@@ -87,22 +95,19 @@ class ModelEmpleado:
                 # Obtener nombre del área
                 cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
                 area_row = cursor.fetchone()
-                empleado["id_empleado"] = new_id
-
-                # Obtener nombre del área
-                cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
-                area_row = cursor.fetchone()
                 empleado["area"] = area_row[0] if area_row else "Desconocido"
 
-                # Estado fijo como entero (por defecto 1 = Activo)
                 empleado["estado"] = 1
 
                 db.connection.commit()
                 return True, "Empleado creado con éxito", empleado
 
-        except Exception as ex:
-            db.connection.rollback()
-            return False, f"Error: {str(ex)}", None
+        except Exception as e:
+            print(f"[ERROR AL INSERTAR EMPLEADO]: {e}")
+            import traceback
+            traceback.print_exc()
+            return False, str(e), None
+
 
     @classmethod
     def update(cls, db, id_empleado, data):

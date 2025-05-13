@@ -10,8 +10,8 @@ class ModelUser:
             row = cursor.fetchone()
             if row is not None:
                 id_usuario, nombre_usuario, password_hash, estado = row
-                if not estado:  # Estado 0 = inactivo
-                    print("[DEBUG] Usuario inactivo o no autorizado")
+                if not estado:
+                    print("[DEBUG] Usuario inactivo")
                     return None
                 if User.check_password(password_hash, password):
                     print("[DEBUG] Contraseña correcta")
@@ -43,7 +43,7 @@ class ModelUser:
     def obtener_rol_estado_usuario(cls, db, id_usuario):
         try:
             cursor = db.connection.cursor()
-            cursor.callproc('sp_obtener_datos_usuario', [id_usuario])
+            cursor.callproc('sp_obtener_rol_estado_usuario', [id_usuario])
             row = cursor.fetchone()
 
             if row is not None:

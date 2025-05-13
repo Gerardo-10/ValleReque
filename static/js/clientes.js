@@ -2,35 +2,27 @@ window.initClientesModals = function () {
     // Referencias a elementos del DOM
     const btnCambiarEstado = document.getElementById('btnCambiarEstado');
     const btnAgregar = document.getElementById('btnAgregar');
-
     const modalCambiarEstado = document.getElementById('modalCambiarEstado');
     const modalAgregarCliente = document.getElementById('modalAgregarCliente');
     const modalExito = document.getElementById('modalExito');
     const modalOverlay = document.getElementById('modalOverlay');
-
     const cerrarModalEstado = document.getElementById('cerrarModalEstado');
     const cerrarModalAgregar = document.getElementById('cerrarModalAgregar');
     const cerrarModalExito = document.getElementById('cerrarModalExito');
-
     const btnCancelarAgregar = document.getElementById('btnCancelarAgregar');
     const btnConfirmarEstado = document.getElementById('btnConfirmarEstado');
-
     const formAgregarCliente = document.getElementById('formAgregarCliente');
     const opcionesEstado = document.querySelectorAll('.opcion-estado');
-
     const checkboxSeleccionarTodos = document.getElementById('seleccionarTodos');
-    const checkboxesClientes = document.querySelectorAll('.checkbox-cliente');
-
     const btnEliminar = document.getElementById('btnEliminar');
     const modalEliminarCliente = document.getElementById('modalConfirmarEliminacion');
     const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
     const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
 
     // Variables de estado
-    let clientesSeleccionados = [];
     let estadoSeleccionado = null;
 
-    // Funciones para manejar modales
+    // Funciones auxiliares
     function abrirModal(modal) {
         modal.classList.add('activo');
         modalOverlay.classList.add('activo');
@@ -44,9 +36,7 @@ window.initClientesModals = function () {
     }
 
     function cerrarTodosLosModales() {
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.classList.remove('activo');
-        });
+        document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('activo'));
         modalOverlay.classList.remove('activo');
         document.body.style.overflow = '';
     }
@@ -57,20 +47,21 @@ window.initClientesModals = function () {
         abrirModal(modalExito);
     }
 
-    function actualizarClientesSeleccionados() {
-        clientesSeleccionados = [];
-        checkboxesClientes.forEach(checkbox => {
-            if (checkbox.checked) {
-                clientesSeleccionados.push(checkbox.dataset.id);
-            }
-        });
-
-        btnCambiarEstado.disabled = clientesSeleccionados.length === 0;
-        btnCambiarEstado.style.opacity = clientesSeleccionados.length === 0 ? '0.6' : '1';
+    function obtenerClientesSeleccionados() {
+        return [...document.querySelectorAll('.checkbox-cliente:checked')].map(cb => cb.dataset.id);
     }
 
-    checkboxesClientes.forEach(checkbox => {
-        checkbox.addEventListener('change', actualizarClientesSeleccionados);
+    function actualizarClientesSeleccionados() {
+        const seleccionados = obtenerClientesSeleccionados();
+        btnCambiarEstado.disabled = seleccionados.length === 0;
+        btnCambiarEstado.style.opacity = seleccionados.length === 0 ? '0.6' : '1';
+    }
+
+    // Eventos
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('checkbox-cliente')) {
+            actualizarClientesSeleccionados();
+        }
     });
 
     opcionesEstado.forEach(opcion => {
@@ -95,28 +86,24 @@ window.initClientesModals = function () {
         })
             .then(async res => {
                 if (!res.ok) {
-                    // Obtener el texto por si no es JSON (por ejemplo, HTML de error)
                     const errorText = await res.text();
                     throw new Error(`Error HTTP ${res.status}: ${errorText}`);
                 }
                 return res.json();
             })
             .then(data => {
-                console.log(data);
                 if (data.success) {
                     const cliente = data.cliente;
-
                     const nuevaFila = document.createElement('tr');
-
                     const clasesEstado = {
                         'Activo': 'activo',
                         'Evaluado': 'evaluado',
                         'NoDisponible': 'no-disponible',
                         'SinEvaluar': 'sin-evaluar'
                     };
-
                     const claseEstado = clasesEstado[cliente.estado] || 'sin-evaluar';
-
+                    nuevaFila.setAttribute('data-id', cliente.id_cliente);
+                    nuevaFila.setAttribute('data-estado', cliente.estado.toLowerCase());
                     nuevaFila.innerHTML = `
                         <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
                         <td>${cliente.id_cliente}</td>
@@ -125,24 +112,16 @@ window.initClientesModals = function () {
                         <td>${cliente.direccion}</td>
                         <td>${cliente.telefono}</td>
                         <td>${cliente.ingreso_neto}</td>
-                        <td>
-                            <span class="estado-badge ${claseEstado}">
-                                ${cliente.estado}
-                            </span>
-                        </td>
+                        <td><span class="estado-badge ${claseEstado}">${cliente.estado}</span></td>
                         <td style="text-align: center;">
-                            <button class="btn-detalles-clientes" data-id="${cliente.id_cliente}">
-                                <i class="fas fa-eye"></i>
-                            </button>
+                            <button class="btn-detalles" data-id="${cliente.id_cliente}"><i class="fas fa-eye"></i></button>
                         </td>
                     `;
-
                     document.getElementById('tabla_clientes_body').appendChild(nuevaFila);
-
                     cerrarModal(modalAgregarCliente);
                     mostrarExito('Cliente agregado', data.message);
-
-                    this.reset(); // Limpia el formulario después de agregar
+                    this.reset();
+                    actualizarClientesSeleccionados();
                 } else {
                     alert('Error: ' + data.message);
                 }
@@ -154,7 +133,7 @@ window.initClientesModals = function () {
     });
 
     btnEliminar.addEventListener('click', () => {
-        if (clientesSeleccionados.length === 0) {
+        if (obtenerClientesSeleccionados().length === 0) {
             alert('Por favor, seleccione al menos un cliente');
             return;
         }
@@ -164,6 +143,12 @@ window.initClientesModals = function () {
     btnCancelarEliminar.addEventListener('click', () => cerrarModal(modalEliminarCliente));
 
     btnConfirmarEliminar.addEventListener('click', () => {
+        const clientesSeleccionados = obtenerClientesSeleccionados();
+        if (clientesSeleccionados.length === 0) {
+            alert('No hay clientes seleccionados');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('clientes', JSON.stringify(clientesSeleccionados));
 
@@ -180,40 +165,95 @@ window.initClientesModals = function () {
                 if (data.success) {
                     clientesSeleccionados.forEach(id => {
                         const fila = document.querySelector(`tr[data-id="${id}"]`);
-                        if (fila) {
-                            fila.remove();
-                        }
+                        if (fila) fila.remove();
                     });
                     cerrarModal(modalEliminarCliente);
                     mostrarExito('Clientes eliminados', data.message);
+                    actualizarClientesSeleccionados();
                 } else {
                     alert('Error: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error('Error al enviar formulario:', error);
-                alert('Error inesperado al enviar el formulario');
+                console.error('Error al eliminar clientes:', error);
+                alert('Error inesperado al eliminar clientes');
             });
     });
 
-
     btnConfirmarEstado.addEventListener('click', function () {
+        const clientesSeleccionados = obtenerClientesSeleccionados();
+
+        // Verificar que se ha seleccionado un estado
         if (!estadoSeleccionado) {
             alert('Por favor, seleccione un estado');
             return;
         }
 
-        cerrarModal(modalCambiarEstado);
-        setTimeout(() => {
-            mostrarExito('Estado Actualizado', `Se ha actualizado el estado de ${clientesSeleccionados.length} cliente(s).`);
-        }, 500);
+        // Verificar que se ha seleccionado al menos un cliente
+        if (clientesSeleccionados.length === 0) {
+            alert('Por favor, seleccione al menos un cliente');
+            return;
+        }
 
-        estadoSeleccionado = null;
-        opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+        // Crear el formulario con los datos
+        const formData = new FormData();
+        formData.append('clientes', JSON.stringify(clientesSeleccionados));  // Convertir lista de clientes a JSON
+        formData.append('estado', estadoSeleccionado);  // Agregar el estado seleccionado
+
+        // Enviar la solicitud al backend
+        fetch('/actualizar_estado_clientes', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value  // CSRF token
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar el estado visualmente en la interfaz de usuario
+                    clientesSeleccionados.forEach(id => {
+                        const fila = document.querySelector(`tr[data-id="${id}"]`);
+                        if (fila) {
+                            const spanEstado = fila.querySelector('.estado-badge');
+                            const clasesEstado = {
+                                'activo': 'activo',
+                                'evaluado': 'evaluado',
+                                'no-disponible': 'no-disponible',
+                                'sin-evaluar': 'sin-evaluar'
+                            };
+
+                            // Actualizar el estado visualmente
+                            spanEstado.className = 'estado-badge ' + (clasesEstado[estadoSeleccionado] || 'sin-evaluar');
+                            spanEstado.textContent = estadoSeleccionado.charAt(0).toUpperCase() + estadoSeleccionado.slice(1).replace('-', ' ');
+
+                            // Actualizar el atributo de estado de la fila
+                            fila.setAttribute('data-estado', estadoSeleccionado);
+                        }
+                    });
+
+                    // Cerrar el modal y mostrar mensaje de éxito
+                    cerrarModal(modalCambiarEstado);
+                    mostrarExito('Estado Actualizado', `Se ha actualizado el estado de ${clientesSeleccionados.length} cliente(s).`);
+
+                    // Resetear el estado seleccionado
+                    estadoSeleccionado = null;
+                    opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Manejo de errores inesperados
+                console.error('Error al actualizar estado:', error);
+                alert('Error inesperado al actualizar estado');
+            });
     });
 
+
     btnCambiarEstado.addEventListener('click', () => {
-        if (clientesSeleccionados.length === 0) {
+        if (obtenerClientesSeleccionados().length === 0) {
             alert('Por favor, seleccione al menos un cliente');
             return;
         }
@@ -228,37 +268,29 @@ window.initClientesModals = function () {
     modalOverlay.addEventListener('click', cerrarTodosLosModales);
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            cerrarTodosLosModales();
-        }
+        if (e.key === 'Escape') cerrarTodosLosModales();
     });
 
+    // Inicializar selección
     actualizarClientesSeleccionados();
 
-    const inputBuscar = document.getElementById('buscarCliente');
-    inputBuscar.addEventListener('input', filtrarClientes);
+    // Buscador de clientes
+    document.getElementById('buscarCliente').addEventListener('input', filtrarClientes);
     document.getElementById('filtroClientes').addEventListener('change', filtrarClientes);
     document.getElementById('filtroClientesEstado').addEventListener('change', filtrarClientes);
 
     function filtrarClientes() {
-        const textoBusqueda = inputBuscar.value.toLowerCase();
+        const textoBusqueda = document.getElementById('buscarCliente').value.toLowerCase();
         const filtro = document.getElementById('filtroClientes').value;
-        const filtroEstado = document.getElementById('filtroClientesEstado').value;
-        const filas = document.querySelectorAll('.tabla-clientes tbody tr');
-
-        filas.forEach(fila => {
-            const estadoCliente = fila.getAttribute('data-estado');
-
-            // Solo muestra filas que coincidan exactamente con el estado seleccionado
-            const coincideEstado = estadoCliente === filtroEstado;
-
+        const filtroEstado = document.getElementById('filtroClientesEstado').value.toLowerCase();
+        document.querySelectorAll('.tabla-clientes tbody tr').forEach(fila => {
+            const estadoCliente = fila.getAttribute('data-estado').toLowerCase();
+            const coincideEstado = (filtroEstado === 'todos') || (estadoCliente === filtroEstado);
             if (!coincideEstado) {
                 fila.style.display = 'none';
                 return;
             }
-
             let mostrar = false;
-
             if (!filtro) {
                 mostrar = fila.textContent.toLowerCase().includes(textoBusqueda);
             } else {
@@ -267,8 +299,7 @@ window.initClientesModals = function () {
                     mostrar = celda.textContent.toLowerCase().includes(textoBusqueda);
                 }
             }
-
             fila.style.display = mostrar ? '' : 'none';
         });
     }
-}
+};

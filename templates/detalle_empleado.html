@@ -1,0 +1,280 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="contenedor-principal">
+        <!-- Contenedor de información del empleado -->
+        <div class="tarjeta-usuario">
+            <div class="usuario-encabezado">
+                <div class="usuario-avatar">
+                    <img src="{{ url_for('static', filename='img/perfil.png') }}" alt="Foto de Usuario">
+                </div>
+                <div class="usuario-info-basica">
+                    <h2>{{ empleado.nombre }} {{ empleado.apellido }}</h2>
+                    <p class="usuario-rol">{{ empleado.rol }}</p>
+                    <div class="usuario-contacto">
+                        <span><i class="fas fa-envelope"></i> {{ empleado.correo }}</span>
+                        <span><i class="fas fa-phone"></i> {{ empleado.telefono }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usuario-contenido">
+                <div class="usuario-seccion">
+                    <h3>Información Personal</h3>
+                    <div class="info-grupo">
+                        <div class="info-item">
+                            <label>Nombre Completo</label>
+                            <p>{{ empleado.nombre }} {{ empleado.apellido }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Fecha de Nacimiento</label>
+                            <p>{{ empleado.fecha_nacimiento }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Dirección</label>
+                            <p>{{ empleado.direccion }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Correo Electrónico</label>
+                            <p>{{ empleado.correo }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Teléfono</label>
+                            <p>{{ empleado.telefono }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>DNI</label>
+                            <p>{{ empleado.dni }}</p>
+                        </div>
+                    </div>
+                    <button class="btn-accion" id="btnActualizarInfo">
+                        <i class="fas fa-edit"></i> Actualizar Información
+                    </button>
+                </div>
+
+                <div class="usuario-seccion">
+                    <h3>Seguridad de la Cuenta</h3>
+                    <div class="info-grupo">
+                        <div class="info-item">
+                            <label>Nombre de Usuario</label>
+                            <p>{{ empleado.nombre_usuario }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Rol del Sistema</label>
+                            <p>{{ empleado.rol }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Estado</label>
+                            <p class="estado-{{ 'activo' if empleado.estado == 1 else 'inactivo' }}">
+                                {{ 'Activo' if empleado.estado == 1 else 'Inactivo' }}
+                            </p>
+                        </div>
+                    </div>
+                    <button class="btn-accion" id="btnCambiarPassword">
+                        <i class="fas fa-key"></i> Cambiar Contraseña
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Agregar Empleado -->
+    <div class="modal" id="modalAgregarEmpleado">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+                <h2>Agregar Nuevo Empleado</h2>
+                <button class="modal-cerrar" id="cerrarModalAgregar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <form id="formAgregarEmpleado">
+                    <div class="form-grupo">
+                        <label for="nombreEmpleado">Nombre*</label>
+                        <input type="text" id="nombreEmpleado" placeholder="Ingrese nombre" required>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="apellidoEmpleado">Apellidos*</label>
+                        <input type="text" id="apellidoEmpleado" placeholder="Ingrese apellidos" required>
+                    </div>
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="emailEmpleado">Correo Electrónico*</label>
+                            <input type="email" id="emailEmpleado" placeholder="correo@ejemplo.com" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="telefonoEmpleado">Teléfono*</label>
+                            <input type="tel" id="telefonoEmpleado" placeholder="978657452" required>
+                        </div>
+                    </div>
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="fechaNacEmpleado">Fecha de Nacimiento*</label>
+                            <input type="date" id="fechaNacEmpleado" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="rolEmpleado">Rol*</label>
+                            <select id="rolEmpleado" required>
+                                <option value="">Seleccione un rol</option>
+                                <option value="administrador">Administrador</option>
+                                <option value="asesor">Asesor</option>
+                                <option value="usuario">Usuario</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="direccionEmpleado">Dirección</label>
+                        <input type="text" id="direccionEmpleado" placeholder="Ingrese dirección">
+                    </div>
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Actualizar Información -->
+    <div class="modal" id="modalActualizarInfo">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-edit"></i>
+                </div>
+                <h2>Actualizar Información</h2>
+                <button class="modal-cerrar" id="cerrarModalActualizar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <form id="formActualizarInfo">
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="nombreActualizar">Nombre*</label>
+                            <input type="text" id="nombreActualizar" value="......." required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="apellidoActualizar">Apellidos*</label>
+                            <input type="text" id="apellidoActualizar" value="......." required>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="emailActualizar">Correo Electrónico*</label>
+                        <input type="email" id="emailActualizar" value="...@gmail.com" required>
+                    </div>
+                    <div class="form-fila">
+                        <div class="form-grupo">
+                            <label for="fechaNacActualizar">Fecha de Nacimiento*</label>
+                            <input type="date" id="fechaNacActualizar" value="1998-01-25" required>
+                        </div>
+                        <div class="form-grupo">
+                            <label for="telefonoActualizar">Teléfono*</label>
+                            <input type="tel" id="telefonoActualizar" value="978657452" required>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="direccionActualizar">Dirección</label>
+                        <input type="text" id="direccionActualizar" value="Antenor Orrego #563">
+                    </div>
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnCancelarActualizar">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Cambiar Contraseña -->
+    <div class="modal" id="modalCambiarPassword">
+        <div class="modal-contenido">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2>Cambiar Contraseña</h2>
+                <button class="modal-cerrar" id="cerrarModalPassword">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <form id="formCambiarPassword">
+                    <div class="form-grupo">
+                        <label for="passwordActual">Contraseña Actual*</label>
+                        <div class="input-password">
+                            <input type="password" id="passwordActual" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="passwordNueva">Nueva Contraseña*</label>
+                        <div class="input-password">
+                            <input type="password" id="passwordNueva" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-grupo">
+                        <label for="passwordConfirmar">Confirmar Contraseña*</label>
+                        <div class="input-password">
+                            <input type="password" id="passwordConfirmar" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="requisitos-password">
+                        <p>La contraseña debe cumplir con los siguientes requisitos:</p>
+                        <ul>
+                            <li>Mínimo 8 caracteres</li>
+                            <li>Al menos una letra mayúscula</li>
+                            <li>Al menos un número</li>
+                            <li>Al menos un carácter especial</li>
+                        </ul>
+                    </div>
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnCancelarPassword">Cancelar</button>
+                        <button type="submit" class="btn-confirmar">Cambiar Contraseña</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Éxito -->
+    <div class="modal" id="modalExito">
+        <div class="modal-contenido modal-exito">
+            <div class="modal-encabezado">
+                <div class="icono-exito">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 id="tituloExito">Operación Exitosa</h2>
+                <button class="modal-cerrar" id="cerrarModalExito">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <p id="mensajeExito">La operación se ha completado con éxito.</p>
+                <div class="credenciales" id="credencialesContainer" style="display: none;">
+                    <p><strong>Usuario:</strong> <span id="usuarioGenerado">r.flores</span></p>
+                    <p><strong>Contraseña:</strong> <span id="passwordGenerada">ROS*2023!</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para modales -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <script src="../static/js/detalle_empleado.js"></script>
+{% endblock %}

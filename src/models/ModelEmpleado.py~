@@ -19,9 +19,9 @@ class ModelEmpleado:
                        u.estado,
                        u.id_usuario
                 FROM empleado e
-                         LEFT JOIN usuario u ON e.id_empleado = u.id_empleado
-                         LEFT JOIN Rol_Usuario ru on u.id_usuario = ru.id_usuario
-                         LEFT JOIN rol r ON ru.id_rol = r.id_rol
+                         inner join usuario u ON e.id_empleado = u.id_empleado
+                         inner join Rol_Usuario ru on u.id_usuario = ru.id_usuario
+                         inner join rol r ON ru.id_rol = r.id_rol
                 WHERE e.id_empleado = %s
                 """
         cursor.execute(query, (id_empleado,))
@@ -150,19 +150,3 @@ class ModelEmpleado:
         except Exception as ex:
             print(f"Error en delete: {ex}")
             return False
-
-    @classmethod
-    def cambiar_estado_empleados(cls,db, ids, nuevo_estado):
-        try:
-            cursor = db.connection.cursor()
-            print(f"▶️ Ejecutando SP con ids={ids} y estado={nuevo_estado}")
-            for id_empleado in ids:
-                cursor.execute("CALL sp_actualizar_estado_empleado_rol(%s, %s)", (id_empleado, nuevo_estado))
-            db.connection.commit()
-            cursor.close()
-            return True, "Estados actualizados correctamente."
-        except Exception as ex:
-            db.connection.rollback()
-            print(f"Error al cambiar estados: {ex}")
-            return False, str(ex)
-

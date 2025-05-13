@@ -6,19 +6,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.text();
             })
             .then(html => {
-                document.getElementById("dynamic-content").innerHTML = html;
-                setTimeout(() => {
+                const dynamicContent = document.getElementById("dynamic-content");
+                dynamicContent.innerHTML = html;
+
+                // Esperamos al siguiente frame para asegurar que el DOM fue procesado
+                requestAnimationFrame(() => {
                     if (typeof initFunction === "function") {
-                        initFunction();
+                        try {
+                            initFunction();
+                        } catch (e) {
+                            console.error(`Error ejecutando ${initFunction.name}:`, e);
+                        }
                     } else {
-                        console.error(`La función ${initFunction.name} no está disponible.`);
+                        console.error(`La función ${initFunction?.name || 'desconocida'} no está disponible.`);
                     }
-                }, 50);
+                });
             })
             .catch(error => {
                 console.error(`Error cargando contenido de ${endpoint}:`, error);
             });
     }
+
+    window.cargarVista = cargarVista;
 
     const seguridadLink = document.getElementById("seguridad-link");
     const clientesLink = document.getElementById("clientes-link");
@@ -40,21 +49,31 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.addEventListener("click", function (e) {
-        const boton = e.target.closest(".btn-detalles-clientes");
+        const boton = e.target.closest(".btn-detalles");
         if (boton) {
-            const idCliente = boton.dataset.id;
-            cargarVista(`/detalle_clientes/${idCliente}`, () => {
-                console.log("Vista de detalle cargada");
-                // Aquí puedes inicializar scripts específicos del detalle
-            });
+            const id = boton.dataset.id;
+            const tipo = boton.dataset.tipo;
+
+            if (tipo === "cliente") {
+                cargarVista(`/detalle_clientes/${id}`, () => {
+                    console.log("Vista de detalle de cliente cargada");
+                    initDetalleCliente();
+                });
+            } else if (tipo === "empleado") {
+                cargarVista(`/detalle_empleado/${id}`, () => {
+                    console.log("Vista de detalle de empleado cargada");
+                    initDetalleEmpleado();
+                });
+            }
         }
 
         const botonVolver = e.target.closest(".back-button");
         if (botonVolver) {
-            e.preventDefault(); // Evita el comportamiento predeterminado del <a href="#">
+            e.preventDefault();
             cargarVista("/clientes", initClientesModals);
         }
     });
+
 
     const sidebar = document.querySelector('.sidebar');
     const mainContent = document.querySelector('.main-content');

@@ -1,3 +1,5 @@
+import json
+
 from src.models.entities.Cliente import Cliente
 
 
@@ -6,7 +8,7 @@ class ModelCliente:
     def get_by_id(cls, db, id_cliente):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_por_id(%s)", (id_cliente,)) # Llama a un procedimiento almacenado
+            cursor.execute("CALL sp_cliente_por_id(%s)", (id_cliente,))  # Llama a un procedimiento almacenado
             row = cursor.fetchone()
 
             # Liberar el resto del resultado del procedimiento si existe
@@ -27,7 +29,7 @@ class ModelCliente:
     def get_all(cls, db):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_clientes_todos()")  # Asegúrate de tener este SP creado en tu BD
+            cursor.execute("CALL sp_listar_clientes()")  # Asegúrate de tener este SP creado en tu BD
             rows = cursor.fetchall()
 
             # Liberar el resto del resultado del procedimiento si existe
@@ -46,7 +48,7 @@ class ModelCliente:
     def insert(cls, db, data):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_insertar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+            cursor.execute("CALL sp_crear_cliente(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                 data['nombre'],
                 data['apellido'],
                 data['dni'],
@@ -73,8 +75,8 @@ class ModelCliente:
     def update(cls, db, id_cliente, data):
         try:
             cursor = db.connection.cursor()
-            cursor.execute("CALL sp_cliente_actualizar(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
-                id_cliente,
+            cursor.execute("CALL sp_actualizar_cliente(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                int(id_cliente),
                 data['nombre'],
                 data['apellido'],
                 data['dni'],
@@ -82,14 +84,32 @@ class ModelCliente:
                 data['correo'],
                 data['telefono'],
                 data['ocupacion'],
-                data['ingreso_neto'],
+                float(data['ingreso_neto']),
                 data['estado'],
-                data['carga_familiar']
+                int(data['carga_familiar'])
             ))
             db.connection.commit()
             return True
         except Exception as e:
-            print(f"[ERROR update]: {e}")
+            print(f"[ERROR update cliente {id_cliente}]: {e}")
+            return False
+
+    @classmethod
+    def update_status(cls, db, clientes, nuevo_estado):
+        try:
+            # Convertir la lista de IDs de clientes a JSON
+            clientes_json = json.dumps(clientes)
+
+            # Crear cursor y llamar al procedimiento almacenado
+            cursor = db.connection.cursor()
+            cursor.callproc('sp_actualizar_estado_cliente', [clientes_json, nuevo_estado])
+
+            # Confirmar cambios en la base de datos
+            db.connection.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            print(f"[ERROR update_status]: {e}")
             return False
 
     @classmethod
@@ -97,7 +117,7 @@ class ModelCliente:
         try:
             cursor = db.connection.cursor()
             for id_cliente in ids:
-                cursor.execute("CALL sp_cliente_eliminar(%s)", (id_cliente,))
+                cursor.execute("CALL sp_eliminar_cliente(%s)", (id_cliente,))
             db.connection.commit()
             return True
         except Exception as e:

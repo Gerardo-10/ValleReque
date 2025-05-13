@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="client-photo">
-                    <img src="img/perfil.png" alt="Foto del cliente">
+                    <img src="{{ url_for('static', filename='img/perfil.png') }}" alt="Foto del cliente">
                 </div>
             </div>
 
@@ -87,7 +87,13 @@
                     </div>
                     <div class="data-item">
                         <p class="data-label">Carga Familiar</p>
-                        <p class="data-value">{{ cliente.cargo_familiar }}</p>
+                        <p class="data-value">
+                            {% if cliente.carga_familiar == 1 %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

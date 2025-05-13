@@ -64,7 +64,9 @@
                         </div>
                         <div class="info-item">
                             <label>Estado</label>
-                            <p class="estado-activo">{{ estado }}</p>
+                            <p class="estado-{{ 'activo' if estado == 1 else 'inactivo' }}">
+                                {{ 'Activo' if estado == 1 else 'Inactivo' }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -72,5 +74,5 @@
         </div>
     </div>
 
-    <script src="../../static/css/perfil.css"></script>
+    <script src="../../static/js/perfil.js"></script>
 {% endblock %}

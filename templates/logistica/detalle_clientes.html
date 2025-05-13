@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="client-photo">
-                    <img src="img/perfil.png" alt="Foto del cliente">
+                    <img src="{{ url_for('static', filename='img/perfil.png') }}" alt="Foto del cliente">
                 </div>
             </div>
 
@@ -51,7 +51,7 @@
             <div class="section">
                 <div class="section-header">
                     <h3>Datos Personales</h3>
-                    <button class="edit-button" data-section="personal">
+                    <button class="edit-button" data-id="{{ cliente.id_cliente }}" data-section="personal">
                         <i class="fas fa-edit"></i> Editar
                     </button>
                 </div>
@@ -87,7 +87,13 @@
                     </div>
                     <div class="data-item">
                         <p class="data-label">Carga Familiar</p>
-                        <p class="data-value">{{ cliente.carga_familiar }}</p>
+                        <p class="data-value">
+                            {% if cliente.carga_familiar == 1 %}
+                                Sí
+                            {% else %}
+                                No
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -173,6 +179,7 @@
             </div>
             <div class="modal-body">
                 <form id="editForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-grid" id="formFields">
                         <!-- Form fields will be generated dynamically -->
                     </div>

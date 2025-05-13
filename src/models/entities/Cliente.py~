@@ -10,5 +10,5 @@ class Cliente:
         self.telefono = telefono
         self.ocupacion = ocupacion
         self.ingreso_neto = ingreso_neto
-        self.estado_cliente = estado_cliente
+        self.estado = estado_cliente
         self.carga_familiar = carga_familiar

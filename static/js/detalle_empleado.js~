@@ -52,12 +52,35 @@ window.initDetalleEmpleado = function () {
     }
 
     // Función para mostrar modal de éxito
-    function mostrarError(titulo, mensaje) {
-        alert(titulo + '\n' + mensaje);
-    }
+    function mostrarExito(titulo, mensaje, mostrarCredenciales = false) {
+        const tituloExito = document.getElementById('tituloExito');
+        const mensajeExito = document.getElementById('mensajeExito');
+        const credencialesContainer = document.getElementById('credencialesContainer');
 
-    function mostrarExito(titulo, mensaje) {
-        alert(titulo + '\n' + mensaje);
+        if (tituloExito && mensajeExito) {
+            tituloExito.textContent = titulo;
+            mensajeExito.textContent = mensaje;
+        }
+
+        if (mostrarCredenciales && credencialesContainer) {
+            // Generar credenciales aleatorias para demostración
+            const usuario = 'r.' + Math.random().toString(36).substring(2, 8);
+            const password = 'Pass' + Math.floor(Math.random() * 10000) + '!';
+
+            const usuarioGenerado = document.getElementById('usuarioGenerado');
+            const passwordGenerada = document.getElementById('passwordGenerada');
+
+            if (usuarioGenerado && passwordGenerada) {
+                usuarioGenerado.textContent = usuario;
+                passwordGenerada.textContent = password;
+            }
+
+            credencialesContainer.style.display = 'block';
+        } else if (credencialesContainer) {
+            credencialesContainer.style.display = 'none';
+        }
+
+        abrirModal(modalExito);
     }
 
     // Manejar envío de formularios
@@ -275,4 +298,9 @@ window.initDetalleEmpleado = function () {
         // Abrir el modal
         abrirModal(modalActualizarInfo);
     });
+
+    function mostrarError(titulo, mensaje) {
+    alert(titulo + '\n' + mensaje);
+    console.error(titulo, mensaje);
+}
 };

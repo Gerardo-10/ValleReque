@@ -111,3 +111,51 @@ def actualizar_empleado():
 
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
+
+
+@empleado_routes.route('/actualizar_contrasena', methods=['POST'])
+@login_required
+def actualizar_contrasena():
+    try:
+        id_empleado = request.form.get('id_empleado')
+        password_actual = request.form.get('password_actual')
+        password_nueva = request.form.get('password_nueva')
+        password_confirmar = request.form.get('password_confirmar')
+
+        # Validación de campos vacíos
+        if not all([id_empleado, password_actual, password_nueva, password_confirmar]):
+            return jsonify({'success': False, 'message': 'Todos los campos son obligatorios'})
+
+        # Validación de coincidencia de contraseñas
+        if password_nueva != password_confirmar:
+            return jsonify({'success': False, 'message': 'Las contraseñas no coinciden'})
+
+        # Validación básica de seguridad (longitud mínima y requisitos)
+        if len(password_nueva) < 8:
+            return jsonify({'success': False, 'message': 'La contraseña debe tener al menos 8 caracteres'})
+
+        import re
+        if not re.search(r'[A-Z]', password_nueva):
+            return jsonify({'success': False, 'message': 'Debe contener al menos una letra mayúscula'})
+        if not re.search(r'[0-9]', password_nueva):
+            return jsonify({'success': False, 'message': 'Debe contener al menos un número'})
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password_nueva):
+            return jsonify({'success': False, 'message': 'Debe contener al menos un carácter especial'})
+
+        # Seguridad: validar que solo pueda cambiar su propia contraseña (salvo admin, opcional)
+        empleado = ModelEmpleado.get_by_empleado_id(current_app.db, id_empleado)
+        if not empleado or int(id_empleado) != empleado.id_empleado:
+            return jsonify({'success': False, 'message': 'No tienes permisos para cambiar esta contraseña'})
+
+        # Ejecutar la actualización
+        success, message = ModelEmpleado.update_password(
+            current_app.db, id_empleado, password_actual, password_nueva
+        )
+
+        return jsonify({'success': success, 'message': message})
+
+    except Exception as e:
+        print(f"[ERROR]: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'message': 'Error interno'})

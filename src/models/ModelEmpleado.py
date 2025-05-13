@@ -1,4 +1,4 @@
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from src.models.entities.Empleado import Empleado
 
@@ -108,7 +108,6 @@ class ModelEmpleado:
             traceback.print_exc()
             return False, str(e), None
 
-
     @classmethod
     def update(cls, db, id_empleado, data):
         try:
@@ -138,6 +137,43 @@ class ModelEmpleado:
         except Exception as ex:
             print(f"Error en update: {ex}")
             return False
+
+    @classmethod
+    def update_password(cls, db, id_empleado, current_password, new_password):
+        try:
+            with db.connection.cursor() as cursor:
+                cursor.execute("""
+                               SELECT u.pwd
+                               FROM usuario u
+                               WHERE u.id_empleado = %s
+                               """, (id_empleado,))
+                row = cursor.fetchone()
+
+                if not row:
+                    return False, "Usuario no encontrado"
+
+                hash_actual = row[0]
+
+                # Verificar contraseña actual
+                if not check_password_hash(hash_actual, current_password):
+                    return False, "La contraseña actual no es correcta"
+
+                # Generar hash nuevo (usa una función fuerte por defecto como PBKDF2)
+                hash_nuevo = generate_password_hash(new_password)
+
+                cursor.execute("""
+                               UPDATE usuario
+                               SET pwd = %s
+                               WHERE id_empleado = %s
+                               """, (hash_nuevo, id_empleado))
+
+                db.connection.commit()
+                return True, "Contraseña actualizada correctamente"
+        except Exception as ex:
+            print(f"[ERROR] Error en update_password: {ex}")
+            import traceback
+            traceback.print_exc()
+            return False, "Error interno"
 
     @staticmethod
     def delete(db, id_empleado):

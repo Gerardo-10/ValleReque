@@ -1,5 +1,8 @@
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from flask_login import UserMixin
+
+from src.models.entities.Empleado import Empleado
+
 
 class User(UserMixin):
     def __init__(self, id_usuario, nombre_usuario):
@@ -12,3 +15,8 @@ class User(UserMixin):
 
     def get_id(self):
         return str(self.id_usuario)
+
+    # Método para obtener el Empleado asociado a este User
+    def get_empleado(self, db):
+        # Suponiendo que tienes una relación entre User y Empleado
+        return db.session.query(Empleado).filter(Empleado.id_usuario == self.id_usuario).first()

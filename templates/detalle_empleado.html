@@ -120,30 +120,44 @@
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="nombreActualizar">Nombre*</label>
-                            <input type="text" id="nombreActualizar" name="nombre" required>
+                            <input type="text" id="nombreActualizar" name="nombre"
+                                   pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,100}"
+                                   title="Solo letras, mínimo 3 y máximo 100 caracteres" required>
                         </div>
                         <div class="form-grupo">
                             <label for="apellidoActualizar">Apellidos*</label>
-                            <input type="text" id="apellidoActualizar" name="apellido" required>
+                            <input type="text" id="apellidoActualizar" name="apellido"
+                                   pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,100}"
+                                   title="Solo letras, mínimo 3 y máximo 100 caracteres" required>
                         </div>
                     </div>
                     <div class="form-grupo">
                         <label for="emailActualizar">Correo Electrónico*</label>
-                        <input type="email" id="emailActualizar" name="correo" required>
+                        <input type="email" id="emailActualizar" name="correo"
+                               pattern="[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
+                               title="Debe ser un correo válido de Gmail o Hotmail, ej: usuario@gmail.com"
+                               required>
                     </div>
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="fechaNacActualizar">Fecha de Nacimiento*</label>
-                            <input type="date" id="fechaNacActualizar" name="fecha_nacimiento" required>
+                            <input type="date" id="fechaNacActualizar" name="fecha_nacimiento"
+                                   max="{{ fecha_hace_18_anios|safe }}"
+                                   title="Debe tener al menos 18 años" required>
                         </div>
                         <div class="form-grupo">
                             <label for="telefonoActualizar">Teléfono*</label>
-                            <input type="tel" id="telefonoActualizar" name="telefono" required>
+                            <input type="tel" id="telefonoActualizar" name="telefono"
+                                   pattern="[9][0-9]{8}"
+                                   title="Debe iniciar con 9 y contener 9 dígitos (ej. 912345678)"
+                                   inputmode="numeric" maxlength="9" required>
                         </div>
                     </div>
                     <div class="form-grupo">
                         <label for="direccionActualizar">Dirección</label>
-                        <input type="text" id="direccionActualizar" name="direccion" required>
+                        <input type="text" id="direccionActualizar" name="direccion"
+                               pattern=".{5,250}"
+                               title="Ingrese una dirección entre 5 y 250 caracteres" required>
                     </div>
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarActualizar">Cancelar</button>
@@ -272,7 +286,6 @@
                         <button type="submit" class="btn-confirmar">Cambiar Contraseña</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>

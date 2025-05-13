@@ -167,47 +167,48 @@
                                    max="{{ fecha_hace_18_anios|safe }}"
                                    title="Debe tener al menos 18 años" required>
                         </div>
-                    </div>
-                    <div class="form-fila">
-                        <div class="form-grupo">
-                            <label for="direccionEmpleado">Dirección*</label>
-                            <input type="text" id="direccionEmpleado" name="direccion"
-                                   placeholder="Ingrese dirección"
-                                   minlength="5" maxlength="250" title="Mínimo 5 y máximo 250 caracteres" required>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label for="direccionEmpleado">Dirección*</label>
+                                <input type="text" id="direccionEmpleado" name="direccion"
+                                       placeholder="Ingrese dirección"
+                                       minlength="5" maxlength="250" title="Mínimo 5 y máximo 250 caracteres" required>
+                            </div>
+                            <div class="form-grupo">
+                                <label for="telefonoEmpleado">Teléfono*</label>
+                                <input type="text" id="telefonoEmpleado" name="telefono"
+                                       placeholder="999999999" pattern="\d{9}"
+                                       title="Debe contener exactamente 9 dígitos"
+                                       required>
+                            </div>
                         </div>
+
                         <div class="form-grupo">
-                            <label for="telefonoEmpleado">Teléfono*</label>
-                            <input type="text" id="telefonoEmpleado" name="telefono"
-                                   placeholder="999999999" pattern="\d{9}"
-                                   title="Debe contener exactamente 9 dígitos"
+                            <label for="correoEmpleado">Correo Electrónico*</label>
+                            <input type="email" id="correoEmpleado" name="correo" placeholder="ejemplo@gmail.com"
+                                   pattern="[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
+                                   title="Debe ser un correo válido de Gmail o Hotmail, ej: usuario@gmail.com"
                                    required>
                         </div>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="correoEmpleado">Correo Electrónico*</label>
-                        <input type="email" id="correoEmpleado" name="correo" placeholder="ejemplo@gmail.com"
-                               pattern="[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
-                               title="Debe ser un correo válido de Gmail o Hotmail, ej: usuario@gmail.com"
-                               required>
-                    </div>
-                    <div class="form-grupo">
-                        <label for="areaEmpleado">Área*</label>
-                        <select id="areaEmpleado" name="area" required>
-                            <option value="" disabled selected>Seleccione un área</option>
-                            <option value="1">Administración</option>
-                            <option value="2">Ventas</option>
-                            <option value="3">Legal</option>
-                            <option value="4">Contabilidad</option>
-                        </select>
-                    </div>
 
-                    <!-- El estado se establecerá automáticamente en "Activo" en el backend -->
+                        <div class="form-grupo">
+                            <label for="areaEmpleado">Área*</label>
+                            <select id="areaEmpleado" name="area" required>
+                                <option value="" disabled selected>Seleccione un área</option>
+                                <option value="1">Administración</option>
+                                <option value="2">Ventas</option>
+                                <option value="3">Legal</option>
+                                <option value="4">Contabilidad</option>
+                            </select>
+                        </div>
 
-                    <div class="modal-pie">
-                        <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
-                        <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
-                        <div id="modalOverlay" class="overlay"></div>
-                    </div>
+                        <!-- El estado se establecerá automáticamente en "Activo" en el backend -->
+
+                        <div class="modal-pie">
+                            <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
+                            <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
+                            <div id="modalOverlay" class="overlay"></div>
+                        </div>
                 </form>
             </div>
         </div>

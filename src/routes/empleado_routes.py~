@@ -13,11 +13,7 @@ empleado_routes = Blueprint('empleado_routes', __name__)
 @login_required
 def seguridad():
     empleados = ModelEmpleado.get_all(current_app.db)
-    fecha_hoy = datetime.today()
-
-    # Calcular la fecha límite (hace 18 años)
-    fecha_hace_18_anios = fecha_hoy.replace(year=fecha_hoy.year - 18).strftime('%Y-%m-%d')
-    return render_template('seguridad.html', empleados=empleados, fecha_hace_18_anios=fecha_hace_18_anios)
+    return render_template('seguridad.html', empleados=empleados)
 
 
 @empleado_routes.route('/perfil')

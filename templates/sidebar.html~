@@ -39,7 +39,7 @@
                         <span>Logística</span>
                     </a>
                     <div class="nav-submenu">
-                        <a href="#" class="nav-subitem" id="proyectos-link">
+                        <a href="#" class="nav-subitem">
                             <i class="fas fa-folder"></i>
                             <span>Proyectos</span>
                         </a>

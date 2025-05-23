@@ -1,9 +1,25 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, current_app
 from flask_login import login_required
 
+from src.models.ModelProyecto import ModelProyecto
+from src.models.ModelTerreno import ModelTerreno
+from src.routes.proyecto_routes import proyectos
+
 terreno_routes = Blueprint('terreno_routes', __name__)
+
 
 @terreno_routes.route('/terrenos')
 @login_required
 def terrenos():
-    return render_template('logistica/terrenos.html')
+    # Obtener listas de terrenos y proyectos
+    terrenos = ModelTerreno.get_all(current_app.db)
+    proyectos = ModelProyecto.get_all(current_app.db)
+
+    # Crear diccionario: id_proyecto -> nombre
+    proyectos_dict = {proy.id_proyecto: proy.nombre for proy in proyectos}
+
+    # Enlazar el nombre del proyecto a cada terreno
+    for t in terrenos:
+        t.nombre_proyecto = proyectos_dict.get(t.id_proyecto, 'Sin Proyecto')
+
+    return render_template('logistica/terrenos.html', terrenos=terrenos)

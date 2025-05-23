@@ -41,7 +41,7 @@
                         <option value="vendido">Vendido</option>
                     </select>
                 </div>
-                <button class="btn-eliminar" id="btnEliminar">
+                <button class="btn-eliminar">
                     <i class="fa-solid fa-trash"></i>
                 </button>
             </div>
@@ -64,20 +64,26 @@
                     </tr>
                     </thead>
                     <tbody id="tabla_terrenos_body">
-                    <tr>
-                        <td><input type="checkbox" class="checkbox-terreno"></td>
-                        <td>1</td>
-                        <td>Proyecto A</td>
-                        <td>Etapa 1</td>
-                        <td>Unidad 101</td>
-                        <td>100 m²</td>
-                        <td>$50,000</td>
-                        <td>Residencial</td>
-                        <td>Disponible</td>
-                        <td class="acciones">
-                            <button class="btn-editar"><i class="fas fa-edit"></i></button>
-                        </td>
-                    </tr>
+                    {% for terreno in terrenos %}
+                        <tr data-id="{{ terreno.id_empleado }}" data-estado="{{ terreno.estado | lower }}">
+                            <td class="columna-checkbox">
+                                <input type="checkbox" class="checkbox-terreno" data-id="{{ terreno.id_terreno }}">
+                            </td>
+                            <td>{{ terreno.id_terreno }}</td>
+                            <td>{{ terreno.nombre_proyecto }}</td>
+                            <td>{{ terreno.etapa }}</td>
+                            <td>{{ terreno.unidad }}</td>
+                            <td>{{ terreno.area }}</td>
+                            <td>{{ terreno.precio }}</td>
+                            <td>{{ terreno.tipo }}</td>
+                            <td>{{ terreno.estado }}</td>
+                            <td class="acciones">
+                                <button class="btn-editar" id="btnEditar_{{ terreno.id_terreno }}">Editar</button>
+                                <button class="btn-eliminar" id="btnEliminar_{{ terreno.id_terreno }}">Eliminar</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
                     </tbody>
                 </table>
             </div>

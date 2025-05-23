@@ -87,7 +87,7 @@ root {
 .modal-terreno .modal-header {
     display: flex;
     justify-content: space-between;
-    align-items: start;
+    align-items: center;
     border-bottom: 1px solid #ddd;
     margin-bottom: 1rem;
 }
@@ -95,7 +95,7 @@ root {
 .modal-terreno .modal-title {
     display: flex;
     gap: 1rem;
-    align-items: start;
+    align-items: center;
 }
 
 .modal-terreno .modal-title h2 {

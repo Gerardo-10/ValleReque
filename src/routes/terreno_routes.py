@@ -3,7 +3,6 @@ from flask_login import login_required
 
 from src.models.ModelProyecto import ModelProyecto
 from src.models.ModelTerreno import ModelTerreno
-from src.routes.proyecto_routes import proyectos
 
 terreno_routes = Blueprint('terreno_routes', __name__)
 

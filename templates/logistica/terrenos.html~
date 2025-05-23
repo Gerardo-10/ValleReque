@@ -159,7 +159,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btn-cancelar-terreno-footer">Cancelar</button>
-                <button class="btn-agregar" id="btn-guardar-terreno">Guardar</button>
+                <button class="btn-primary" id="btn-guardar-terreno">Guardar</button>
             </div>
         </div>
     </div>

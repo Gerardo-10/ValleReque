@@ -204,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const wasMobile = isMobile;
         isMobile = window.innerWidth < 992;
 
-
         if (wasMobile !== isMobile) {
             if (isMobile) {
                 // Cambio a móvil
@@ -220,12 +219,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 mainContent.style.marginLeft = 'var(--sidebar-width)';
             }
 
-            dashboardCards.forEach(card => {
-                card.style.transform = '';
-                card.style.boxShadow = '';
-            });
+            // ✅ Verifica si existen dashboard cards antes de iterar
+            const dashboardCards = document.querySelectorAll(".dashboard-card");
+            if (dashboardCards.length > 0) {
+                dashboardCards.forEach(card => {
+                    card.style.transform = '';
+                    card.style.boxShadow = '';
+                });
+            }
         }
     }
+
 
     // Sidebar toggle
     menuToggle.addEventListener('click', toggleSidebar);

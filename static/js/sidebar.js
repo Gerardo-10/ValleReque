@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     proyectosLink?.addEventListener("click", e => {
         e.preventDefault();
-        cargarVista("/proyectos");
+        cargarVista("/proyectos", initProyectosModals);
     });
 
     document.addEventListener("click", function (e) {

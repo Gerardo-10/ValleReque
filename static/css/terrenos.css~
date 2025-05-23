@@ -22,6 +22,17 @@ root {
     transition: background-color 0.3s ease;
 }
 
+.btn-editar {
+    background: var(--color-gradiente);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: var(--radio-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transicion);
+}
+
 .tabla-empleados {
     width: 100%;
     border-collapse: collapse;
@@ -87,7 +98,7 @@ root {
 .modal-terreno .modal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
     border-bottom: 1px solid #ddd;
     margin-bottom: 1rem;
 }
@@ -95,7 +106,7 @@ root {
 .modal-terreno .modal-title {
     display: flex;
     gap: 1rem;
-    align-items: center;
+    align-items: start;
 }
 
 .modal-terreno .modal-title h2 {
@@ -120,6 +131,11 @@ root {
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+}
+
+.modal-terreno .icon-warning {
+    background-color: #fff3e0;
+    color: red;
 }
 
 /* Cerrar */

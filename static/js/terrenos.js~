@@ -1,26 +1,103 @@
 function initTerrenosModals() {
-    const btnAgregarTerreno = document.getElementById("btnAgregarTerreno");
-    const modal = document.getElementById("modalAgregarTerreno");
     const overlay = document.getElementById("modalOverlay");
 
-    console.log({ btnAgregarTerreno, modal, overlay }); // 👈
+    // Agregar Terreno
+    const btnAgregarTerreno = document.getElementById("btnAgregarTerreno");
+    const modalAgregar = document.getElementById("modalAgregarTerreno");
+    const btnCancelarAgregar1 = document.querySelector("#modalAgregarTerreno .close");
+    const btnCancelarAgregar2 = document.querySelector("#modalAgregarTerreno .btn-secondary");
 
-    if (btnAgregarTerreno && modal && overlay) {
-        btnAgregarTerreno.addEventListener("click", () => {
-            modal.style.display = "block";
-            overlay.style.display = "block";
-        });
+    btnAgregarTerreno?.addEventListener("click", () => {
+        modalAgregar.classList.add("active");
+        overlay.classList.add("active");
+    });
 
-        document.getElementById("btn-cancelar-terreno")?.addEventListener("click", () => {
-            modal.style.display = "none";
-            overlay.style.display = "none";
+    [btnCancelarAgregar1, btnCancelarAgregar2].forEach(el => {
+        el?.addEventListener("click", () => {
+            modalAgregar.classList.remove("active");
+            overlay.classList.remove("active");
         });
+    });
 
-        document.getElementById("btn-cancelar-terreno-footer")?.addEventListener("click", () => {
-            modal.style.display = "none";
-            overlay.style.display = "none";
+    // Editar Terreno
+    const modalEditar = document.getElementById("modalEditarTerreno");
+    const botonesEditar = document.querySelectorAll(".btn-editar-terreno");
+    const btnCancelarEditar1 = document.querySelector("#modalEditarTerreno .close");
+    const btnCancelarEditar2 = document.querySelector("#modalEditarTerreno .btn-secondary");
+
+    botonesEditar.forEach((boton) => {
+        boton.addEventListener("click", () => {
+            const idTerreno = boton.getAttribute("data-id");
+            // Aquí podrías rellenar el formulario con datos si lo necesitas
+            modalEditar.classList.add("active");
+            overlay.classList.add("active");
         });
-    } else {
-        console.error("Elementos no encontrados en initTerrenosModals");
-    }
+    });
+
+    [btnCancelarEditar1, btnCancelarEditar2].forEach(el => {
+        el?.addEventListener("click", () => {
+            modalEditar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    });
+
+    // Confirmar Eliminar Terreno
+    const modalEliminar = document.getElementById("modalConfirmarEliminarTerreno");
+    const botonesEliminar = document.querySelectorAll(".btn-eliminar-terreno");
+    const btnCancelarEliminar1 = document.querySelector("#modalConfirmarEliminarTerreno .close");
+    const btnCancelarEliminar2 = document.querySelector("#modalConfirmarEliminarTerreno .btn-secondary");
+
+    botonesEliminar.forEach((boton) => {
+        boton.addEventListener("click", () => {
+            const idTerreno = boton.getAttribute("data-id");
+            // Puedes guardar el ID en un input oculto o variable global si lo necesitas para eliminar
+            modalEliminar.classList.add("active");
+            overlay.classList.add("active");
+        });
+    });
+
+    [btnCancelarEliminar1, btnCancelarEliminar2].forEach(el => {
+        el?.addEventListener("click", () => {
+            modalEliminar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    });
+
+    // Confirmar Guardar Terreno
+    const modalGuardar = document.getElementById("modalConfirmarGuardarTerreno");
+    const btnAbrirModalGuardar = document.getElementById("btn-guardar-terreno"); // Botón que muestra el modal
+    const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarTerreno .close");
+    const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarTerreno .btn-secondary");
+    const btnConfirmarGuardar = document.getElementById("btn-confirmar-guardar-terreno"); // Nuevo ID del botón Continuar
+
+    btnAbrirModalGuardar?.addEventListener("click", (e) => {
+        e.preventDefault(); // Previene el envío del formulario inmediato
+        modalGuardar.classList.add("active");
+        overlay.classList.add("active");
+    });
+
+    [btnCancelarGuardar1, btnCancelarGuardar2].forEach(el => {
+        el?.addEventListener("click", () => {
+            modalGuardar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    });
+
+    // Aquí puedes manejar la acción final de guardar
+    btnConfirmarGuardar?.addEventListener("click", () => {
+        // Aquí podrías hacer submit al formulario manualmente:
+        // document.getElementById("formTerreno").submit();
+        console.log("Terreno confirmado para guardar");
+        modalGuardar.classList.remove("active");
+        overlay.classList.remove("active");
+    });
+
+    // Cerrar por overlay
+    overlay?.addEventListener("click", () => {
+        modalAgregar?.classList.remove("active");
+        modalEditar?.classList.remove("active");
+        modalEliminar?.classList.remove("active");
+        modalGuardar?.classList.remove("active");
+        overlay.classList.remove("active");
+    });
 }

@@ -74,10 +74,10 @@
                             <td>{{ terreno.tipo }}</td>
                             <td>{{ terreno.estado }}</td>
                             <td class="acciones">
-                                <button class="btn-editar-terreno" id="btnEditarTerreno"
+                                <button class="btn-editar-terreno"
                                         data-id="{{ terreno.id_terreno }}">Editar
                                 </button>
-                                <button class="btn-eliminar-terreno" id="btnEliminarTerreno"
+                                <button class="btn-eliminar-terreno"
                                         data-id="{{ terreno.id_terreno }}">Eliminar
                                 </button>
                             </td>
@@ -113,6 +113,7 @@
             </div>
             <div class="modal-body">
                 <form id="formAgregarTerreno">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="form-group">
                         <label for="proyecto">Selecciona el Proyecto*</label>
                         <select id="proyecto" name="proyecto" required>
@@ -159,7 +160,181 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btn-cancelar-terreno-footer">Cancelar</button>
-                <button class="btn-primary" id="btn-guardar-terreno">Guardar</button>
+                <button class="btn-agregar" id="btn-guardar-terreno">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar terreno -->
+    <div class="modal-terreno" id="modalEditarTerreno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <div>
+                        <h2>Editar Terreno</h2>
+                        <p>Bienvenido a la edición de terreno. Solo puedes modificar los campos visibles. Si el campo
+                            contiene un candado, no se puede modificar.</p>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formEditarTerreno">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <div class="form-group">
+                        <label for="proyecto">Selecciona el Proyecto*</label>
+                        <select id="proyecto" name="proyecto" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="1">Valle Reque</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="etapa">Selecciona la Etapa*</label>
+                        <select id="etapa" name="etapa" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="manzana">Selecciona la Manzana*</label>
+                        <select id="manzana" name="manzana" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipoTerreno">Tipo de terreno*</label>
+                        <select id="tipoTerreno" name="tipoTerreno" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Calle">Calle</option>
+                            <option value="Avenida">Avenida</option>
+                            <option value="Esquina">Esquina</option>
+                            <option value="Parque">Parque</option>
+                            <option value="Esquina_Parque">Esquina-Parque</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="area">Área m²*</label>
+                        <input id="area" name="area" type="number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precio">Precio*</label>
+                        <input type="number" id="precio" name="precio" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-terreno-footer">Cancelar</button>
+                <button class="btn-editar" id="btn-editar-terreno">Editar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar eliminar terreno -->
+    <div class="modal-terreno" id="modalConfirmarEliminarTerreno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <h2>¿Desea eliminar este terreno?</h2>
+                        <p>Esta acción no se puede deshacer. El terreno será eliminado permanentemente.</p>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-terreno-footer">Cancelar</button>
+                <button class="btn-eliminar-terreno" id="btn-eliminar-terreno">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar guardar terreno -->
+    <div class="modal-terreno" id="modalConfirmarGuardarTerreno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <h2>¿Desea guardar el nuevo Terreno?</h2>
+                        <p>Recuerde que al guardar un nuevo terreno, no podrá eliminarlo, solo podrá cambiar su estado a
+                            "Inactivo".</p>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
+                <button class="btn-confirmar-terreno" id="btn-confirmar-guardar-terreno">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar editar terreno -->
+    <div class="modal-terreno" id="modalConfirmarEditarTerreno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <h2>¿Desea guardar los cambios en el terreno?</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-atras-editar">Atrás</button>
+                <button class="btn-confirmar-terreno" id="btn-confirmar-editar-terreno">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito al agregar el terreno-->
+    <div class="modal-terreno" id="modalExitoAgregar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h2>Se a creado un nuevo Terreno !!</h2>
+                        <p>Su Terreno fue creado con el siguiente código: su número Terreno, en el proyecto [Proyecto],
+                            en la manzana [Manzana].</p>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito al editar el terreno-->
+    <div class="modal-terreno" id="modalExitoEditar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h2>Se a creado un nuevo Terreno !!</h2>
+                        <p>Su Terreno fue creado con el siguiente código: su número Terreno, en el proyecto [Proyecto],
+                            en la manzana [Manzana].</p>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
             </div>
         </div>
     </div>

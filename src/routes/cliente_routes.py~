@@ -110,28 +110,31 @@ def actualizar_cliente():
 @cliente_routes.route('/actualizar_estado_clientes', methods=['POST'])
 def actualizar_estado_clientes():
     try:
-        # Recibe los datos de la solicitud
-        clientes = request.form.get('clientes')  # lista de IDs de clientes
-        estado = request.form.get('estado')  # nuevo estado para los clientes
+        clientes = request.form.get('clientes')
+        estado = request.form.get('estado')
 
-        # Lista de estados válidos según el ENUM
-        estados_validos = ['sin-evaluar', 'no-disponible', 'evaluado', 'activo']
+        # Mapeo de valores del frontend al ENUM exacto en BD
+        estados_mapeo = {
+            'sin-evaluar': 'SinEvaluar',
+            'no-disponible': 'NoDisponible',
+            'evaluado': 'Evaluado',
+            'activo': 'Activo'
+        }
 
-        # Validar que el estado sea uno de los valores permitidos
-        if estado not in estados_validos:
+        # Validación del estado recibido
+        if estado not in estados_mapeo:
             return jsonify(success=False, message='Estado no válido'), 400
+
+        estado_real = estados_mapeo[estado]
 
         if not clientes or not estado:
             return jsonify(success=False, message='Datos incompletos'), 400
 
-        # Opcional: log de datos recibidos
-        print(f'Recibido clientes: {clientes}, estado: {estado}')
+        print(f'Recibido clientes: {clientes}, estado: {estado_real}')
 
-        # Convertir la cadena de clientes a lista
         clientes = json.loads(clientes)
 
-        # Llamar al método del modelo para actualizar el estado
-        if ModelCliente.update_status(current_app.db, clientes, estado):
+        if ModelCliente.update_status(current_app.db, clientes, estado_real):
             return jsonify(success=True, message='Estado actualizado correctamente')
         else:
             return jsonify(success=False, message='Error al actualizar el estado de los clientes'), 500

@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const seguridadLink = document.getElementById("seguridad-link");
     const clientesLink = document.getElementById("clientes-link");
     const perfilLink = document.getElementById("perfil-link");
+    const terrenosLink = document.getElementById("terrenos-link");
 
     seguridadLink?.addEventListener("click", e => {
         e.preventDefault();
@@ -46,6 +47,11 @@ document.addEventListener('DOMContentLoaded', function () {
     perfilLink?.addEventListener("click", e => {
         e.preventDefault();
         cargarVista("/perfil");
+    });
+
+    terrenosLink?.addEventListener("click", e => {
+        e.preventDefault();
+        cargarVista("/terrenos", initTerrenosModals);
     });
 
     document.addEventListener("click", function (e) {

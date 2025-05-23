@@ -1,0 +1,153 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="contenedor-principal">
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h1>Terrenos</h1><br>
+                </div>
+            </header>
+            <br>
+            <!-- Barra de búsqueda y filtros -->
+            <div class="barra-herramientas">
+                <div class="busqueda-container">
+                    <input type="text" id="buscarTerreno" placeholder="Buscar terreno">
+                    <button class="btn-buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroTerrenos">
+                        <option value="">Filtrar por...</option>
+                        <option value="proyecto">Proyecto</option>
+                        <option value="etapa">Etapa</option>
+                        <option value="unidad">Unidad</option>
+                    </select>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroTerrenosEstado">
+                        <option value="todos">Todos</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="enProceso">En Proceso</option>
+                        <option value="reservado">Reservado</option>
+                        <option value="noDisponible">No Disponible</option>
+                        <option value="vendido">Vendido</option>
+                    </select>
+                </div>
+                <button class="btn-eliminar" id="btnEliminar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+
+            <!-- Tabla de terrenos -->
+            <div class="tabla-container">
+                <table class="tabla-terrenos" id="tabla_terrenos">
+                    <thead>
+                    <tr>
+                        <th class="columna-checkbox"></th>
+                        <th>ID</th>
+                        <th>Proyecto</th>
+                        <th>Etapa</th>
+                        <th>Unidad</th>
+                        <th>Área</th>
+                        <th>Precio</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="terrenos-table">
+                    <!-- Contenido generado por JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-container">
+                <button class="btn-agregar" id="agregar">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Nuevo Terreno -->
+    <div id="modal-nuevo" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <div>
+                        <h2>Nuevo Terreno</h2>
+                        <p>Bienvenido a la creación de terreno. No olvide que los campos deben estar en proyecto creado, si el campo no existe debe crearlo en la sección de catálogos.</p>
+                    </div>
+                </div>
+                <span class="close" onclick="document.getElementById('modal-nuevo').style.display='none'">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="form-nuevo">
+                    <div class="form-group">
+                        <label>Selecciona el Proyecto*</label>
+                        <select required>
+                            <option value="">Seleccionar...</option>
+                            <option value="VALLE REQUE">VALLE REQUE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Selecciona la Etapa*</label>
+                        <select required>
+                            <option value="">Seleccionar...</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Selecciona la Manzana*</label>
+                        <select required>
+                            <option value="">Seleccionar...</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de terreno*</label>
+                        <select required>
+                            <option value="">Seleccionar...</option>
+                            <option value="CALLE">CALLE</option>
+                            <option value="AVENIDA">AVENIDA</option>
+                            <option value="ESQUINA">ESQUINA</option>
+                            <option value="PARQUE">PARQUE</option>
+                            <option value="ESQUINA-PARQUE">ESQUINA-PARQUE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área m²*</label>
+                        <input type="number" value="120" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Precio*</label>
+                        <div class="price-input">
+                            <span>$</span>
+                            <input type="text" value="12,000.00" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Detalles</label>
+                        <textarea>Lorem ipsum is simply dummy text...</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-nuevo">Cancelar</button>
+                <button class="btn-primary" id="btn-guardar-nuevo">Guardar</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

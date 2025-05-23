@@ -3,8 +3,6 @@ from flask_login import login_required
 import json
 import logging
 
-from sqlalchemy.testing import db
-
 from src.models.ModelCliente import ModelCliente
 
 cliente_routes = Blueprint('cliente_routes', __name__)

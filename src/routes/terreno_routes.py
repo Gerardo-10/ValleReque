@@ -1,0 +1,9 @@
+from flask import Blueprint, render_template
+from flask_login import login_required
+
+terreno_routes = Blueprint('terreno_routes', __name__)
+
+@terreno_routes.route('/terrenos')
+@login_required
+def terrenos():
+    return render_template('logistica/terrenos.html')

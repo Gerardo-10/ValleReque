@@ -1,0 +1,91 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="contenedor-principal">
+            <header class="header">
+                <div class="header-content">
+                    <div class="header-icon">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <h1>Terrenos</h1><br>
+                </div>
+            </header>
+            <br>
+            <!-- Barra de búsqueda y filtros -->
+            <div class="barra-herramientas">
+                <div class="busqueda-container">
+                    <input type="text" id="buscarTerreno" placeholder="Buscar terreno">
+                    <button class="btn-buscar">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroTerrenos">
+                        <option value="">Filtrar por...</option>
+                        <option value="proyecto">Proyecto</option>
+                        <option value="etapa">Etapa</option>
+                        <option value="unidad">Unidad</option>
+                    </select>
+                </div>
+                <div class="filtro-container">
+                    <select id="filtroTerrenosEstado">
+                        <option value="todos">Todos</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="enProceso">En Proceso</option>
+                        <option value="reservado">Reservado</option>
+                        <option value="noDisponible">No Disponible</option>
+                        <option value="vendido">Vendido</option>
+                    </select>
+                </div>
+                <button class="btn-eliminar" id="btnEliminar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </div>
+
+            <!-- Tabla de terrenos -->
+            <div class="tabla-container">
+                <table class="tabla-terrenos" id="tabla_terrenos">
+                    <thead>
+                    <tr>
+                        <th class="columna-checkbox"></th>
+                        <th>ID</th>
+                        <th>Proyecto</th>
+                        <th>Etapa</th>
+                        <th>Unidad</th>
+                        <th>Área</th>
+                        <th>Precio</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tabla_terrenos_body">
+                    <tr>
+                        <td><input type="checkbox" class="checkbox-terreno"></td>
+                        <td>1</td>
+                        <td>Proyecto A</td>
+                        <td>Etapa 1</td>
+                        <td>Unidad 101</td>
+                        <td>100 m²</td>
+                        <td>$50,000</td>
+                        <td>Residencial</td>
+                        <td>Disponible</td>
+                        <td class="acciones">
+                            <button class="btn-editar"><i class="fas fa-edit"></i></button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Botones de acción -->
+            <div class="acciones-container">
+                <button class="btn-agregar" id="btnAgregar">Agregar</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

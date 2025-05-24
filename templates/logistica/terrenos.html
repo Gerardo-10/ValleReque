@@ -67,7 +67,7 @@
                     </thead>
                     <tbody id="tabla_terrenos_body">
                     {% for terreno in terrenos %}
-                        <tr data-id="{{ terreno.id_empleado }}" data-estado="{{ terreno.estado | lower }}">
+                        <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower }}">
                             <td>{{ terreno.id_terreno }}</td>
                             <td>{{ terreno.nombre_proyecto }}</td>
                             <td>{{ terreno.etapa }}</td>
@@ -89,7 +89,6 @@
                             </td>
                         </tr>
                     {% endfor %}
-
                     </tbody>
                 </table>
             </div>
@@ -202,13 +201,9 @@
             <div class="modal-body">
                 <form id="formEditarTerreno">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="form-group">
-                        <label for="proyecto">Selecciona el Proyecto*</label>
-                        <select id="proyecto" name="proyecto" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="1">Valle Reque</option>
-                        </select>
-                    </div>
+                    <input type="hidden" name="id_terreno" id="idTerreno">
+                    <input type="hidden" name="codigo_unidad" id="codigo_unidad">
+                    <input type="hidden" name="nombre_proyecto" id="nombre_proyecto">
                     <div class="form-group">
                         <label for="etapa">Selecciona la Etapa*</label>
                         <select id="etapa" name="etapa" required>
@@ -218,12 +213,20 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label for="unidad">Unidad*</label>
+                        <input id="unidad" name="unidad" type="number" required>
+                    </div>
+                    <div class="form-group">
                         <label for="manzana">Selecciona la Manzana*</label>
                         <select id="manzana" name="manzana" required>
                             <option value="">Seleccionar...</option>
                             <option value="A">A</option>
                             <option value="B">B</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="lote">N° de Lote*</label>
+                        <input id="lote" name="lote" type="number" required>
                     </div>
                     <div class="form-group">
                         <label for="tipoTerreno">Tipo de terreno*</label>
@@ -243,6 +246,17 @@
                     <div class="form-group">
                         <label for="precio">Precio*</label>
                         <input type="number" id="precio" name="precio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estadoTerreno">Estado*</label>
+                        <select id="estadoTerreno" name="estadoTerreno" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Disponible">Disponible</option>
+                            <option value="EnProceso">En Proceso</option>
+                            <option value="Reservado">Reservado</option>
+                            <option value="Vendido">Vendido</option>
+                            <option value="NoDisponible">No Disponible</option>
+                        </select>
                     </div>
                 </form>
             </div>

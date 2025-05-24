@@ -21,17 +21,27 @@ function initTerrenosModals() {
 
     // Editar Terreno
     const modalEditar = document.getElementById("modalEditarTerreno");
-    const botonesEditar = document.querySelectorAll(".btn-editar-terreno");
     const btnCancelarEditar1 = document.querySelector("#modalEditarTerreno .close");
     const btnCancelarEditar2 = document.querySelector("#modalEditarTerreno .btn-secondary");
 
-    botonesEditar.forEach((boton) => {
-        boton.addEventListener("click", () => {
-            const idTerreno = boton.getAttribute("data-id");
-            modalEditar.classList.add("active");
-            overlay.classList.add("active");
-        });
+    document.querySelectorAll(".btn-editar-terreno").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const fila = btn.closest("tr");
+
+        const idTerreno = fila.dataset.id;
+        const nombreProyecto = fila.children[1].textContent; // segunda columna
+
+        // Rellenar el input oculto con el nombre del proyecto
+        document.getElementById("idTerreno").value = idTerreno;
+        document.getElementById("nombre_proyecto").value = nombreProyecto;
+
+        // rellenar otros campos también...
+
+        modalEditar.classList.add("active");
+        overlay.classList.add("active");
     });
+});
+
 
     [btnCancelarEditar1, btnCancelarEditar2].forEach(el => {
         el?.addEventListener("click", () => {
@@ -156,12 +166,66 @@ function initTerrenosModals() {
         });
     });
 
-    btnConfirmarEditar?.addEventListener("click", () => {
-        console.log("Terreno confirmado para editar");
-        modalConfirmarEditar.classList.remove("active");
-        overlay.classList.remove("active");
-        mostrarModalExitoEditar();
+    btnConfirmarEditar?.addEventListener("click", async () => {
+        const form = document.getElementById("formEditarTerreno");
+        const formData = new FormData(form);
+        const idTerreno = formData.get("id_terreno");
+
+
+        try {
+            const response = await fetch("/actualizar_terreno", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.terreno) {
+                const terreno = data.terreno;
+
+                // Cerrar todos los modales
+                modalConfirmarEditar.classList.remove("active");
+                modalEditar.classList.remove("active");
+                overlay.classList.remove("active");
+
+                // Actualizar la fila en la tabla
+                const fila = document.querySelector(`tr[data-id="${idTerreno}"]`);
+                if (fila) {
+                    fila.innerHTML = `
+                    <td>${terreno.id_terreno}</td>
+                    <td>${terreno.nombre_proyecto}</td>
+                    <td>${terreno.etapa}</td>
+                    <td>${terreno.codigo_unidad}</td>
+                    <td>${terreno.unidad}</td>
+                    <td>${terreno.manzana}</td>
+                    <td>${terreno.lote}</td>
+                    <td>${terreno.area}</td>
+                    <td>${terreno.precio}</td>
+                    <td>${terreno.tipoTerreno}</td>
+                    <td>${terreno.estadoTerreno}</td>
+                    <td class="acciones">
+                        <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>
+                        <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}">Eliminar</button>
+                    </td>
+                `;
+                }
+
+                // Reasignar eventos a botones recién creados
+                initTerrenosModals(); // vuelve a vincular eventos a los botones nuevos
+                form.reset();
+                mostrarModalExitoEditar();
+            } else {
+                alert("Error al actualizar terreno: " + (data.error || "desconocido"));
+            }
+        } catch (error) {
+            console.error("Error en la petición:", error);
+            alert("Error al enviar la solicitud.");
+        }
     });
+
 
     // Éxito al agregar
     function mostrarModalExitoAgregar() {
@@ -183,6 +247,15 @@ function initTerrenosModals() {
             modal.classList.remove("active");
             overlay.classList.remove("active");
         }, 3000);
+    }
+
+    function cerrarTodosLosModales() {
+        modalAgregar?.classList.remove("active");
+        modalEditar?.classList.remove("active");
+        modalEliminar?.classList.remove("active");
+        modalGuardar?.classList.remove("active");
+        modalConfirmarEditar?.classList.remove("active");
+        overlay?.classList.remove("active");
     }
 
     // Cerrar por overlay

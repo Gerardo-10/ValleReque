@@ -64,3 +64,25 @@ class ModelTerreno:
             print(f"[ERROR insert terreno]: {e}")
             db.connection.rollback()
             return False
+
+    @classmethod
+    def update(cls, db, id_terreno, data):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_actualizar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                id_terreno,
+                data['etapa'],
+                data['unidad'],
+                data['tipoTerreno'],
+                data['area'],
+                data['precio'],
+                data['estadoTerreno'],
+                data['manzana'],
+                data['lote'],
+                data['codigo_unidad']
+            ))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR update terreno {id_terreno}]: {e}")
+            return False

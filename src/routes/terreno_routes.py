@@ -80,3 +80,56 @@ def insertar_terreno():
         return jsonify({'success': False, 'error': str(e)})
 
     return jsonify({'success': False, 'error': 'No se pudo insertar el terreno'})
+
+
+@terreno_routes.route('/actualizar_terreno', methods=['POST'])
+@login_required
+def actualizar_terreno():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            form = request.form
+
+            id_terreno = int(form['id_terreno'])
+
+            manzana = form['manzana'].strip()
+            lote = form['lote'].strip()
+            codigo_unidad = f"{manzana} - {lote}"
+
+            terreno = {
+                'etapa': form['etapa'],
+                'unidad': form['unidad'],
+                'tipoTerreno': form['tipoTerreno'],
+                'area': form['area'],
+                'precio': form['precio'],
+                'estadoTerreno': form['estadoTerreno'],
+                'manzana': manzana,
+                'lote': lote,
+                'codigo_unidad': codigo_unidad
+            }
+
+            # Actualizar en la base de datos
+            ModelTerreno.update(current_app.db, id_terreno, terreno)
+
+            nombre_proyecto = form.get('nombre_proyecto')
+
+            terreno_response = {
+                'id_terreno': id_terreno,
+                'nombre_proyecto': nombre_proyecto,
+                'etapa': terreno['etapa'],
+                'codigo_unidad': terreno['codigo_unidad'],
+                'unidad': terreno['unidad'],
+                'manzana': terreno['manzana'],
+                'lote': terreno['lote'],
+                'area': terreno['area'],
+                'precio': terreno['precio'],
+                'tipoTerreno': terreno['tipoTerreno'],  # usa el mismo nombre que usas en JS
+                'estadoTerreno': terreno['estadoTerreno']
+            }
+
+            return jsonify({'success': True, 'terreno': terreno_response})
+
+    except Exception as e:
+        print("Error en actualizar_terreno:", str(e))  # Agrega este print para ver el error en consola
+        return jsonify({'success': False, 'error': str(e)})
+
+    return jsonify({'success': False, 'error': 'No se pudo actualizar el terreno'})

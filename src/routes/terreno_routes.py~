@@ -1,9 +1,8 @@
-from flask import Blueprint, render_template, current_app
+from flask import Blueprint, render_template, current_app, request, jsonify
 from flask_login import login_required
 
 from src.models.ModelProyecto import ModelProyecto
 from src.models.ModelTerreno import ModelTerreno
-from src.routes.proyecto_routes import proyectos
 
 terreno_routes = Blueprint('terreno_routes', __name__)
 
@@ -23,3 +22,61 @@ def terrenos():
         t.nombre_proyecto = proyectos_dict.get(t.id_proyecto, 'Sin Proyecto')
 
     return render_template('logistica/terrenos.html', terrenos=terrenos)
+
+
+@terreno_routes.route('/insertar_terreno', methods=['POST'])
+@login_required
+def insertar_terreno():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            form = request.form
+
+            id_proyecto = int(form['proyecto'])
+
+            manzana = form['manzana'].strip()
+            lote = form['lote'].strip()
+            codigo_unidad = f"{manzana}-{lote}"  # Concatenación de manzana y lote
+
+            terreno = {
+                'id_proyecto': form['proyecto'],
+                'etapa': form['etapa'],
+                'unidad': form['unidad'],
+                'tipoTerreno': form['tipoTerreno'],
+                'area': form['area'],
+                'precio': form['precio'],
+                'estadoTerreno': form['estadoTerreno'],
+                'manzana': manzana,
+                'lote': lote,
+                'codigo_unidad': codigo_unidad
+            }
+
+            # Insertar en la base de datos y recuperar ID
+            id_terreno = ModelTerreno.insert(current_app.db, terreno, id_proyecto)
+
+            proyecto = ModelProyecto.get_by_id(current_app.db, id_proyecto)
+            nombre_proyecto = proyecto.nombre
+
+            terreno_json = {
+                'id_terreno': id_terreno,
+                'nombre_proyecto': nombre_proyecto,
+                'etapa': terreno['etapa'],
+                'unidad': terreno['unidad'],
+                'area': terreno['area'],
+                'precio': terreno['precio'],
+                'tipo': terreno['tipoTerreno'],
+                'estado': terreno['estadoTerreno'],
+                'manzana': terreno['manzana'],
+                'lote': terreno['lote'],
+                'codigo_unidad': terreno['codigo_unidad']
+            }
+
+            return jsonify({
+                'success': True,
+                'message': 'Terreno agregado correctamente',
+                'terreno': terreno_json
+            })
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+    return jsonify({'success': False, 'error': 'No se pudo insertar el terreno'})

@@ -37,3 +37,30 @@ class ModelTerreno:
         except Exception as e:
             print(f"[ERROR get_all terreno]: {e}")
             return []
+
+    @classmethod
+    def insert(cls, db, terreno, id_proyecto):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute(
+                "CALL sp_insertar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (id_proyecto, terreno['etapa'], terreno['unidad'], terreno['tipoTerreno'],
+                 terreno['area'], terreno['precio'], terreno['estadoTerreno'], terreno['manzana'], terreno['lote'],
+                 terreno['codigo_unidad'])
+            )
+
+            # Consumir todos los resultados hasta encontrar el SELECT
+            while cursor.nextset():
+                if cursor.description:
+                    break
+
+            # Obtener el último ID insertado
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            id_terreno = cursor.fetchone()[0]
+
+            db.connection.commit()
+            return id_terreno
+        except Exception as e:
+            print(f"[ERROR insert terreno]: {e}")
+            db.connection.rollback()
+            return False

@@ -28,7 +28,6 @@ function initTerrenosModals() {
     botonesEditar.forEach((boton) => {
         boton.addEventListener("click", () => {
             const idTerreno = boton.getAttribute("data-id");
-            // Aquí podrías rellenar el formulario con datos si lo necesitas
             modalEditar.classList.add("active");
             overlay.classList.add("active");
         });
@@ -50,7 +49,6 @@ function initTerrenosModals() {
     botonesEliminar.forEach((boton) => {
         boton.addEventListener("click", () => {
             const idTerreno = boton.getAttribute("data-id");
-            // Puedes guardar el ID en un input oculto o variable global si lo necesitas para eliminar
             modalEliminar.classList.add("active");
             overlay.classList.add("active");
         });
@@ -65,13 +63,13 @@ function initTerrenosModals() {
 
     // Confirmar Guardar Terreno
     const modalGuardar = document.getElementById("modalConfirmarGuardarTerreno");
-    const btnAbrirModalGuardar = document.getElementById("btn-guardar-terreno"); // Botón que muestra el modal
+    const btnAbrirModalGuardar = document.getElementById("btn-guardar-terreno");
     const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarTerreno .close");
     const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarTerreno .btn-secondary");
-    const btnConfirmarGuardar = document.getElementById("btn-confirmar-guardar-terreno"); // Nuevo ID del botón Continuar
+    const btnConfirmarGuardar = document.getElementById("btn-confirmar-guardar-terreno");
 
     btnAbrirModalGuardar?.addEventListener("click", (e) => {
-        e.preventDefault(); // Previene el envío del formulario inmediato
+        e.preventDefault();
         modalGuardar.classList.add("active");
         overlay.classList.add("active");
     });
@@ -83,13 +81,59 @@ function initTerrenosModals() {
         });
     });
 
-    // Aquí puedes manejar la acción final de guardar
-    btnConfirmarGuardar?.addEventListener("click", () => {
-        // Aquí podrías hacer submit al formulario manualmente:
-        // document.getElementById("formTerreno").submit();
-        console.log("Terreno confirmado para guardar");
-        modalGuardar.classList.remove("active");
-        overlay.classList.remove("active");
+    btnConfirmarGuardar?.addEventListener("click", async () => {
+        const form = document.getElementById("formAgregarTerreno");
+        const formData = new FormData(form);
+        formData.append('estadoTerreno', 'Disponible');
+
+        try {
+            const response = await fetch("/insertar_terreno", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                modalGuardar.classList.remove("active");
+                overlay.classList.remove("active");
+                modalAgregar.classList.remove("active");
+
+                const terreno = result.terreno;
+
+                const nuevaFila = document.createElement('tr');
+                nuevaFila.setAttribute('data-id', terreno.id_terreno);
+                nuevaFila.setAttribute('data-estado', (terreno.estado || 'Disponible').toLowerCase());
+                nuevaFila.innerHTML = `
+                    <td>${terreno.id_terreno}</td>
+                    <td>${terreno.nombre_proyecto}</td>
+                    <td>${terreno.etapa}</td>
+                    <td>${terreno.codigo_unidad}</td>
+                    <td>${terreno.unidad}</td>
+                    <td>${terreno.manzana}</td>
+                    <td>${terreno.lote}</td>
+                    <td>${terreno.area}</td>
+                    <td>${terreno.precio}</td>
+                    <td>${terreno.tipo}</td>
+                    <td>${terreno.estado || 'Disponible'}</td>
+                    <td class="acciones">
+                        <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>
+                        <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}">Eliminar</button>
+                    </td>
+                `;
+                document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
+
+                form.reset();
+                mostrarModalExitoAgregar();
+            } else {
+                alert("Error al guardar el terreno: " + (result.error || "desconocido"));
+            }
+        } catch (error) {
+            alert("Error en la solicitud: " + error.message);
+        }
     });
 
     // Confirmar Editar Terreno
@@ -113,11 +157,10 @@ function initTerrenosModals() {
     });
 
     btnConfirmarEditar?.addEventListener("click", () => {
-        // Aquí podrías hacer submit al formulario manualmente o vía fetch
         console.log("Terreno confirmado para editar");
         modalConfirmarEditar.classList.remove("active");
         overlay.classList.remove("active");
-        mostrarModalExitoEditar(); // Muestra mensaje de éxito
+        mostrarModalExitoEditar();
     });
 
     // Éxito al agregar
@@ -142,13 +185,13 @@ function initTerrenosModals() {
         }, 3000);
     }
 
-
     // Cerrar por overlay
     overlay?.addEventListener("click", () => {
         modalAgregar?.classList.remove("active");
         modalEditar?.classList.remove("active");
         modalEliminar?.classList.remove("active");
         modalGuardar?.classList.remove("active");
+        modalConfirmarEditar?.classList.remove("active");
         overlay.classList.remove("active");
     });
 }

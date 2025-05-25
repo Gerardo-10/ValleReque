@@ -86,3 +86,14 @@ class ModelTerreno:
         except Exception as e:
             print(f"[ERROR update terreno {id_terreno}]: {e}")
             return False
+
+    @classmethod
+    def delete(cls, db, id_terreno):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_eliminar_terreno(%s)", (id_terreno,))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR delete terreno {id_terreno}]: {e}")
+            return False

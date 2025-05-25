@@ -203,7 +203,7 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="id_terreno" id="idTerreno">
                     <input type="hidden" name="codigo_unidad" id="codigo_unidad">
-                    <input type="hidden" name="proyecto" id="proyecto" value="{{ terreno.id_proyecto }}">
+                    <input type="hidden" name="nombre_proyecto" id="nombre_proyecto">
                     <div class="form-group">
                         <label for="etapa">Selecciona la Etapa*</label>
                         <select id="etapa" name="etapa" required>

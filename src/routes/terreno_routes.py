@@ -133,3 +133,23 @@ def actualizar_terreno():
         return jsonify({'success': False, 'error': str(e)})
 
     return jsonify({'success': False, 'error': 'No se pudo actualizar el terreno'})
+
+
+@terreno_routes.route('/eliminar_terreno', methods=['POST'])
+@login_required
+def eliminar_terreno():
+    try:
+        data = request.get_json()
+        id_terreno = data.get('id_terreno')
+        if not id_terreno:
+            return jsonify({'success': False, 'message': 'Falta el ID del terreno'}), 400
+
+        success = ModelTerreno.delete(current_app.db, id_terreno)
+
+        if success:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'Fallo al eliminar en la base de datos'}), 500
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})

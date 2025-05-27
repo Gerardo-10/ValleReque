@@ -9,10 +9,6 @@ financiamiento_routes = Blueprint("financiamiento_routes", __name__)
 @financiamiento_routes.route("/financiamientos")
 @login_required
 def financiamientos():
-    try:
-        # Obtener lista de financiamientos
-        financiamientos = ModelFinanciamiento.get_all(current_app.db)
-        return render_template('tesoreria/financiamientos.html', financiamientos=financiamientos)
-    except Exception as e:
-        print("Error en /financiamientos:", e)
-        return f"Error cargando financiamientos: {e}", 500
+    # Obtener lista de financiamientos
+    financiamientos = ModelFinanciamiento.get_all(current_app.db)
+    return render_template('tesoreria/financiamientos.html', financiamientos=financiamientos)

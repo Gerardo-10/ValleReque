@@ -55,7 +55,8 @@
                         <div class="card-info">
                             <div>
                                 <span class="label">Tipo:</span>
-                                <span class="value">{% if financiamiento.tipo == 1 %}Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
+                                {% if financiamiento.tipo == 1 %}Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}
+                                <span class="value">{{ financiamiento.tipo }}</span>
                             </div>
                             <div>
                                 <span class="label">Monto:</span>

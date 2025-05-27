@@ -476,3 +476,187 @@ body {
         max-width: none;
     }
 }
+
+/* Fondo del modal */
+.modal-financiamiento {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-financiamiento.active {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Contenido del modal */
+.modal-financiamiento .modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    animation: fadeInUp 0.3s ease;
+}
+
+/* Header del modal */
+.modal-financiamiento .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 1rem;
+}
+
+.modal-financiamiento .modal-title {
+    display: flex;
+    gap: 1rem;
+    align-items: start;
+}
+
+.modal-financiamiento .modal-title h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.modal-financiamiento .modal-title p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Icono */
+.modal-financiamiento .icon-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e3f2fd;
+    color: var(--primary-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.modal-financiamiento .icon-warning {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #fff3e0;
+    color: red;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+/* Cerrar */
+.modal-financiamiento .close {
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Cuerpo del modal */
+.modal-financiamiento .modal-body {
+    margin-bottom: 1rem;
+}
+
+.modal-financiamiento.form-group {
+    margin-bottom: 1rem;
+}
+
+.modal-financiamiento .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.modal-financiamiento .form-group input,
+.modal-financiamiento .form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Footer */
+.modal-financiamiento .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Botones */
+.modal-financiamiento .btn-secondary,
+.modal-financiamiento .btn-primary {
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-financiamiento .btn-secondary {
+    background-color: #ccc;
+    color: #333;
+}
+
+.modal-financiamiento .btn-primary {
+    background-color: #2196F3;
+    color: white;
+}
+
+.modal-financiamiento .btn-secondary:hover {
+    background-color: #bbb;
+}
+
+.modal-financiamiento .btn-primary:hover {
+    background-color: #1976D2;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary-blue);
+    outline: none;
+}
+
+/* Animación */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

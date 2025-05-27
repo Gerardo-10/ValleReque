@@ -12,7 +12,7 @@
             </div>
             <div class="financiamiento-actions">
                 <button class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
-                <button class="btn btn-primary"><i class="fas fa-plus"></i> Agregar</button>
+                <button class="btn btn-primary" id="btnAgregarFinanciamiento"><i class="fas fa-plus"></i> Agregar</button>
             </div>
         </div>
 
@@ -41,7 +41,7 @@
                     <div class="card-header">
                         <input type="checkbox" class="card-checkbox">
                         <div class="card-logo">
-                            <img src="{{ url_for('static', filename=financiamiento.imagen) }}"
+                            <img src="{{ url_for('static', filename='img/' + financiamiento.imagen) }}"
                                  alt="{{ financiamiento.nombre }}">
                         </div>
                     </div>
@@ -55,7 +55,8 @@
                         <div class="card-info">
                             <div>
                                 <span class="label">Tipo:</span>
-                                <span class="value">{% if financiamiento.tipo == 1 %}Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
+                                <span class="value">{% if financiamiento.tipo == 1 %}
+                                    Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
                             </div>
                             <div>
                                 <span class="label">Monto:</span>
@@ -83,9 +84,103 @@
                 </div>
             {% endfor %}
         </div>
-
     </div>
 
+    <!-- Modal para agregar financiamiento -->
+    <div class="modal-financiamiento" id="modalAgregarFinanciamiento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div>
+                        <h2>Creando un nuevo Financiamiento</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="formAgregarFinanciamiento">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="estado" value="Activo">
+                    <div class="form-group">
+                        <label for="nombre">Nombre*</label>
+                        <input id="nombre" name="nombre" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="monto">Monto del Bono*</label>
+                        <input id="monto" name="monto" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="interes">Interés anualmente*</label>
+                        <input id="interes" name="interes" type="text" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Financiamiento*</label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="1">Estatal</option>
+                            <option value="2">Privado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_creacion">Fecha de Creación*</label>
+                        <input id="fecha_creacion" name="fecha_creacion" type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen">Foto de Referencia*</label>
+                        <input type="file" name="imagen" accept="image/png, image/jpeg" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-financiamiento-footer">Cancelar</button>
+                <button class="btn-agregar" id="btn-guardar-financiamiento">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar guardar financiamiento -->
+    <div class="modal-financiamiento" id="modalConfirmarGuardarFinanciamiento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <h2>¿Desea guardar el nuevo Financiamiento?</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
+                <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito al agregar el financiamiento-->
+    <div class="modal-financiamiento" id="modalExitoAgregar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h2>¡Se ha creado un nuevo Financiamiento!!</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay para modales -->
+    <div class="modal-overlay-financiamiento" id="modalOverlay"></div>
 
     <script src="{{ url_for('static', filename='js/financiamientos.js') }}"></script>
 {% endblock %}

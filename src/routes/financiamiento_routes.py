@@ -1,5 +1,9 @@
-from flask import Blueprint, current_app, render_template
+import os
+from datetime import datetime
+
+from flask import Blueprint, current_app, render_template, request, jsonify
 from flask_login import login_required
+from werkzeug.utils import secure_filename
 
 from src.models.ModelFinanciamiento import ModelFinanciamiento
 
@@ -12,3 +16,57 @@ def financiamientos():
     # Obtener lista de financiamientos
     financiamientos = ModelFinanciamiento.get_all(current_app.db)
     return render_template('tesoreria/financiamientos.html', financiamientos=financiamientos)
+
+
+@financiamiento_routes.route("/insertar_financiamiento", methods=["POST"])
+@login_required
+def insertar_financiamiento():
+    try:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            form = request.form
+            file = request.files['imagen']
+
+            filename = None
+            if file and file.filename != '':
+                filename = secure_filename(file.filename)
+                upload_path = os.path.join(current_app.root_path, 'static', 'img', filename)
+                file.save(upload_path)
+
+            financiamiento = {
+                "tipo": form["tipo"],
+                "nombre": form["nombre"].strip(),
+                "monto": float(form["monto"]),
+                "interes": float(form["interes"]),
+                "estado": form["estado"],
+                "fecha_creacion": datetime.strptime(form["fecha_creacion"], "%Y-%m-%d"),
+                "imagen": filename
+            }
+
+            # Insertar en la base de datos y recuperar ID
+            id_financiamiento = ModelFinanciamiento.insert(current_app.db, financiamiento)
+
+            if id_financiamiento:
+                return jsonify({
+                    "success": True,
+                    "financiamiento": {
+                        "id": id_financiamiento,
+                        "tipo": int(financiamiento["tipo"]),
+                        "nombre": financiamiento["nombre"],
+                        "monto": financiamiento["monto"],
+                        "interes": financiamiento["interes"],
+                        "estado": financiamiento["estado"],
+                        "fecha_creacion": financiamiento["fecha_creacion"].strftime("%Y-%m-%d"),
+                        "imagen": financiamiento["imagen"]
+                    }
+                }), 201
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": "No se pudo insertar el financiamiento"
+                }), 400
+
+    except Exception as e:
+        print(f"[ERROR insertar financiamiento]: {e}")
+        return {"error": str(e)}, 500
+
+    return {"error": "No se pudo insertar el financiamiento"}, 500

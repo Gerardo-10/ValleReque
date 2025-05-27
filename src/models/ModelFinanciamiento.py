@@ -37,3 +37,27 @@ class ModelFinanciamiento:
         except Exception as e:
             print(f"[ERROR get_all financiamientos]: {e}")
             return []
+
+    @classmethod
+    def insert(cls, db, financiamiento):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute(
+                "CALL sp_insertar_financiamiento(%s, %s, %s, %s, %s, %s, %s)",
+                (financiamiento['tipo'], financiamiento['nombre'], financiamiento['monto'],
+                 financiamiento['interes'], financiamiento['estado'] ,financiamiento['fecha_creacion'], financiamiento['imagen'])
+            )
+
+            while cursor.nextset():
+                if cursor.description:
+                    break
+
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            id_financiamiento = cursor.fetchone()[0]
+
+            db.connection.commit()
+            return id_financiamiento
+        except Exception as e:
+            print(f"[ERROR insert financiamiento]: {e}")
+            db.connection.rollback()
+            return None

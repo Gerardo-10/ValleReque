@@ -1,3 +1,4 @@
+{% extends 'base.html' %}
 {% block customCSS %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
@@ -277,7 +278,8 @@
                     </div>
                     <div>
                         <h2>¿Desea eliminar este terreno?</h2>
-                        <p>Esta acción no se puede deshacer. El terreno será eliminado permanentemente.</p>
+                        <p>Esta acción no se puede deshacer.</p>
+                        <p>El terreno será eliminado permanentemente.</p>
                     </div>
                 </div>
                 <span class="close" id="btn-cancelar-terreno">&times;</span>
@@ -362,6 +364,23 @@
                     </div>
                     <div>
                         <h2>¡Se ha modificado correctamente el Terreno!</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-terreno">&times;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito al eliminar el terreno-->
+    <div class="modal-terreno" id="modalExitoEliminar">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h2>¡Se ha eliminado correctamente el Terreno!</h2>
                     </div>
                 </div>
                 <span class="close" id="btn-cancelar-terreno">&times;</span>

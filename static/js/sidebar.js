@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const perfilLink = document.getElementById("perfil-link");
     const terrenosLink = document.getElementById("terrenos-link");
     const proyectosLink = document.getElementById("proyectos-link");
+    const financiamientosLink = document.getElementById("financiamientos-link");
 
     seguridadLink?.addEventListener("click", e => {
         e.preventDefault();
@@ -58,6 +59,11 @@ document.addEventListener('DOMContentLoaded', function () {
     proyectosLink?.addEventListener("click", e => {
         e.preventDefault();
         cargarVista("/proyectos", initProyectosModals);
+    });
+
+    financiamientosLink?.addEventListener("click", e => {
+        e.preventDefault();
+        cargarVista("/financiamientos", initFinanciamientosModals);
     });
 
     document.addEventListener("click", function (e) {

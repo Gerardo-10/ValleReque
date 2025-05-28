@@ -30,6 +30,7 @@ def login():
             session['user_id'] = logged_user.id_usuario
             session['username'] = logged_user.username
             login_user(logged_user, remember=remember)
+            login_user(logged_user)
 
             # Si es una petición fetch, devolver JSON
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

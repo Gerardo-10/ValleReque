@@ -8,11 +8,13 @@ def generate_verification_code(length=9):
 
 
 def send_email(recipient, code):
+    formatted_code = '-'.join([code[i:i + 3] for i in range(0, len(code), 3)])
+
     subject = 'Código de verificación - Recuperación de contraseña'
     body = f"""
     Hola,
 
-    Tu código de verificación es: {code}
+    Tu código de verificación es: {formatted_code}
 
     Este código es válido por {current_app.config['CODE_EXPIRY_MINUTES']} minutos.
 

@@ -22,8 +22,9 @@ function initFinanciamientosModals() {
     // Confirmar Guardar Financiamiento
     const modalGuardar = document.getElementById('modalConfirmarGuardarFinanciamiento');
     const btnAbrirModalGuardar = document.getElementById('btn-guardar-financiamiento');
-    const btnCancelarGuardar1 = document.querySelector("#modalGuardarFinanciamiento .close");
-    const btnCancelarGuardar2 = document.querySelector("#modalGuardarFinanciamiento .btn-secondary");
+    const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarFinanciamiento .close");
+    const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarFinanciamiento .btn-secondary");
+
     const btnConfirmarGuardar = document.getElementById('btn-confirmar-guardar-financiamiento');
 
     btnAbrirModalGuardar?.addEventListener("click", (e) => {
@@ -119,6 +120,106 @@ function initFinanciamientosModals() {
             overlay.classList.remove("active");
         }, 3000);
     }
+
+    // Mostrar el modal de confirmación para activar o desactivar el financiamiento
+    const modalEstado = document.getElementById('modalConfirmarEstadoFinanciamiento');
+    const confirmText = document.getElementById('confirmText');
+    const btnConfirmar = document.getElementById('btn-confirmar-estado');
+    const btnCerrar1 = document.getElementById('btn-cancelar-estado');
+    const btnCerrar2 = document.getElementById('btn-cancelar-financiamiento-footer');
+
+    let financiamientoId = null;
+    let nuevoEstado = null;
+
+    // Cerrar modal
+    [btnCerrar1, btnCerrar2].forEach(btn => {
+        btn?.addEventListener("click", () => {
+            modalEstado.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    });
+
+    // Clic en los botones toggle-status de cada tarjeta
+    document.querySelectorAll(".toggle-status").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const card = e.target.closest(".card");
+            financiamientoId = card.getAttribute("data-id");
+
+            const estaActivo = card.querySelector(".financiamiento-badge").classList.contains("active");
+            nuevoEstado = estaActivo ? "Inactivo" : "Activo";
+
+            // Texto de confirmación
+            confirmText.textContent = `¿Está seguro que desea ${estaActivo ? "desactivar" : "activar"} este financiamiento?`;
+
+            // Texto del botón de confirmar
+            btnConfirmar.textContent = estaActivo ? "Desactivar" : "Activar";
+
+            // Cambiar color del botón (rojo para desactivar, verde para activar)
+            btnConfirmar.classList.remove("btn-danger", "btn-success");
+            if (estaActivo) {
+                btnConfirmar.classList.add("btn-danger"); // desactivar → rojo
+            } else {
+                btnConfirmar.classList.add("btn-success"); // activar → verde
+            }
+
+            // Mostrar modal
+            modalEstado.classList.add("active");
+            overlay.classList.add("active");
+        });
+    });
+
+    // Confirmar cambio de estado
+    btnConfirmar?.addEventListener("click", async () => {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+        console.log("ID a enviar:", financiamientoId);
+        console.log("Estado a enviar:", nuevoEstado);
+        try {
+            const response = await fetch("/cambiar_estado_financiamiento", {
+                method: "POST",
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({
+                    id_financiamiento: financiamientoId,
+                    estado: nuevoEstado
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                const card = document.querySelector(`.card[data-id="${financiamientoId}"]`);
+                const badge = card.querySelector(".financiamiento-badge");
+                const btnToggle = card.querySelector(".toggle-status");
+                const modalExito = document.getElementById("modalExitoEstado");
+
+
+                // Actualiza visualmente el estado
+                badge.textContent = nuevoEstado;
+                badge.classList.toggle("active", nuevoEstado === "Activo");
+                badge.classList.toggle("inactive", nuevoEstado === "Inactivo");
+                btnToggle.innerHTML = `<i class="fas fa-power-off"></i> ${nuevoEstado === "Activo" ? "Desactivar" : "Activar"}`;
+                btnToggle.classList.remove("btn-danger", "btn-success");
+                btnToggle.classList.add(nuevoEstado === "Activo" ? "btn-danger" : "btn-success");
+
+                modalEstado.classList.remove("active");
+                overlay.classList.remove("active");
+
+                modalExito.classList.add("active");
+                setTimeout(() => {
+                    modalExito.classList.remove("active");
+                    overlay.classList.remove("active");
+                }, 2500);
+            } else {
+                alert("No se pudo cambiar el estado.");
+            }
+        } catch (error) {
+            console.error("Error en la solicitud:", error);
+        }
+    });
+
 
     // Cerrar por overlay
     overlay?.addEventListener("click", () => {

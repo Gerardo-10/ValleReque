@@ -62,15 +62,4 @@ class ModelFinanciamiento:
             db.connection.rollback()
             return None
 
-    @classmethod
-    def update_status(cls,db, financiamiento, nuevo_estado):
-        try:
-            cursor = db.connection.cursor()
-            cursor.execute("CALL sp_actualizar_estado_financiamiento(%s, %s)", (financiamiento, nuevo_estado))
-            db.connection.commit()
-            cursor.close()
-            return True
-        except Exception as ex:
-            db.connection.rollback()
-            print(f"Error al cambiar estados: {ex}")
-            return False
+    

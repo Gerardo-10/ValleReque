@@ -70,3 +70,35 @@ def insertar_financiamiento():
         return {"error": str(e)}, 500
 
     return {"error": "No se pudo insertar el financiamiento"}, 500
+
+
+@financiamiento_routes.route("/cambiar_estado_financiamiento", methods=["POST"])
+@login_required
+def cambiar_estado():
+    try:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            data = request.get_json()
+
+            id_raw = data.get("id_financiamiento")
+            if not id_raw or not str(id_raw).isdigit():
+                return jsonify({"error": "ID de financiamiento inválido"}), 400
+
+            id_financiamiento = int(id_raw)
+
+            estado = data.get("estado", "").capitalize()
+
+            if estado not in ["Activo", "Inactivo"]:
+                return jsonify({"error": "Estado inválido"}), 400
+
+            # Actualizar el estado del financiamiento en la base de datos
+            success = ModelFinanciamiento.update_status(current_app.db, id_financiamiento, estado)
+
+            if success:
+                return jsonify({"success": True}), 200
+            else:
+                return jsonify({"error": "No se pudo actualizar en BD"}), 500
+    except Exception as e:
+        print(f"[ERROR cambiar estado financiamiento]: {e}")
+        return {"error": str(e)}, 500
+
+    return {"error": "No se pudo cambiar el estado del financiamiento"}, 500

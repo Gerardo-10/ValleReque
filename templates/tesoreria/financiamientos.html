@@ -11,8 +11,8 @@
                 <h1>Financiamientos</h1>
             </div>
             <div class="financiamiento-actions">
-                <button class="btn btn-danger"><i class="fas fa-trash"></i> Eliminar</button>
-                <button class="btn btn-primary" id="btnAgregarFinanciamiento"><i class="fas fa-plus"></i> Agregar</button>
+                <button class="btn btn-primary" id="btnAgregarFinanciamiento"><i class="fas fa-plus"></i> Agregar
+                </button>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
 
         <div class="cards">
             {% for financiamiento in financiamientos %}
-                <div class="card" data-id="{{ financiamiento.id }}">
+                <div class="card" data-id="{{ financiamiento.id_financiamiento }}">
                     <div class="card-header">
                         <input type="checkbox" class="card-checkbox">
                         <div class="card-logo">
@@ -48,7 +48,7 @@
                     <div class="card-body">
                         <div class="card-title-badge">
                             <h2>{{ financiamiento.nombre }}</h2>
-                            <span class="financiamiento-badge {% if financiamiento.estado %}active{% else %}inactive{% endif %}">
+                            <span class="financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}">
                                 {% if financiamiento.estado %}Activo{% else %}Inactivo{% endif %}
                             </span>
                         </div>
@@ -73,9 +73,9 @@
                         </div>
                     </div>
                     <div class="card-footer">
-                        <button class="btn-outline btn-danger toggle-status">
-                            <i class="fas fa-power-off"></i> {% if financiamiento.activo %}Desactivar{% else %}
-                            Activar{% endif %}
+                        <button class="btn-outline {{ 'btn-danger' if financiamiento.estado == 'Activo' else 'btn-success' }} toggle-status">
+                            <i class="fas fa-power-off"></i>
+                            {{ 'Desactivar' if financiamiento.estado == 'Activo' else 'Activar' }}
                         </button>
                         <button class="btn-outline btn-info show-details">
                             <i class="fas fa-info-circle"></i> Detalles
@@ -157,7 +157,8 @@
             </div>
             <div class="modal-footer">
                 <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
-                <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar</button>
+                <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar
+                </button>
             </div>
         </div>
     </div>
@@ -172,6 +173,50 @@
                     </div>
                     <div>
                         <h2>¡Se ha creado un nuevo Financiamiento!!</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmacion para activar o desactivar financiamiento -->
+    <div class="modal-financiamiento" id="modalConfirmarEstadoFinanciamiento">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-warning">
+                        <i class="fas fa-exclamation"></i>
+                    </div>
+                    <div>
+                        <h2>Confirmar esta Acción</h2>
+                    </div>
+                </div>
+                <span class="close" id="btn-cancelar-estado">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-message">
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    <p id="confirmText">¿Está seguro que desea desactivar este financiamiento?</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="btn-cancelar-financiamiento-footer">Cancelar</button>
+                <button class="btn-cambiar-estado" id="btn-confirmar-estado">Cambiar Estado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de exito al cambiar el estado del financiamiento-->
+    <div class="modal-financiamiento" id="modalExitoEstado">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <div class="icon-circle icon-success">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h2>¡Se ha cambiado correctamente el estado del Financiamiento!</h2>
                     </div>
                 </div>
                 <span class="close" id="btn-cancelar-financiamiento">&times;</span>

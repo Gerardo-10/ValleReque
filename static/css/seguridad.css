@@ -589,3 +589,23 @@ tbody tr:hover {
         width: 100%;
     }
 }
+
+.paginacion {
+    text-align: center;
+    margin: 10px;
+}
+
+.paginacion button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.paginacion button.activo {
+    background-color: #0056b3;
+    font-weight: bold;
+}

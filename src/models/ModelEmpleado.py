@@ -1,3 +1,4 @@
+import MySQLdb
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from src.models.entities.Empleado import Empleado
@@ -101,11 +102,17 @@ class ModelEmpleado:
                 db.connection.commit()
                 return True, "Empleado creado con éxito", empleado
 
+        except MySQLdb.OperationalError as e:
+            # Extraer el mensaje lanzado por SIGNAL SQLSTATE
+            error_msg = str(e.args[1])
+            if "Error:" in error_msg:
+                mensaje_limpio = error_msg.split("Error:")[1].strip(" '\"")
+            else:
+                mensaje_limpio = "Ocurrió un error inesperado al registrar el empleado."
+            return False, mensaje_limpio, None
+
         except Exception as e:
-            print(f"[ERROR AL INSERTAR EMPLEADO]: {e}")
-            import traceback
-            traceback.print_exc()
-            return False, str(e), None
+            return False, "Error interno del servidor: " + str(e), None
 
     @classmethod
     def update(cls, db, id_empleado, data):

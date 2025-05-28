@@ -40,6 +40,9 @@
                         <option value="inactivos">Inactivos</option>
                     </select>
                 </div>
+                <button class="btn-eliminar">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
             </div>
 
             <!-- Tabla de empleados -->

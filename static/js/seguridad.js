@@ -79,11 +79,14 @@ window.initSecurityModals = function () {
             }
         })
             .then(async res => {
+                const data = await res.json(); // intentamos parsear JSON, incluso si res.ok es false
+
                 if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`Error HTTP ${res.status}: ${errorText}`);
+                    // Lanzamos el mensaje del backend directamente
+                    throw new Error(data.message);
+
                 }
-                return res.json();
+                return data;
             })
             .then(data => {
                 if (data.success) {
@@ -111,14 +114,46 @@ window.initSecurityModals = function () {
                     cerrarModal(modalAgregarEmpleado);
                     mostrarExito('Empleado agregado', data.message);
                     this.reset();
+                    paginarTabla();
                 } else {
-                    alert('Error: ' + data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en el registro',
+                        text: data.message,
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#d33'
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error al enviar formulario:', error);
-                alert('Error inesperado al enviar el formulario: ' + error.message);
+                let mensajeRaw = error.message;
+                let mensajeUsuario;
+                let mensajeLower = mensajeRaw.toLowerCase();
+
+                if (mensajeLower.includes("dni") && mensajeLower.includes("registrado")) {
+                    mensajeUsuario = "El DNI ingresado ya está registrado.";
+                } else if (mensajeLower.includes("teléfono") && mensajeLower.includes("registrado")) {
+                    mensajeUsuario = "El número de teléfono ya está registrado.";
+                } else if (mensajeLower.includes("correo") && mensajeLower.includes("registrado")) {
+                    mensajeUsuario = "El correo electrónico ya se encuentra en uso.";
+                } else if (mensajeLower.includes("nombre_usuario") && mensajeLower.includes("duplicate")) {
+                    mensajeUsuario = "Ya existe un nombre de usuario generado automáticamente con este nombre y apellido. Por favor, modifique ligeramente alguno de ellos.";
+                } else if (mensajeLower.includes("campos incompletos") || mensajeLower.includes("formulario incompleto")) {
+                    mensajeUsuario = "Por favor, complete todos los campos requeridos correctamente.";
+                } else {
+                    mensajeUsuario = mensajeRaw;  // Muestra el mensaje original si no entra a ningún caso
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error al registrar empleado',
+                    text: mensajeUsuario,
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#d33'
+                });
             });
+
     });
 
     // Esto debería estar fuera del addEventListener, preferiblemente al cargar la página
@@ -256,7 +291,8 @@ window.initSecurityModals = function () {
 
         filas.forEach(fila => {
             const estadoEmpleado = fila.getAttribute('data-estado');
-            const coincideEstado = estadoEmpleado === filtroEstado;
+            // Permitir mostrar todos si filtroEstado es vacío o 'todos'
+            const coincideEstado = (filtroEstado === '' || filtroEstado === 'todos') ? true : (estadoEmpleado === filtroEstado);
 
             if (!coincideEstado) {
                 fila.style.display = 'none';
@@ -276,5 +312,52 @@ window.initSecurityModals = function () {
 
             fila.style.display = mostrar ? '' : 'none';
         });
+
+        paginarTabla(); // Actualiza la paginación al filtrar
     }
+
+
+    // Paginación en la tabla de empleados
+    let filasPorPagina = 10;
+    let paginaActual = 1;
+
+    function paginarTabla() {
+        const filas = Array.from(document.querySelectorAll('#tabla_empleados_body tr'))
+            .filter(fila => fila.style.display !== 'none');
+        const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+        const paginacion = document.getElementById('paginacion');
+
+        function mostrarPagina(pagina) {
+            paginaActual = pagina;
+            const inicio = (pagina - 1) * filasPorPagina;
+            const fin = inicio + filasPorPagina;
+
+            // Primero ocultamos todas las filas
+            document.querySelectorAll('#tabla_empleados_body tr').forEach(fila => fila.style.display = 'none');
+
+            // Mostramos sólo las filas visibles en el filtro correspondientes a la página
+            filas.forEach((fila, i) => {
+                if (i >= inicio && i < fin) {
+                    fila.style.display = '';
+                }
+            });
+
+            paginacion.innerHTML = '';
+            for (let i = 1; i <= totalPaginas; i++) {
+                const boton = document.createElement('button');
+                boton.textContent = i;
+                if (i === pagina) boton.classList.add('activo');
+                boton.addEventListener('click', () => mostrarPagina(i));
+                paginacion.appendChild(boton);
+            }
+        }
+
+        if (totalPaginas > 0) {
+            mostrarPagina(paginaActual);
+        } else {
+            paginacion.innerHTML = ''; // No mostrar paginación si no hay filas
+        }
+    }
+
+    paginarTabla();
 };

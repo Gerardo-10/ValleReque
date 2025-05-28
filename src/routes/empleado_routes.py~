@@ -13,7 +13,11 @@ empleado_routes = Blueprint('empleado_routes', __name__)
 @login_required
 def seguridad():
     empleados = ModelEmpleado.get_all(current_app.db)
-    return render_template('seguridad.html', empleados=empleados)
+    fecha_hoy = datetime.today()
+
+    # Calcular la fecha límite (hace 18 años)
+    fecha_hace_18_anios = fecha_hoy.replace(year=fecha_hoy.year - 18).strftime('%Y-%m-%d')
+    return render_template('seguridad.html', empleados=empleados, fecha_hace_18_anios=fecha_hace_18_anios)
 
 
 @empleado_routes.route('/perfil')
@@ -73,7 +77,7 @@ def insertar_empleado():
             return jsonify({'success': False, 'message': 'Esta ruta solo acepta peticiones AJAX'}), 405
     except Exception as e:
         # Mejorar mensaje de error capturando el traceback opcionalmente
-        return jsonify({'success': False, 'message': f'Error inesperado: {str(e)}'}), 500
+        return jsonify({'success': False, 'message': str(e)}), 400
 
 
 @empleado_routes.route('/cambiar_estado_empleados', methods=['POST'])

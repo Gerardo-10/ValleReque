@@ -473,3 +473,11 @@ class PasswordRecovery {
 }
 
 const passwordRecovery = new PasswordRecovery()
+
+document.addEventListener("DOMContentLoaded", () => {
+    const savedUsername = localStorage.getItem("rememberedUsername");
+    if (savedUsername) {
+        document.getElementById("username").value = savedUsername;
+        document.getElementById("remember").checked = true;
+    }
+});

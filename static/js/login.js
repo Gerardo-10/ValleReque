@@ -189,7 +189,7 @@ class PasswordRecovery {
             }
         } catch (error) {
             console.error("Error enviando código:", error)
-            this.showNotification("Error, ingrese un correo electrónico válido.", "error")
+            this.showNotification("El correo ingresado no forma parte de la base de datos de la empresa", "error")
         }
     }
 

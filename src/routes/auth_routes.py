@@ -7,6 +7,7 @@ from flask_login import login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash
 
 from src.models.ModelUser import ModelUser
+from src.models.entities.User import User
 from src.utils.email_utils import generate_verification_code, send_email
 
 auth_routes = Blueprint('auth_routes', __name__)
@@ -24,19 +25,23 @@ def login():
         password = request.form['password']
         remember = request.form.get('remember') == 'true'
 
-        logged_user = ModelUser.login(current_app.db, username, password)
+        result = ModelUser.login(current_app.db, username, password)
 
-        if logged_user:
+        if result is not None:
+            logged_user, password_hash = result
+
+            # Usa logged_user normalmente
             session['user_id'] = logged_user.id_usuario
             session['username'] = logged_user.username
             login_user(logged_user, remember=remember)
 
             # Si es una petición fetch, devolver JSON
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                if User.check_password(password_hash, "123456"):
+                    return jsonify(success=True, cambiar_password=True)
                 return jsonify(success=True, redirect_url=url_for('home_routes.sidebar'))
             else:
                 return redirect(url_for('home_routes.sidebar'))
-
         else:
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return jsonify(success=False, message="Credenciales Incorrectas"), 200

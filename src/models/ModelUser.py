@@ -15,7 +15,8 @@ class ModelUser:
                     return None
                 if User.check_password(password_hash, password):
                     print("[DEBUG] Contraseña correcta")
-                    return User(id_usuario=id_usuario, nombre_usuario=nombre_usuario)
+                    user = User(id_usuario=id_usuario, nombre_usuario=nombre_usuario)
+                    return user, password_hash
                 else:
                     print("[DEBUG] Contraseña incorrecta")
             else:

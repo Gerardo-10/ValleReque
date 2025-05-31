@@ -123,6 +123,17 @@ class PasswordRecovery {
             e.preventDefault()
             this.handleLogin()
         })
+        document.getElementById("formCambiarPassword").addEventListener("submit", (e) => {
+            e.preventDefault();
+            this.handlePasswordUpdate()
+        })
+        document.querySelectorAll('[data-close-modal]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modalId = btn.getAttribute('data-close-modal');
+                document.getElementById(modalId).style.display = 'none';
+            });
+        });
+
     }
 
     openEmailModal() {
@@ -406,12 +417,10 @@ class PasswordRecovery {
     async handleLogin() {
         const username = document.getElementById("username").value.trim()
         const password = document.getElementById("password").value
-
         if (!username || !password) {
             this.showNotification("Ingresa usuario y contraseña", "error")
             return
         }
-
         try {
             const csrfToken = document.querySelector('input[name="csrf_token"]').value;
             this.showNotification("Iniciando sesión...", "info", 1500)
@@ -421,7 +430,6 @@ class PasswordRecovery {
             formData.append('username', username);
             formData.append('password', password);
             formData.append('remember', remember);
-
             if (remember) {
                 localStorage.setItem("rememberedUsername", username);
             } else {
@@ -436,20 +444,83 @@ class PasswordRecovery {
                 },
                 body: formData,
                 credentials: "include",
-            })
-
+            });
 
             const data = await response.json();
 
             if (data.success) {
                 this.showSuccess("Inicio de sesión exitoso");
-                window.location.href = data.redirect_url;
+
+                if (data.cambiar_password) {
+                    setTimeout(() => {
+                        const modal = document.getElementById("modalCambiarPassword");
+                        if (modal) {
+                            modal.style.display = "block";
+                        }
+                    }, 500);
+                } else if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                }
             } else {
                 this.showError(data.message || "Usuario o contraseña incorrectos");
             }
         } catch (error) {
             console.error("Error en login:", error)
             this.showNotification("Error de conexión", "error")
+        }
+    }
+
+    async handlePasswordUpdate() {
+        const actual = document.getElementById("passwordActual").value;
+        const nueva = document.getElementById("passwordNueva").value;
+        const confirmar = document.getElementById("passwordConfirmar").value;
+
+        if (!actual || !nueva || !confirmar) {
+            this.showError("Completa todos los campos");
+            return;
+        }
+
+        if (nueva !== confirmar) {
+            this.showError("Las contraseñas no coinciden");
+            return;
+        }
+
+        const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+        if (!regex.test(nueva)) {
+            this.showError("La nueva contraseña debe tener mínimo 8 caracteres, una mayúscula, un número y un símbolo");
+            return;
+        }
+
+        try {
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+            const response = await fetch("/actualizar_contrasena_inicial", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+                body: JSON.stringify({
+                    password_actual: actual,
+                    password_nueva: nueva,
+                    password_confirmar: confirmar
+                }),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                this.showSuccess("Contraseña actualizada correctamente");
+                setTimeout(() => {
+                    document.getElementById("modalCambiarPassword").style.display = "none";
+                    window.location.href = "/sidebar";
+                }, 1500);
+            } else {
+                this.showError(data.message || "Error al actualizar contraseña");
+            }
+        } catch (error) {
+            console.error("Error al actualizar contraseña:", error);
+            this.showNotification("Error del servidor", "error");
         }
     }
 
@@ -481,3 +552,4 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("remember").checked = true;
     }
 });
+

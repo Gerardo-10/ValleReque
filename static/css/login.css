@@ -431,3 +431,54 @@ h2 {
         height: 100px;
     }
 }
+
+/* Inputs dentro del modal */
+.modal-body input[type="password"],
+.modal-body input[type="text"],
+.modal-body input[type="email"] {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1rem;
+  border: 1.5px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Cambiar borde y sombra al enfocar */
+.modal-body input[type="password"]:focus,
+.modal-body input[type="text"]:focus,
+.modal-body input[type="email"]:focus {
+  border-color: #4CAF50; /* verde */
+  box-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+}
+
+/* Para el contenedor del input con botón ojo */
+.input-password {
+  display: flex;
+  align-items: center;
+}
+
+.input-password input {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none;
+}
+
+.input-password button.toggle-password {
+  background-color: #4CAF50;
+  border: none;
+  padding: 10px 14px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.input-password button.toggle-password:hover {
+  background-color: #388E3C;
+}

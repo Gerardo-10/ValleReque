@@ -5,10 +5,11 @@
 {% block body %}
     <div class="container">
         <div class="contenedor-principal">
+            <!-- Cabecera con título -->
             <header class="header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <i class="fas fa-user-friends"></i>
+                        <i class="fas fa-user-friends"></i> <!-- Icono de múltiples clientes -->
                     </div>
                     <h1>Clientes</h1><br>
                 </div>
@@ -90,6 +91,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <div id="paginacion" class="paginacion"></div>
             </div>
 
             <!-- Botones de acción -->
@@ -97,9 +99,6 @@
                 <button class="btn-cambiar-estado" id="btnCambiarEstado">Cambiar Estado</button>
                 <button class="btn-agregar" id="btnAgregar">Agregar</button>
             </div>
-            <button id="agregar" class="btn-primary">
-                <i class="fas fa-plus"></i> Agregar
-            </button>
         </div>
     </div>
 
@@ -165,26 +164,29 @@
                         <div class="form-grupo">
                             <label for="nombreCliente">Nombres*</label>
                             <input type="text" id="nombreCliente" name="nombre" placeholder="Ingrese nombres" required
-                                   pattern="[A-Za-zÁÉÍÓÚÑáéíóú\s]{3,100}" title="Solo letras, mínimo 3 caracteres"
+                                   pattern="^[A-Za-zÁÉÍÓÚÑáéíóú\s]{3,100}$" title="Solo letras, mínimo 3 caracteres"
                                    minlength="3" maxlength="100">
                         </div>
                         <div class="form-grupo">
                             <label for="apellidoCliente">Apellidos*</label>
                             <input type="text" id="apellidoCliente" name="apellido" placeholder="Ingrese apellidos"
-                                   required pattern="[A-Za-zÁÉÍÓÚÑáéíóú\s]{3,100}"
-                                   title="Solo letras, mínimo 3 caracteres" minlength="3" maxlength="100">
+                                   required
+                                   pattern="^[A-Za-zÁÉÍÓÚÑáéíóú\s]{3,100}$"
+                                   title="Debe ingresar solo letras y al menos dos apellidos" minlength="3"
+                                   maxlength="100">
                         </div>
                     </div>
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="dniCliente">DNI*</label>
                             <input type="text" id="dniCliente" name="dni" placeholder="Ingrese DNI" required
-                                   pattern="\d{8}" title="Debe contener exactamente 8 dígitos" maxlength="8">
+                                   pattern="^\d{8}$" title="Debe contener exactamente 8 dígitos numéricos"
+                                   maxlength="8">
                         </div>
                         <div class="form-grupo">
                             <label for="telefonoCliente">Teléfono*</label>
                             <input type="tel" id="telefonoCliente" name="telefono" placeholder="987654321" required
-                                   pattern="\d{9}" title="Debe contener 9 dígitos numéricos" maxlength="9">
+                                   pattern="^9\d{8}$" title="Debe iniciar con 9 y contener 9 dígitos" maxlength="9">
                         </div>
                     </div>
                     <div class="form-fila">
@@ -206,7 +208,7 @@
                         <label for="correoElectronicoCliente">Correo Electronico*</label>
                         <input type="email" id="correoElectronicoCliente" name="correo"
                                placeholder="Ingrese dirección" required maxlength="100"
-                               pattern="[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
+                               pattern="^[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
                                title="Debe ser un correo válido de Gmail o Hotmail, ej: usuario@gmail.com">
                     </div>
                     <div class="form-grupo">

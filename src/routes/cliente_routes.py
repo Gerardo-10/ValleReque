@@ -3,6 +3,8 @@ from flask_login import login_required
 import json
 import logging
 
+from MySQLdb._exceptions import IntegrityError
+
 from src.models.ModelCliente import ModelCliente
 
 cliente_routes = Blueprint('cliente_routes', __name__)
@@ -47,8 +49,24 @@ def insertar_cliente():
             flash('Esta ruta solo acepta peticiones AJAX', 'danger')
             return redirect(url_for('cliente_routes.clientes'))
 
+    except IntegrityError as e:
+        current_app.db.connection.rollback()
+        error_str = str(e)
+
+        if 'cliente.dni' in error_str:
+            mensaje = 'El DNI ingresado ya está registrado.'
+        elif 'cliente.telefono' in error_str:
+            mensaje = 'El número de teléfono ya está registrado.'
+        elif 'cliente.correo' in error_str:
+            mensaje = 'El correo electrónico ya está en uso.'
+        else:
+            mensaje = 'Error de integridad en la base de datos.'
+
+        return jsonify({'success': False, 'message': mensaje}), 400
+
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)}), 500
+        logging.error(f"Error al insertar cliente: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 
 @cliente_routes.route('/eliminar_clientes', methods=['POST'])

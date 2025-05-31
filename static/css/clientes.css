@@ -4,9 +4,9 @@
     --color-no-disponible: #f44336;
     --color-sin-evaluar: #ff9800;
     --color-por-evaluar: #ff9800;
-    --sombra-sm: 0 2px 4px rgba(0,0,0,0.05);
-    --sombra-md: 0 4px 8px rgba(0,0,0,0.1);
-    --sombra-lg: 0 8px 16px rgba(0,0,0,0.15);
+    --sombra-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --sombra-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --sombra-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
     --radio-sm: 4px;
     --radio-md: 8px;
     --radio-lg: 12px;
@@ -565,6 +565,26 @@ tbody tr:hover {
 
 .modal-exito .modal-cuerpo {
     text-align: center;
+}
+
+.paginacion {
+    text-align: center;
+    margin: 10px;
+}
+
+.paginacion button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.paginacion button.activo {
+    background-color: #0056b3;
+    font-weight: bold;
 }
 
 /* Responsive */

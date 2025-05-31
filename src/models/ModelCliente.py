@@ -1,5 +1,7 @@
 import json
 
+from flask import current_app
+
 from src.models.entities.Cliente import Cliente
 
 
@@ -69,7 +71,8 @@ class ModelCliente:
             return {**data, 'id_cliente': id_cliente}
         except Exception as e:
             print(f"[ERROR insert]: {e}")
-            return False
+            current_app.db.connection.rollback()
+            raise e
 
     @classmethod
     def update(cls, db, id_cliente, data):

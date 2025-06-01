@@ -301,5 +301,50 @@ window.initClientesModals = function () {
             }
             fila.style.display = mostrar ? '' : 'none';
         });
+        paginarTabla();
     }
+
+    // Paginación en la tabla de clientes
+    let filasPorPagina = 10;
+    let paginaActual = 1;
+
+    function paginarTabla() {
+        const filas = Array.from(document.querySelectorAll('#tabla_clientes_body tr'))
+            .filter(fila => fila.style.display !== 'none');
+        const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+        const paginacion = document.getElementById('paginacion');
+
+        function mostrarPagina(pagina) {
+            paginaActual = pagina;
+            const inicio = (pagina - 1) * filasPorPagina;
+            const fin = inicio + filasPorPagina;
+
+            // Primero ocultamos todas las filas
+            document.querySelectorAll('#tabla_clientes_body tr').forEach(fila => fila.style.display = 'none');
+
+            // Mostramos sólo las filas visibles en el filtro correspondientes a la página
+            filas.forEach((fila, i) => {
+                if (i >= inicio && i < fin) {
+                    fila.style.display = '';
+                }
+            });
+
+            paginacion.innerHTML = '';
+            for (let i = 1; i <= totalPaginas; i++) {
+                const boton = document.createElement('button');
+                boton.textContent = i;
+                if (i === pagina) boton.classList.add('activo');
+                boton.addEventListener('click', () => mostrarPagina(i));
+                paginacion.appendChild(boton);
+            }
+        }
+
+        if (totalPaginas > 0) {
+            mostrarPagina(paginaActual);
+        } else {
+            paginacion.innerHTML = ''; // No mostrar paginación si no hay filas
+        }
+    }
+
+    paginarTabla();
 };

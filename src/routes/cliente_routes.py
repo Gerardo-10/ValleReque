@@ -53,11 +53,11 @@ def insertar_cliente():
         current_app.db.connection.rollback()
         error_str = str(e)
 
-        if 'cliente.dni' in error_str:
+        if 'documento_identidad' in error_str:
             mensaje = 'El DNI ingresado ya está registrado.'
-        elif 'cliente.telefono' in error_str:
+        elif 'telefono' in error_str:
             mensaje = 'El número de teléfono ya está registrado.'
-        elif 'cliente.correo' in error_str:
+        elif 'correo' in error_str:
             mensaje = 'El correo electrónico ya está en uso.'
         else:
             mensaje = 'Error de integridad en la base de datos.'

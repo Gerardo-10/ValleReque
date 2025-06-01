@@ -173,7 +173,11 @@ window.initSecurityModals = function () {
     btnConfirmarEstado.addEventListener('click', function () {
         // Verificar si se ha seleccionado un estado
         if (!estadoSeleccionado) {
-            alert('Por favor, seleccione un estado');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione un estado'
+            });
             return;
         }
 
@@ -322,7 +326,8 @@ window.initSecurityModals = function () {
     let paginaActual = 1;
 
     function paginarTabla() {
-        const filas = Array.from(document.querySelectorAll('#tabla_empleados_body tr'));
+        const filas = Array.from(document.querySelectorAll('#tabla_empleados_body tr'))
+            .filter(fila => fila.style.display !== 'none');
         const totalPaginas = Math.ceil(filas.length / filasPorPagina);
         const paginacion = document.getElementById('paginacion');
 
@@ -331,23 +336,32 @@ window.initSecurityModals = function () {
             const inicio = (pagina - 1) * filasPorPagina;
             const fin = inicio + filasPorPagina;
 
+            // Primero ocultamos todas las filas
+            document.querySelectorAll('#tabla_empleados_body tr').forEach(fila => fila.style.display = 'none');
+
+            // Mostramos sólo las filas visibles en el filtro correspondientes a la página
             filas.forEach((fila, i) => {
-                fila.style.display = (i >= inicio && i < fin) ? '' : 'none';
+                if (i >= inicio && i < fin) {
+                    fila.style.display = '';
+                }
             });
 
             paginacion.innerHTML = '';
             for (let i = 1; i <= totalPaginas; i++) {
                 const boton = document.createElement('button');
                 boton.textContent = i;
-                if (i === pagina) {
-                    boton.classList.add('activo');
-                }
+                if (i === pagina) boton.classList.add('activo');
                 boton.addEventListener('click', () => mostrarPagina(i));
                 paginacion.appendChild(boton);
             }
         }
 
-        mostrarPagina(paginaActual);
+        if (totalPaginas > 0) {
+            mostrarPagina(paginaActual);
+        } else {
+            paginacion.innerHTML = ''; // No mostrar paginación si no hay filas
+        }
     }
+
     paginarTabla();
 };

@@ -74,6 +74,48 @@ window.initClientesModals = function () {
 
     formAgregarCliente.addEventListener('submit', function (e) {
         e.preventDefault();
+        const nombre = document.getElementById('nombreCliente').value.trim();
+        const apellido = document.getElementById('apellidoCliente').value.trim();
+        const dni = document.getElementById('dniCliente').value.trim();
+        const telefono = document.getElementById('telefonoCliente').value.trim();
+        const correo = document.getElementById('correoElectronicoCliente').value.trim();
+
+        const soloLetrasRegex = /^[A-Za-zÁÉÍÓÚÑáéíóú\s]{3,100}$/;
+        const dosApellidosRegex = /^[A-Za-zÁÉÍÓÚÑáéíóú]+\s+[A-Za-zÁÉÍÓÚÑáéíóú]+$/;
+        const dniRegex = /^\d{8}$/;
+        const telefonoRegex = /^9\d{8}$/;
+        const correoRegex = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$/;
+
+        if (!soloLetrasRegex.test(nombre)) {
+            Swal.fire('Nombre inválido', 'El nombre solo debe contener letras y espacios, mínimo 3 caracteres.', 'warning');
+            return;
+        }
+
+        if (!soloLetrasRegex.test(apellido)) {
+            Swal.fire('Apellido inválido', 'El apellido solo debe contener letras y espacios, mínimo 3 caracteres.', 'warning');
+            return;
+        }
+
+        if (!dosApellidosRegex.test(apellido)) {
+            Swal.fire('Apellido incompleto', 'Debe ingresar exactamente dos apellidos separados por un espacio.', 'warning');
+            return;
+        }
+
+        if (!dniRegex.test(dni)) {
+            Swal.fire('DNI inválido', 'El DNI debe contener exactamente 8 dígitos numéricos.', 'warning');
+            return;
+        }
+
+        if (!telefonoRegex.test(telefono)) {
+            Swal.fire('Teléfono inválido', 'El teléfono debe contener 9 dígitos y comenzar con 9.', 'warning');
+            return;
+        }
+
+        if (!correoRegex.test(correo)) {
+            Swal.fire('Correo inválido', 'El correo debe ser @gmail.com o @hotmail.com.', 'warning');
+            return;
+        }
+
         const formData = new FormData(this);
 
         fetch(this.action, {
@@ -85,11 +127,11 @@ window.initClientesModals = function () {
             }
         })
             .then(async res => {
+                const data = await res.json(); // Siempre intenta parsear como JSON
                 if (!res.ok) {
-                    const errorText = await res.text();
-                    throw new Error(`Error HTTP ${res.status}: ${errorText}`);
+                    throw new Error(data.message || `Error HTTP ${res.status}`);
                 }
-                return res.json();
+                return data;
             })
             .then(data => {
                 if (data.success) {
@@ -123,18 +165,30 @@ window.initClientesModals = function () {
                     this.reset();
                     actualizarClientesSeleccionados();
                 } else {
-                    alert('Error: ' + data.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: data.message
+                    });
                 }
             })
             .catch(error => {
                 console.error('Error al enviar formulario:', error);
-                alert('Error inesperado al enviar el formulario: ' + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: error.message
+                });
             });
     });
 
     btnEliminar.addEventListener('click', () => {
         if (obtenerClientesSeleccionados().length === 0) {
-            alert('Por favor, seleccione al menos un cliente');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione al menos un cliente'
+            });
             return;
         }
         abrirModal(modalEliminarCliente);
@@ -145,7 +199,11 @@ window.initClientesModals = function () {
     btnConfirmarEliminar.addEventListener('click', () => {
         const clientesSeleccionados = obtenerClientesSeleccionados();
         if (clientesSeleccionados.length === 0) {
-            alert('No hay clientes seleccionados');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'No hay clientes seleccionados'
+            });
             return;
         }
 
@@ -176,7 +234,11 @@ window.initClientesModals = function () {
             })
             .catch(error => {
                 console.error('Error al eliminar clientes:', error);
-                alert('Error inesperado al eliminar clientes');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: 'Ocurrió un problema al eliminar los clientes'
+                });
             });
     });
 
@@ -185,13 +247,21 @@ window.initClientesModals = function () {
 
         // Verificar que se ha seleccionado un estado
         if (!estadoSeleccionado) {
-            alert('Por favor, seleccione un estado');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione un estado'
+            });
             return;
         }
 
         // Verificar que se ha seleccionado al menos un cliente
         if (clientesSeleccionados.length === 0) {
-            alert('Por favor, seleccione al menos un cliente');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione al menos un cliente'
+            });
             return;
         }
 
@@ -247,7 +317,11 @@ window.initClientesModals = function () {
             .catch(error => {
                 // Manejo de errores inesperados
                 console.error('Error al actualizar estado:', error);
-                alert('Error inesperado al actualizar estado');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: 'Ocurrió un problema al actualizar el estado'
+                });
             });
     });
 

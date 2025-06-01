@@ -38,3 +38,5 @@
 2025-05-13 01:04:08,256 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: User.__init__() missing 1 required positional argument: 'nombre_usuario'
 2025-05-13 01:04:12,720 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: User.__init__() missing 1 required positional argument: 'nombre_usuario'
 2025-05-13 01:04:17,313 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: User.__init__() missing 1 required positional argument: 'nombre_usuario'
+2025-05-31 23:19:52,061 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-05-31 23:19:52,993 - INFO - appLogger - Aplicación iniciada en modo desarrollo

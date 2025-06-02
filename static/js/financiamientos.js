@@ -8,6 +8,7 @@ window.initFinanciamientosModals = function () {
     const btnCancelarAgregar2 = document.querySelector("#modalAgregarFinanciamiento .btn-secondary");
 
     btnAgregarFinanciamiento?.addEventListener("click", () => {
+        limpiarMensaje();
         modalAgregar.classList.add("active");
         overlay.classList.add("active");
         document.body.style.overflow = 'hidden';
@@ -18,10 +19,30 @@ window.initFinanciamientosModals = function () {
             modalAgregar.classList.remove("active");
             overlay.classList.remove("active");
             document.body.style.overflow = '';
+            limpiarMensaje();
+            document.getElementById("formAgregarFinanciamiento").reset();
         });
     });
 
-    // Guardar nuevo financiamiento
+    // Funciones para mostrar y limpiar mensajes dentro del modal
+    function mostrarMensaje(texto, tipo = 'error') {
+        let mensaje = modalAgregar.querySelector('.alert');
+        if (!mensaje) {
+            mensaje = document.createElement('div');
+            mensaje.classList.add('alert');
+            modalAgregar.querySelector('.modal-body').appendChild(mensaje);
+        }
+        mensaje.textContent = texto;
+        mensaje.className = 'alert'; // reset clases
+        if (tipo === 'error') mensaje.classList.add('alert-error');
+        else if (tipo === 'success') mensaje.classList.add('alert-success');
+    }
+    function limpiarMensaje() {
+        const mensaje = modalAgregar.querySelector('.alert');
+        if (mensaje) mensaje.remove();
+    }
+
+    // Guardar nuevo financiamiento con validación previa
     const modalGuardar = document.getElementById('modalConfirmarGuardarFinanciamiento');
     const btnAbrirModalGuardar = document.getElementById('btn-guardar-financiamiento');
     const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarFinanciamiento .close");
@@ -30,6 +51,30 @@ window.initFinanciamientosModals = function () {
 
     btnAbrirModalGuardar?.addEventListener("click", (e) => {
         e.preventDefault();
+        limpiarMensaje();
+
+        const form = document.getElementById("formAgregarFinanciamiento");
+        const nombre = form.nombre.value.trim();
+        const monto = form.monto.value.trim();
+        const interes = form.interes.value.trim();
+
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
+            mostrarMensaje('El nombre solo debe contener letras y espacios.');
+            form.nombre.focus();
+            return;
+        }
+        if (!/^\d{1,3}(,\d{3})*(\.\d{1,2})?$/.test(monto) && !/^\d+(\.\d{1,2})?$/.test(monto)) {
+            mostrarMensaje('El monto debe ser un número válido');
+            form.monto.focus();
+            return;
+        }
+        if (!/^\d+(\.\d+)?$/.test(interes)) {
+            mostrarMensaje('El interés debe ser un número decimal válido');
+            form.interes.focus();
+            return;
+        }
+
+        // Si pasa validación, abrir modal de confirmación
         modalGuardar.classList.add("active");
         overlay.classList.add("active");
         document.body.style.overflow = 'hidden';

@@ -54,15 +54,16 @@ body {
 
 /* Buttons */
 .btn {
-    padding: 8px 16px;
-    border-radius: 4px;
+    padding: 10px 20px;
+    border-radius: 6px;
     border: none;
     cursor: pointer;
     display: flex;
     align-items: center;
     gap: 8px;
     font-weight: 500;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+    font-size: 1rem;
 }
 
 .btn-primary {
@@ -71,7 +72,7 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: #1976D2;
+    background-color: #218838;
 }
 
 .btn-secondary {
@@ -86,39 +87,33 @@ body {
 .btn-outline {
     background-color: transparent;
     border: 1px solid;
-    padding: 7px 15px;
-    border-radius: 4px;
+    padding: 8px 18px;
+    border-radius: 6px;
     cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
-.btn-info {
+.btn-outline.btn-info {
     color: var(--info);
     border-color: var(--info);
+    background-color: transparent;
 }
 
-.btn-info:hover {
-    background-color: rgba(3, 169, 244, 0.1);
-}
-
-.btn-danger {
+.btn-outline.btn-info:hover {
+    background-color: rgba(3, 169, 244, 0.15);
     color: white;
-    border-color: var(--danger);
-}
-
-.btn-danger:hover {
-    background-color: #d32f2f;
 }
 
 .btn-outline.btn-danger {
-    color: var(--danger); /* texto rojo */
-    background-color: transparent; /* sin fondo */
+    color: var(--danger);
     border-color: var(--danger);
+    background-color: transparent;
 }
 
 .btn-outline.btn-danger:hover {
-    background-color: rgba(244, 67, 54, 0.1);
+    background-color: rgba(244, 67, 54, 0.15);
+    color: white;
 }
 
 .btn-outline.btn-success {
@@ -128,7 +123,18 @@ body {
 }
 
 .btn-outline.btn-success:hover {
-    background-color: rgba(76, 175, 80, 0.1); /* verde clarito */
+    background-color: rgba(76, 175, 80, 0.15);
+    color: white;
+}
+
+/* Iconos dentro de botones */
+.btn i {
+    font-size: 1.2rem;
+}
+
+/* Cursor pointer para todos los botones */
+button {
+    cursor: pointer;
 }
 
 /* Filters */
@@ -188,11 +194,13 @@ body {
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 .card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .card-header {
@@ -219,6 +227,7 @@ body {
 
 .card-body {
     padding: 15px 15px;
+    flex-grow: 1;
 }
 
 .card-body h2 {
@@ -259,12 +268,14 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+    font-size: 14px;
 }
 
 .label {
     font-size: 12px;
     color: var(--gray-600);
     display: block;
+    font-weight: 600;
 }
 
 .value {
@@ -281,6 +292,15 @@ body {
     display: flex;
     justify-content: space-between;
     border-top: 1px solid var(--gray-200);
+    gap: 10px;
+}
+
+.card-footer button {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
 }
 
 /* Modal */
@@ -462,260 +482,143 @@ body {
 }
 
 /* Responsive */
+
+/* Header y filtros se vuelven columnas en pantallas medianas */
 @media (max-width: 768px) {
-    header, .filters {
+    .financiamiento-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
     }
 
-    .actions, .filter-selects {
-        margin-top: 10px;
+    .financiamiento-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .financiamiento-actions button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .financiamiento-filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+    }
+
+    .financiamiento-search-box {
+        max-width: 100%;
+    }
+
+    .financiamiento-filter-selects {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .financiamiento-filter-selects select {
+        width: 100%;
+    }
+}
+
+/* Cards y botones en móviles pequeños */
+@media (max-width: 480px) {
+    .card-info {
+        grid-template-columns: 1fr;
+    }
+
+    .card-footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .card-footer button {
         width: 100%;
     }
 
-    .filter-selects select {
-        flex: 1;
+    .card-logo {
+        width: 80px;
+        height: 80px;
     }
 
-    .search-box {
-        width: 100%;
-        max-width: none;
+    .card-body h2 {
+        font-size: 1.1rem;
+    }
+}
+
+/* Hover cards solo en dispositivos con hover */
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
     }
 }
 
 /* Fondo del modal */
 .modal-financiamiento {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    opacity: 0;
-    visibility: hidden;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  opacity: 0;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  justify-content: center;
+  align-items: center;
 }
 
 .modal-financiamiento.active {
-    display: flex;
-    opacity: 1;
-    visibility: visible;
+  display: flex;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Contenido del modal */
 .modal-financiamiento .modal-content {
-    background-color: #fff;
-    padding: 2rem;
-    border-radius: 10px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-    animation: fadeInUp 0.3s ease;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  max-width: 720px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  animation: fadeInUp 0.3s ease;
 }
 
 /* Header del modal */
 .modal-financiamiento .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-    border-bottom: 1px solid #ddd;
-    margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
 }
 
 .modal-financiamiento .modal-title {
-    display: flex;
-    gap: 1rem;
-    align-items: start;
+  display: flex;
+  gap: 1rem;
+  align-items: start;
 }
 
 .modal-financiamiento .modal-title h2 {
-    margin: 0;
-    font-size: 1.5rem;
-}
-
-.modal-financiamiento .modal-title p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-/* Icono */
-.modal-financiamiento .icon-circle {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #e3f2fd;
-    color: var(--primary-blue);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.modal-financiamiento .icon-warning {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #fff3e0;
-    color: red;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-/* Cerrar */
-.modal-financiamiento .close {
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-/* Cuerpo del modal */
-.modal-financiamiento .modal-body {
-    margin-bottom: 1rem;
-}
-
-.modal-financiamiento.form-group {
-    margin-bottom: 1rem;
-}
-
-.modal-financiamiento .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-}
-
-.modal-financiamiento .form-group input,
-.modal-financiamiento .form-group select {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-/* Footer */
-.modal-financiamiento .modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-}
-
-/* Botones */
-.modal-financiamiento .btn-secondary,
-.modal-financiamiento .btn-primary {
-    padding: 0.5rem 1.2rem;
-    border: none;
-    border-radius: 4px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.modal-financiamiento .btn-secondary {
-    background-color: #ccc;
-    color: #333;
-}
-
-.modal-financiamiento .btn-primary {
-    background-color: #2196F3;
-    color: white;
-}
-
-.modal-financiamiento .btn-secondary:hover {
-    background-color: #bbb;
-}
-
-.modal-financiamiento .btn-primary:hover {
-    background-color: #1976D2;
-}
-
-input[type="text"],
-input[type="number"],
-select,
-textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 14px;
-    transition: border-color 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-select:focus,
-textarea:focus {
-    border-color: var(--primary-blue);
-    outline: none;
-}
-
-/* Animación */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Modal general */
-.modal-financiamiento {
-  display: none;
-  position: fixed;
-  z-index: 1100;
-  inset: 0;
-  background: rgba(0,0,0,0.48);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* Contenido modal */
-.modal-financiamiento .modal-content {
-  max-width: 720px;
-  width: 95%;
-  background: #fff;
-  padding: 30px 40px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-  animation: fadeIn 0.4s ease forwards;
-  position: relative;
-  user-select: none;
-}
-
-/* Header */
-.modal-financiamiento .modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 28px;
-  user-select: none;
-}
-
-/* Título con icono y texto */
-.modal-financiamiento .modal-title {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  margin: 0;
+  font-size: 1.5rem;
 }
 
 .modal-financiamiento .icon-circle {
-  background-color: #d9f0d9; /* verde muy suave */
   width: 45px;
   height: 45px;
+  border-radius: 50%;
+  background-color: #d9f0d9; /* verde muy suave */
+  color: #28a745; /* verde */
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #28a745; /* verde */
   font-size: 1.7rem;
   user-select: none;
 }
@@ -737,15 +640,6 @@ textarea:focus {
   user-select: none;
 }
 
-.modal-financiamiento .modal-title h2 {
-  font-size: 2rem;
-  color: #28a745;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  margin: 0;
-  text-shadow: 0 1px 2px rgba(40,167,69,0.3);
-}
-
 /* Botón cerrar */
 .modal-financiamiento .close {
   font-size: 28px;
@@ -759,12 +653,11 @@ textarea:focus {
   color: #444;
 }
 
-/* Formulario */
+/* Formulario modal */
 .modal-financiamiento .modal-body {
   margin-bottom: 24px;
 }
 
-/* Form-group estilos */
 .modal-financiamiento .form-group {
   margin-bottom: 20px;
 }
@@ -777,7 +670,6 @@ textarea:focus {
   margin-bottom: 8px;
 }
 
-/* Inputs texto, fecha, file y select */
 .modal-financiamiento input[type="text"],
 .modal-financiamiento input[type="date"],
 .modal-financiamiento input[type="file"],
@@ -803,7 +695,7 @@ textarea:focus {
   box-shadow: none;
 }
 
-/* Footer */
+/* Footer modal */
 .modal-financiamiento .modal-footer {
   display: flex;
   justify-content: flex-end;
@@ -812,7 +704,7 @@ textarea:focus {
   user-select: none;
 }
 
-/* Botones */
+/* Botones modal */
 .modal-financiamiento button.btn-secondary,
 .modal-financiamiento button.btn-agregar,
 .modal-financiamiento button.btn-confirmar-financiamiento,
@@ -821,6 +713,7 @@ textarea:focus {
   font-size: 1.1rem;
   cursor: pointer;
   border: none;
+  border-radius: 4px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   font-weight: 700;
   transition: background-color 0.3s ease;
@@ -858,6 +751,210 @@ textarea:focus {
 
 /* Animación */
 @keyframes fadeIn {
-  from {opacity: 0; transform: scale(0.92);}
-  to {opacity: 1; transform: scale(1);}
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Modal Agregar Financiamiento personalizado --- */
+#modalAgregarFinanciamiento .modal-content {
+  max-width: 520px;
+  width: 90%;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  background: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+/* Título modal */
+#modalAgregarFinanciamiento .modal-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-300);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#modalAgregarFinanciamiento .modal-title h2 {
+  font-size: 1.6rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Icono dentro del título */
+#modalAgregarFinanciamiento .modal-title .icon-circle {
+  width: 48px;
+  height: 48px;
+  background-color: var(--primary);
+  color: white;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Cerrar */
+#modalAgregarFinanciamiento .close {
+  font-size: 28px;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+#modalAgregarFinanciamiento .close:hover {
+  color: var(--primary);
+}
+
+/* Formulario */
+#modalAgregarFinanciamiento .modal-body {
+  margin-top: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+#modalAgregarFinanciamiento form#formAgregarFinanciamiento {
+  max-width: 460px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Labels */
+#modalAgregarFinanciamiento label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--gray-800);
+  margin-bottom: 6px;
+  display: block;
+}
+
+/* Inputs y selects */
+#modalAgregarFinanciamiento input[type="text"],
+#modalAgregarFinanciamiento input[type="date"],
+#modalAgregarFinanciamiento input[type="file"],
+#modalAgregarFinanciamiento select {
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1.5px solid var(--gray-300);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+  color: var(--gray-900);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+#modalAgregarFinanciamiento input[type="text"]:focus,
+#modalAgregarFinanciamiento input[type="date"]:focus,
+#modalAgregarFinanciamiento input[type="file"]:focus,
+#modalAgregarFinanciamiento select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+}
+
+/* Footer: Botones */
+#modalAgregarFinanciamiento .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+#modalAgregarFinanciamiento button.btn-secondary {
+  background-color: var(--gray-200);
+  color: var(--gray-800);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalAgregarFinanciamiento button.btn-secondary:hover {
+  background-color: var(--gray-300);
+}
+
+#modalAgregarFinanciamiento button.btn-agregar {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalAgregarFinanciamiento button.btn-agregar:hover {
+  background-color: #218838;
+}
+
+/* Mensajes de alerta (success, error) */
+
+#modalAgregarFinanciamiento .alert {
+  border-radius: 6px;
+  padding: 12px 18px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  max-width: 460px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+#modalAgregarFinanciamiento .alert-success {
+  background-color: rgba(76, 175, 80, 0.15);
+  color: var(--success);
+  border: 1.5px solid var(--success);
+}
+
+#modalAgregarFinanciamiento .alert-error {
+  background-color: rgba(244, 67, 54, 0.15);
+  color: var(--danger);
+  border: 1.5px solid var(--danger);
+}
+
+/* Responsive para modal */
+@media (max-width: 480px) {
+  #modalAgregarFinanciamiento .modal-content {
+    width: 95%;
+    padding: 1.5rem 1.8rem;
+  }
+
+  #modalAgregarFinanciamiento form#formAgregarFinanciamiento {
+    max-width: 100%;
+    gap: 1rem;
+  }
+
+  #modalAgregarFinanciamiento .modal-footer {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  #modalAgregarFinanciamiento button.btn-secondary,
+  #modalAgregarFinanciamiento button.btn-agregar {
+    width: 100%;
+  }
 }

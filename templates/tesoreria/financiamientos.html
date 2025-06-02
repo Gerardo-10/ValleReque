@@ -99,20 +99,29 @@
                 <span class="close" id="btn-cancelar-financiamiento">&times;</span>
             </div>
             <div class="modal-body">
-                <form id="formAgregarFinanciamiento">
+                <form id="formAgregarFinanciamiento" novalidate>
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="estado" value="Activo">
                     <div class="form-group">
                         <label for="nombre">Nombre*</label>
-                        <input id="nombre" name="nombre" type="text" required>
+                        <input id="nombre" name="nombre" type="text" required
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+                        title="Solo letras y espacios, sin números ni símbolos"
+                        autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="monto">Monto del Bono*</label>
-                        <input id="monto" name="monto" type="text" required>
+                        <input id="monto" name="monto" type="text" required
+                        pattern="^\d{1,3}(,\d{3})*(\.\d{1,2})?$|^\d+(\.\d{1,2})?$"
+                        title="Número válido: 25,000 o 25000.00"
+                        autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="interes">Interés anualmente*</label>
-                        <input id="interes" name="interes" type="text" required>
+                        <input id="interes" name="interes" type="text" required
+                        pattern="^\d+(\.\d+)?$"
+                        title="Número decimal válido, ejemplo: 2.5"
+                        autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="tipo">Tipo de Financiamiento*</label>
@@ -139,88 +148,81 @@
         </div>
     </div>
 
-    <!-- Modal para confirmar guardar financiamiento -->
+        <!-- Modal para confirmar guardar financiamiento -->
     <div class="modal-financiamiento" id="modalConfirmarGuardarFinanciamiento">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <div class="icon-warning">
-                        <i class="fas fa-exclamation"></i>
-                    </div>
-                    <div>
-                        <h2>¿Desea guardar el nuevo Financiamiento?</h2>
-                    </div>
-                </div>
-                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+    <div class="modal-content">
+        <div class="modal-header">
+        <div class="modal-title">
+            <div class="icon-warning">
+            <i class="fas fa-exclamation-circle"></i>
             </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
-                <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar
-                </button>
-            </div>
+            <h2>¿Desea guardar el nuevo Financiamiento?</h2>
+        </div>
+        <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+        </div>
+        <div class="modal-footer">
+        <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
+        <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar</button>
         </div>
     </div>
+    </div>
 
-    <!-- Modal de exito al agregar el financiamiento-->
+    <!-- Modal de éxito al agregar el financiamiento -->
     <div class="modal-financiamiento" id="modalExitoAgregar">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <div class="icon-circle icon-success">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div>
-                        <h2>¡Se ha creado un nuevo Financiamiento!!</h2>
-                    </div>
-                </div>
-                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+    <div class="modal-content">
+        <div class="modal-header">
+        <div class="modal-title">
+            <div class="icon-circle icon-success">
+            <i class="fas fa-check-circle"></i>
             </div>
+            <h2>¡Se ha creado un nuevo Financiamiento!</h2>
+        </div>
+        <span class="close" id="btn-cancelar-financiamiento">&times;</span>
         </div>
     </div>
+    </div>
 
-    <!-- Modal de confirmacion para activar o desactivar financiamiento -->
+    <!-- Modal para confirmar activación o desactivación -->
     <div class="modal-financiamiento" id="modalConfirmarEstadoFinanciamiento">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <div class="icon-warning">
-                        <i class="fas fa-exclamation"></i>
-                    </div>
-                    <div>
-                        <h2>Confirmar esta Acción</h2>
-                    </div>
-                </div>
-                <span class="close" id="btn-cancelar-estado">&times;</span>
+    <div class="modal-content">
+        <div class="modal-header">
+        <div class="modal-title">
+            <div class="icon-warning">
+            <i class="fas fa-exclamation-circle"></i>
             </div>
-            <div class="modal-body">
-                <div class="confirm-message">
-                    <i class="fas fa-exclamation-triangle warning-icon"></i>
-                    <p id="confirmText">¿Está seguro que desea desactivar este financiamiento?</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" id="btn-cancelar-financiamiento-footer">Cancelar</button>
-                <button class="btn-cambiar-estado" id="btn-confirmar-estado">Cambiar Estado</button>
-            </div>
+            <h2>Confirmar esta Acción</h2>
         </div>
+        <span class="close" id="btn-cancelar-estado">&times;</span>
+        </div>
+        <div class="modal-body">
+        <div class="confirm-message">
+            <i class="fas fa-exclamation-triangle warning-icon"></i>
+            <p id="confirmText">¿Está seguro que desea desactivar este financiamiento?</p>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn-secondary" id="btn-cancelar-financiamiento-footer">Cancelar</button>
+        <button class="btn-cambiar-estado" id="btn-confirmar-estado">Cambiar Estado</button>
+        </div>
+    </div>
     </div>
 
-    <!-- Modal de exito al cambiar el estado del financiamiento-->
+    <!-- Modal de éxito al cambiar estado -->
     <div class="modal-financiamiento" id="modalExitoEstado">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">
-                    <div class="icon-circle icon-success">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <div>
-                        <h2>¡Se ha cambiado correctamente el estado del Financiamiento!</h2>
-                    </div>
-                </div>
-                <span class="close" id="btn-cancelar-financiamiento">&times;</span>
+    <div class="modal-content">
+        <div class="modal-header">
+        <div class="modal-title">
+            <div class="icon-circle icon-success">
+            <i class="fas fa-check-circle"></i>
             </div>
+            <h2>¡Se ha cambiado correctamente el estado del Financiamiento!</h2>
+        </div>
+        <span class="close" id="btn-cancelar-financiamiento">&times;</span>
         </div>
     </div>
+    </div>
+
+
 
     <!-- Overlay para modales -->
     <div class="modal-overlay-financiamiento" id="modalOverlay"></div>

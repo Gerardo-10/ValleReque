@@ -9,7 +9,7 @@ class Config:
     MAIL_USE_TLS = True
     MAIL_USERNAME = os.getenv('EMAIL_USERNAME')
     MAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-    MAIL_DEFAULT_SENDER = ('Sistema Valle Reque', 'EMAIL_USERNAME')
+    MAIL_DEFAULT_SENDER = ('Sistema Valle Reque', os.getenv('EMAIL_USERNAME'))
 
     CODE_EXPIRY_MINUTES = 15
     MAX_VERIFICATION_ATTEMPTS = 3

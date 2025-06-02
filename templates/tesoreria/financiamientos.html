@@ -1,7 +1,5 @@
 {% block customCSS %}
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/financiamientos.css') }}">
-
 {% endblock %}
 
 {% block body %}
@@ -11,8 +9,7 @@
                 <h1>Financiamientos</h1>
             </div>
             <div class="financiamiento-actions">
-                <button class="btn btn-primary" id="btnAgregarFinanciamiento"><i class="fas fa-plus"></i> Agregar
-                </button>
+                <button class="btn btn-primary" id="btnAgregarFinanciamiento"><i class="fas fa-plus"></i> Agregar</button>
             </div>
         </div>
 
@@ -22,41 +19,42 @@
                 <input type="text" placeholder="Buscar financiamiento...">
             </div>
             <div class="financiamiento-filter-selects">
-                <select>
-                    <option>Todos los tipos</option>
-                    <option>Estatal</option>
-                    <option>Privado</option>
+                <select id="filterTipo">
+                    <option value="todos">Todos los tipos</option>
+                    <option value="1">Estatal</option>
+                    <option value="2">Privado</option>
                 </select>
-                <select>
-                    <option>Todos los estados</option>
-                    <option>Activo</option>
-                    <option>Inactivo</option>
+                <select id="filterEstado">
+                    <option value="todos">Todos los estados</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
                 </select>
             </div>
         </div>
 
         <div class="cards">
             {% for financiamiento in financiamientos %}
-                <div class="card" data-id="{{ financiamiento.id_financiamiento }}">
+                <div class="card" 
+                     data-id="{{ financiamiento.id_financiamiento }}" 
+                     data-estado="{{ financiamiento.estado | lower }}" 
+                     data-tipo="{{ '1' if financiamiento.tipo == 1 else '2' }}">
                     <div class="card-header">
                         <input type="checkbox" class="card-checkbox">
                         <div class="card-logo">
-                            <img src="{{ url_for('static', filename='img/' + financiamiento.imagen) }}"
-                                 alt="{{ financiamiento.nombre }}">
+                            <img src="{{ url_for('static', filename='img/' + financiamiento.imagen) }}" alt="{{ financiamiento.nombre }}">
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="card-title-badge">
                             <h2>{{ financiamiento.nombre }}</h2>
                             <span class="financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}">
-                                {% if financiamiento.estado %}Activo{% else %}Inactivo{% endif %}
+                                {{ 'Activo' if financiamiento.estado == 'Activo' else 'Inactivo' }}
                             </span>
                         </div>
                         <div class="card-info">
                             <div>
                                 <span class="label">Tipo:</span>
-                                <span class="value">{% if financiamiento.tipo == 1 %}
-                                    Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
+                                <span class="value">{% if financiamiento.tipo == 1 %}Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
                             </div>
                             <div>
                                 <span class="label">Monto:</span>

@@ -1,7 +1,7 @@
-function initFinanciamientosModals() {
+window.initFinanciamientosModals = function () {
     const overlay = document.getElementById('modalOverlay');
 
-    // Agregar Financiamiento
+    // Botones y modales
     const btnAgregarFinanciamiento = document.getElementById('btnAgregarFinanciamiento');
     const modalAgregar = document.getElementById('modalAgregarFinanciamiento');
     const btnCancelarAgregar1 = document.querySelector("#modalAgregarFinanciamiento .close");
@@ -10,33 +10,36 @@ function initFinanciamientosModals() {
     btnAgregarFinanciamiento?.addEventListener("click", () => {
         modalAgregar.classList.add("active");
         overlay.classList.add("active");
+        document.body.style.overflow = 'hidden';
     });
 
     [btnCancelarAgregar1, btnCancelarAgregar2].forEach(el => {
         el?.addEventListener("click", () => {
             modalAgregar.classList.remove("active");
             overlay.classList.remove("active");
+            document.body.style.overflow = '';
         });
     });
 
-    // Confirmar Guardar Financiamiento
+    // Guardar nuevo financiamiento
     const modalGuardar = document.getElementById('modalConfirmarGuardarFinanciamiento');
     const btnAbrirModalGuardar = document.getElementById('btn-guardar-financiamiento');
     const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarFinanciamiento .close");
     const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarFinanciamiento .btn-secondary");
-
     const btnConfirmarGuardar = document.getElementById('btn-confirmar-guardar-financiamiento');
 
     btnAbrirModalGuardar?.addEventListener("click", (e) => {
         e.preventDefault();
         modalGuardar.classList.add("active");
         overlay.classList.add("active");
+        document.body.style.overflow = 'hidden';
     });
 
     [btnCancelarGuardar1, btnCancelarGuardar2].forEach(el => {
         el?.addEventListener("click", () => {
             modalGuardar.classList.remove("active");
             overlay.classList.remove("active");
+            document.body.style.overflow = '';
         });
     });
 
@@ -57,50 +60,57 @@ function initFinanciamientosModals() {
 
             if (result.success) {
                 modalGuardar.classList.remove("active");
-                console.log("Modal Agregar:", modalAgregar);
                 modalAgregar.classList.remove("active");
                 overlay.classList.remove("active");
+                document.body.style.overflow = '';
 
                 const f = result.financiamiento;
 
                 const card = document.createElement("div");
                 card.classList.add("card");
                 card.setAttribute("data-id", f.id);
+                card.setAttribute("data-estado", f.estado.toLowerCase());
+                card.setAttribute("data-tipo", f.tipo.toString());
 
                 card.innerHTML = `
-                <div class="card-header">
-                    <input type="checkbox" class="card-checkbox">
-                    <div class="card-logo">
-                        <img src="/static/img/${f.imagen}" alt="${f.nombre}">
+                    <div class="card-header">
+                        <input type="checkbox" class="card-checkbox">
+                        <div class="card-logo">
+                            <img src="/static/img/${f.imagen}" alt="${f.nombre}">
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <div class="card-title-badge">
-                        <h2>${f.nombre}</h2>
-                        <span class="financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
-                            ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
-                        </span>
+                    <div class="card-body">
+                        <div class="card-title-badge">
+                            <h2>${f.nombre}</h2>
+                            <span class="financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
+                                ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
+                            </span>
+                        </div>
+                        <div class="card-info">
+                            <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
+                            <div><span class="label">Monto:</span> <span class="value">S/ ${f.monto ? parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}</span></div>
+                            <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>
+                            <div><span class="label">Creación:</span> <span class="value">${f.fecha_creacion}</span></div>
+                        </div>
                     </div>
-                    <div class="card-info">
-                        <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
-                        <div><span class="label">Monto:</span> <span class="value">S/ ${f.monto ? parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}</span></div>
-                        <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>
-                        <div><span class="label">Creación:</span> <span class="value">${f.fecha_creacion}</span></div>
+                    <div class="card-footer">
+                        <button class="btn-outline btn-danger toggle-status">
+                            <i class="fas fa-power-off"></i> Desactivar
+                        </button>
+                        <button class="btn-outline btn-info show-details">
+                            <i class="fas fa-info-circle"></i> Detalles
+                        </button>
                     </div>
-                </div>
-                <div class="card-footer">
-                    <button class="btn-outline btn-danger toggle-status">
-                        <i class="fas fa-power-off"></i> Desactivar
-                    </button>
-                    <button class="btn-outline btn-info show-details">
-                        <i class="fas fa-info-circle"></i> Detalles
-                    </button>
-                </div>
-            `;
+                `;
 
                 document.querySelector(".cards").prepend(card);
                 form.reset();
                 mostrarModalExitoAgregar();
+
+                card.querySelector(".toggle-status").addEventListener("click", toggleStatusHandler);
+
+                filtrarFinanciamientos();
+
             } else {
                 alert("Error al guardar: " + (result.error || "desconocido"));
             }
@@ -109,8 +119,6 @@ function initFinanciamientosModals() {
         }
     });
 
-
-    // Éxito al agregar
     function mostrarModalExitoAgregar() {
         const modal = document.getElementById("modalExitoAgregar");
         modal.classList.add("active");
@@ -121,7 +129,6 @@ function initFinanciamientosModals() {
         }, 3000);
     }
 
-    // Mostrar el modal de confirmación para activar o desactivar el financiamiento
     const modalEstado = document.getElementById('modalConfirmarEstadoFinanciamiento');
     const confirmText = document.getElementById('confirmText');
     const btnConfirmar = document.getElementById('btn-confirmar-estado');
@@ -131,49 +138,40 @@ function initFinanciamientosModals() {
     let financiamientoId = null;
     let nuevoEstado = null;
 
-    // Cerrar modal
     [btnCerrar1, btnCerrar2].forEach(btn => {
         btn?.addEventListener("click", () => {
             modalEstado.classList.remove("active");
             overlay.classList.remove("active");
+            document.body.style.overflow = '';
         });
     });
 
-    // Clic en los botones toggle-status de cada tarjeta
+    function toggleStatusHandler(e) {
+        const card = e.target.closest(".card");
+        financiamientoId = card.getAttribute("data-id");
+
+        const estaActivo = card.querySelector(".financiamiento-badge").classList.contains("active");
+        nuevoEstado = estaActivo ? "Inactivo" : "Activo";
+
+        confirmText.textContent = `¿Está seguro que desea ${estaActivo ? "desactivar" : "activar"} este financiamiento?`;
+        btnConfirmar.textContent = estaActivo ? "Desactivar" : "Activar";
+
+        btnConfirmar.classList.remove("btn-danger", "btn-success");
+        btnConfirmar.classList.add(estaActivo ? "btn-danger" : "btn-success");
+
+        modalEstado.classList.add("active");
+        overlay.classList.add("active");
+        document.body.style.overflow = 'hidden';
+    }
+
     document.querySelectorAll(".toggle-status").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            const card = e.target.closest(".card");
-            financiamientoId = card.getAttribute("data-id");
-
-            const estaActivo = card.querySelector(".financiamiento-badge").classList.contains("active");
-            nuevoEstado = estaActivo ? "Inactivo" : "Activo";
-
-            // Texto de confirmación
-            confirmText.textContent = `¿Está seguro que desea ${estaActivo ? "desactivar" : "activar"} este financiamiento?`;
-
-            // Texto del botón de confirmar
-            btnConfirmar.textContent = estaActivo ? "Desactivar" : "Activar";
-
-            // Cambiar color del botón (rojo para desactivar, verde para activar)
-            btnConfirmar.classList.remove("btn-danger", "btn-success");
-            if (estaActivo) {
-                btnConfirmar.classList.add("btn-danger"); // desactivar → rojo
-            } else {
-                btnConfirmar.classList.add("btn-success"); // activar → verde
-            }
-
-            // Mostrar modal
-            modalEstado.classList.add("active");
-            overlay.classList.add("active");
-        });
+        btn.addEventListener("click", toggleStatusHandler);
     });
 
-    // Confirmar cambio de estado
     btnConfirmar?.addEventListener("click", async () => {
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-        console.log("ID a enviar:", financiamientoId);
-        console.log("Estado a enviar:", nuevoEstado);
         try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
+
             const response = await fetch("/cambiar_estado_financiamiento", {
                 method: "POST",
                 headers: {
@@ -195,8 +193,8 @@ function initFinanciamientosModals() {
                 const btnToggle = card.querySelector(".toggle-status");
                 const modalExito = document.getElementById("modalExitoEstado");
 
+                card.setAttribute('data-estado', nuevoEstado.toLowerCase());
 
-                // Actualiza visualmente el estado
                 badge.textContent = nuevoEstado;
                 badge.classList.toggle("active", nuevoEstado === "Activo");
                 badge.classList.toggle("inactive", nuevoEstado === "Inactivo");
@@ -204,15 +202,18 @@ function initFinanciamientosModals() {
                 btnToggle.classList.remove("btn-danger", "btn-success", "btn-outline");
                 btnToggle.classList.add("btn-outline", nuevoEstado === "Activo" ? "btn-danger" : "btn-success");
 
-
                 modalEstado.classList.remove("active");
                 overlay.classList.remove("active");
+                document.body.style.overflow = '';
 
                 modalExito.classList.add("active");
                 setTimeout(() => {
                     modalExito.classList.remove("active");
                     overlay.classList.remove("active");
                 }, 2500);
+
+                filtrarFinanciamientos();
+
             } else {
                 alert("No se pudo cambiar el estado.");
             }
@@ -221,11 +222,51 @@ function initFinanciamientosModals() {
         }
     });
 
-
-    // Cerrar por overlay
     overlay?.addEventListener("click", () => {
         modalAgregar?.classList.remove("active");
         modalGuardar?.classList.remove("active");
+        modalEstado.classList.remove("active");
         overlay.classList.remove("active");
+        document.body.style.overflow = '';
     });
-}
+
+    // Variables para filtros y búsqueda
+    const inputBusqueda = document.querySelector('.financiamiento-search-box input');
+    const filtroEstado = document.getElementById('filterEstado');
+    const filtroTipo = document.getElementById('filterTipo');
+    const contenedorCards = document.querySelector('.cards');
+
+    function filtrarFinanciamientos() {
+        const texto = inputBusqueda.value.trim().toLowerCase();
+        const estadoSeleccionado = filtroEstado.value.toLowerCase();
+        const tipoSeleccionado = filtroTipo.value.toLowerCase();
+
+        const cards = contenedorCards.querySelectorAll('.card');
+
+        cards.forEach(card => {
+            const estadoCard = (card.getAttribute('data-estado') || '').toLowerCase();
+            const tipoCard = (card.getAttribute('data-tipo') || '').toLowerCase();
+            const nombre = card.querySelector('.card-title-badge h2').textContent.toLowerCase();
+
+            const cumpleEstado = (estadoSeleccionado === 'todos' || estadoCard === estadoSeleccionado);
+            const cumpleTipo = (tipoSeleccionado === 'todos' || tipoCard === tipoSeleccionado);
+            const cumpleBusqueda = nombre.includes(texto);
+
+            if (cumpleEstado && cumpleTipo && cumpleBusqueda) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    inputBusqueda.addEventListener('input', filtrarFinanciamientos);
+    filtroEstado.addEventListener('change', filtrarFinanciamientos);
+    filtroTipo.addEventListener('change', filtrarFinanciamientos);
+
+    filtrarFinanciamientos();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    window.initFinanciamientosModals();
+});

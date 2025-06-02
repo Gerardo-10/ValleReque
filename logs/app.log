@@ -40,9 +40,15 @@
 2025-05-13 01:04:17,313 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: User.__init__() missing 1 required positional argument: 'nombre_usuario'
 2025-05-31 23:19:52,061 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-05-31 23:19:52,993 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+<<<<<<< HEAD
 2025-06-01 00:31:08,472 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-01 00:31:09,014 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-01 01:41:22,844 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-01 01:41:23,381 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-01 20:51:23,393 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-01 20:51:24,070 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+=======
+2025-06-01 00:50:35,174 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-01 00:50:35,704 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-01 05:36:54,919 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (138)")
+>>>>>>> 5ef2b2dd4940795f3d441ad90110a0c6f5a1eabe

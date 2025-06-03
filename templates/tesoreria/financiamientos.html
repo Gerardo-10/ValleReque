@@ -222,6 +222,45 @@
     </div>
     </div>
 
+    <!-- Modal de Detalle -->
+    <div class="modal-financiamiento" id="modalDetalleFinanciamiento">
+    <div class="modal-content">
+        <div class="modal-header">
+        <div class="modal-title">
+            <div class="icon-circle">
+            <i class="fas fa-edit"></i>
+            </div>
+            <h2 id="detalleNombre">Nombre del Financiamiento</h2>
+        </div>
+        <span class="close" id="cerrarModalDetalle">&times;</span>
+        </div>
+        <div class="modal-body">
+        <div class="info-grid" style="margin-bottom: 1.5rem;">
+            <div>
+            <strong>Fecha de creación:</strong> <span id="detalleFecha">--</span>
+            </div>
+            <div>
+            <strong>Estado:</strong> <span id="detalleEstado">--</span>
+            </div>
+            <div>
+            <strong>Monto:</strong> <span id="detalleMonto">--</span>
+            </div>
+            <div>
+            <strong>Tipo:</strong> <span id="detalleTipo">--</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="detalleInfoExtra">Información Importante:</label>
+            <textarea id="detalleInfoExtra" rows="4" readonly placeholder="No hay información adicional..."></textarea>
+        </div>
+        </div>
+        <div class="modal-footer">
+        <button class="btn-secondary" id="cerrarModalDetalleFooter">Cerrar</button>
+        </div>
+    </div>
+    </div>
+
+
 
 
     <!-- Overlay para modales -->

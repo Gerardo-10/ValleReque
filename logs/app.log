@@ -246,3 +246,7 @@
 2025-06-02 00:58:50,579 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-02 01:00:02,353 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-02 01:00:04,885 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-03 00:36:22,047 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-03 00:36:22,462 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-03 02:12:23,736 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2013, "Lost connection to server at 'handshake: reading initial communication packet', system error: 0")
+2025-06-03 02:12:23,737 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2013, "Lost connection to server at 'handshake: reading initial communication packet', system error: 0")

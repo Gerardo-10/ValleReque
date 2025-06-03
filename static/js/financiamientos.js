@@ -119,13 +119,12 @@ window.initFinanciamientosModals = function () {
 
                 card.innerHTML = `
                     <div class="card-header">
-                        <input type="checkbox" class="card-checkbox">
                         <div class="card-logo">
                             <img src="/static/img/${f.imagen}" alt="${f.nombre}">
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="card-title-badge">
+                        <div class="card-title">
                             <h2>${f.nombre}</h2>
                             <span class="financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
                                 ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
@@ -291,7 +290,7 @@ window.initFinanciamientosModals = function () {
         cards.forEach(card => {
             const estadoCard = (card.getAttribute('data-estado') || '').toLowerCase();
             const tipoCard = (card.getAttribute('data-tipo') || '').toLowerCase();
-            const nombre = card.querySelector('.card-title-badge h2').textContent.toLowerCase();
+            const nombre = card.querySelector('.card-title h2').textContent.toLowerCase();
 
             const cumpleEstado = (estadoSeleccionado === 'todos' || estadoCard === estadoSeleccionado);
             const cumpleTipo = (tipoSeleccionado === 'todos' || tipoCard === tipoSeleccionado);

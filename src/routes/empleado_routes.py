@@ -40,46 +40,6 @@ def empleado(id_empleado):
     return render_template('detalle_empleado.html', empleado=empleado, fecha_hace_18_anios=fecha_hace_18_anios)
 
 
-@empleado_routes.route('/insertar_empleado', methods=['POST'])
-@login_required
-def insertar_empleado():
-    try:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            form = request.form
-
-            # Capturar id_area y convertirlo a int
-            id_area = int(form['area'])
-
-            # Armar el diccionario de empleado (sin el área)
-            empleado = {
-                'nombre': form['nombre'],
-                'apellido': form['apellido'],
-                'dni': form['dni'],
-                'direccion': form['direccion'],
-                'telefono': form['telefono'],
-                'correo': form['correo'],
-                'fecha_nacimiento': form['fecha_nacimiento'],
-            }
-
-            # Llamar al modelo correctamente con id_area como entero
-            success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, empleado, id_area)
-
-            if success:
-                return jsonify({
-                    'success': True,
-                    'message': message,
-                    'empleado': empleado_insertado
-                })
-            else:
-                return jsonify({'success': False, 'message': message}), 400  # Mejor 400 si es error controlado
-        else:
-            # Retornar error más limpio para no AJAX
-            return jsonify({'success': False, 'message': 'Esta ruta solo acepta peticiones AJAX'}), 405
-    except Exception as e:
-        # Mejorar mensaje de error capturando el traceback opcionalmente
-        return jsonify({'success': False, 'message': f'Error inesperado: {str(e)}'}), 500
-
-
 @empleado_routes.route('/cambiar_estado_empleados', methods=['POST'])
 @login_required
 def cambiar_estado_empleados():
@@ -109,6 +69,60 @@ def cambiar_estado_empleados():
             return jsonify({"success": False, "message": message}), 500
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
+@empleado_routes.route('/insertar_empleado', methods=['POST'])
+@login_required
+def insertar_empleado():
+    try:
+        if request.headers.get('X-Requested-With') != 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'Esta ruta solo acepta peticiones AJAX'}), 405
+
+        form = request.form
+
+        # Validar existencia de campos requeridos
+        campos_requeridos = ['nombre', 'apellido', 'dni', 'direccion', 'telefono', 'correo', 'fecha_nacimiento', 'area']
+        faltantes = [campo for campo in campos_requeridos if not form.get(campo)]
+        if faltantes:
+            return jsonify({
+                'success': False,
+                'message': f'Campos incompletos: {", ".join(faltantes)}'
+            }), 400
+
+        # Convertir área a entero y construir diccionario de empleado
+        try:
+            id_area = int(form['area'])
+        except ValueError:
+            return jsonify({'success': False, 'message': 'El campo área es inválido'}), 400
+
+        empleado = {
+            'nombre': form['nombre'].strip(),
+            'apellido': form['apellido'].strip(),
+            'dni': form['dni'].strip(),
+            'direccion': form['direccion'].strip(),
+            'telefono': form['telefono'].strip(),
+            'correo': form['correo'].strip(),
+            'fecha_nacimiento': form['fecha_nacimiento'].strip()
+        }
+
+        # Llamar a la lógica del modelo
+        success, message, empleado_insertado = ModelEmpleado.insert(current_app.db, empleado, id_area)
+
+        if success:
+            return jsonify({
+                'success': True,
+                'message': message,
+                'empleado': empleado_insertado
+            })
+        else:
+            return jsonify({'success': False, 'message': message}), 400
+
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'success': False,
+            'message': f'Error inesperado: {str(e)}'
+        }), 500
 
 
 @empleado_routes.route('/actualizar_empleado', methods=['POST'])

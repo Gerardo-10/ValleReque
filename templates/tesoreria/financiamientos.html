@@ -62,10 +62,9 @@
                             <div class="d-flex flex-row justify-content-between">
                                 <div>
                                     <span class="label">Tipo:</span>
-                                    <span class="value"
-                                    >{% if financiamiento.tipo == 1 %}Estatal{% eliffinanciamiento.tipo == 2 %}
-                                        Privado{% endif %}</span
-                                    >
+                                    <span class="value">{% if financiamiento.tipo == 1 %}Estatal
+                                        {% elif financiamiento.tipo == 2 %}
+                                        Privado{% endif %}</span>
                                 </div>
                                 <div>
                                     <span class="label">Monto:</span>

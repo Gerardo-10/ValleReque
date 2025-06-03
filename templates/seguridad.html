@@ -36,7 +36,8 @@
                 </div>
                 <div class="filtro-container">
                     <select id="filtroEmpleadosEstado">
-                        <option value="activos" selected>Activos</option>
+                        <option value="todos" selected>Todos</option>
+                        <option value="activos" >Activos</option>
                         <option value="inactivos">Inactivos</option>
                     </select>
                 </div>
@@ -157,7 +158,8 @@
                         <div class="form-grupo">
                             <label for="dniEmpleado">DNI*</label>
                             <input type="text" id="dniEmpleado" name="dni" placeholder="Ingrese DNI"
-                                   pattern="^\d{8}$" title="Debe contener exactamente 8 dígitos numéricos." required>
+                               pattern="^\d{8}$" maxlength="8" inputmode="numeric"
+                               title="Debe contener exactamente 8 dígitos numéricos." required>
                         </div>
                         <div class="form-grupo">
                             <label for="fechaNacimientoEmpleado">Fecha de Nacimiento*</label>
@@ -176,7 +178,7 @@
                         <div class="form-grupo">
                             <label for="telefonoEmpleado">Teléfono*</label>
                             <input type="text" id="telefonoEmpleado" name="telefono" placeholder="999999999"
-                                   pattern="^9\d{8}$"
+                                   pattern="^9\d{8}$" maxlength="9" inputmode="numeric"
                                    title="El número debe contener exactamente 9 dígitos y comenzar con 9." required>
                         </div>
                     </div>
@@ -231,6 +233,6 @@
     <!-- Overlay para modales -->
     <div class="modal-overlay" id="modalOverlay"></div>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../static/js/seguridad.js"></script>
 {% endblock %}

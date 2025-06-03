@@ -1,7 +1,9 @@
+import re
+
 import MySQLdb
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from src.models.entities.Empleado import Empleado
+from email_validator import validate_email, EmailNotValidError
 
 
 class ModelEmpleado:
@@ -68,42 +70,80 @@ class ModelEmpleado:
     def insert(cls, db, empleado, id_area):
         try:
             with db.connection.cursor() as cursor:
-                # Generar contraseña por defecto '123456' con hash seguro
+                # Extraer y limpiar campos
+                nombre = empleado['nombre'].strip()
+                apellido = empleado['apellido'].strip()
+                dni = empleado['dni'].strip()
+                direccion = empleado['direccion'].strip()
+                telefono = empleado['telefono'].strip()
+                correo = empleado['correo'].strip()
+                fecha_nacimiento = empleado['fecha_nacimiento'].strip()
+
+                # Validar nombre (solo letras y espacios)
+                if not re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,100}", nombre):
+                    return False, "Nombre inválido. Solo letras y espacios, mínimo 3 caracteres", None
+
+                # Validar apellido (mínimo dos palabras)
+                if not re.fullmatch(r"([A-Za-zÁÉÍÓÚáéíóúÑñ]+ ){1,}[A-Za-zÁÉÍÓÚáéíóúÑñ]+$", apellido):
+                    return False, "Apellido inválido. Debe contener al menos dos palabras", None
+
+                # Validar DNI (8 dígitos)
+                if not re.fullmatch(r"\d{8}", dni):
+                    return False, "El DNI debe tener exactamente 8 dígitos", None
+
+                # Validar teléfono (9 dígitos empezando con 9)
+                if not re.fullmatch(r"^9\d{8}$", telefono):
+                    return False, "Teléfono inválido. Debe comenzar con 9 y tener 9 dígitos", None
+
+                # Validar dirección (mínimo 5 caracteres)
+                if len(direccion) < 5:
+                    return False, "La dirección debe tener al menos 5 caracteres", None
+
+                # Validar correo electrónico sintáctico y dominio válido
+                try:
+                    valid = validate_email(correo, check_deliverability=True)
+                    correo = valid.email  # normalizado
+                except EmailNotValidError as e:
+                    return False, f"Correo inválido: {str(e)}", None
+
+                # Verificar si el correo ya está registrado
+                cursor.execute("SELECT COUNT(*) FROM empleado WHERE correo_electronico = %s", (correo,))
+                if cursor.fetchone()[0] > 0:
+                    return False, "Este correo ya está registrado", None
+
+                # Verificar si el DNI ya está registrado
+                cursor.execute("SELECT COUNT(*) FROM empleado WHERE dni = %s", (dni,))
+                if cursor.fetchone()[0] > 0:
+                    return False, "El DNI ingresado ya está registrado", None
+
+                # Verificar si el teléfono ya está registrado
+                cursor.execute("SELECT COUNT(*) FROM empleado WHERE telefono = %s", (telefono,))
+                if cursor.fetchone()[0] > 0:
+                    return False, "El número de teléfono ya está registrado", None
+
+                # Crear contraseña por defecto
                 password_hash = generate_password_hash('123456')
 
-                sql = """
-                CALL sp_crear_empleado(
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s
-                )
-                """
-                cursor.execute(sql, (
-                    id_area,
-                    empleado['nombre'],
-                    empleado['apellido'],
-                    empleado['dni'],
-                    empleado['direccion'],
-                    empleado['telefono'],
-                    empleado['correo'],
-                    empleado['fecha_nacimiento'],
-                    password_hash  # ✅ nuevo parámetro enviado al SP
-                ))
+                # Llamar al SP
+                cursor.execute("""
+                        CALL sp_crear_empleado(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    """, (id_area, nombre, apellido, dni, direccion, telefono, correo, fecha_nacimiento, password_hash))
 
+                # Obtener el nuevo ID
                 cursor.execute("SELECT LAST_INSERT_ID()")
                 new_id = cursor.fetchone()[0]
                 empleado["id_empleado"] = new_id
 
-                # Obtener nombre del área
+                # Consultar nombre del área
                 cursor.execute("SELECT nombre FROM area WHERE id_area = %s", (id_area,))
                 area_row = cursor.fetchone()
                 empleado["area"] = area_row[0] if area_row else "Desconocido"
-
                 empleado["estado"] = 1
 
                 db.connection.commit()
                 return True, "Empleado creado con éxito", empleado
 
         except MySQLdb.OperationalError as e:
-            # Extraer el mensaje lanzado por SIGNAL SQLSTATE
             error_msg = str(e.args[1])
             if "Error:" in error_msg:
                 mensaje_limpio = error_msg.split("Error:")[1].strip(" '\"")
@@ -113,36 +153,6 @@ class ModelEmpleado:
 
         except Exception as e:
             return False, "Error interno del servidor: " + str(e), None
-
-    @classmethod
-    def update(cls, db, id_empleado, data):
-        try:
-            cursor = db.connection.cursor()
-            query = """
-                    UPDATE empleado
-                    SET nombre_empleado    = %s,
-                        apellido_empleado  = %s,
-                        direccion          = %s,
-                        telefono           = %s,
-                        correo_electronico = %s,
-                        fecha_nacimiento   = %s
-                    WHERE id_empleado = %s
-                    """
-            cursor.execute(query, (
-                data.get('nombre'),
-                data.get('apellido'),
-                data.get('direccion'),
-                data.get('telefono'),
-                data.get('correo'),
-                data.get('fecha_nacimiento'),
-                id_empleado
-            ))
-            db.connection.commit()
-            cursor.close()
-            return True
-        except Exception as ex:
-            print(f"Error en update: {ex}")
-            return False
 
     @classmethod
     def update_password(cls, db, id_empleado, current_password, new_password):

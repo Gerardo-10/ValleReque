@@ -61,7 +61,7 @@ def load_user(user_id):
 
 # Registrar rutas y errores
 register_routes(app)
-register_error_handlers(app)  # 👈 Registrar errores desde archivo externo
+register_error_handlers(app)
 
 # Ejecutar la app
 if __name__ == '__main__':

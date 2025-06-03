@@ -27,30 +27,34 @@ def login():
 
         result = ModelUser.login(current_app.db, username, password)
 
-        if result is not None:
+        if isinstance(result, tuple):
             logged_user, password_hash = result
-
-            # Usa logged_user normalmente
             session['user_id'] = logged_user.id_usuario
             session['username'] = logged_user.username
             login_user(logged_user, remember=remember)
 
-            # Si es una petición fetch, devolver JSON
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 if User.check_password(password_hash, "123456"):
                     return jsonify(success=True, cambiar_password=True)
                 return jsonify(success=True, redirect_url=url_for('home_routes.sidebar'))
             else:
                 return redirect(url_for('home_routes.sidebar'))
+
+        # Mensajes personalizados
+        mensaje_error = {
+            'inactivo': "Usuario inactivo o no autorizado",
+            'incorrecto': "Contraseña incorrecta",
+            'no_encontrado': "Usuario no encontrado",
+            'error': "Error interno del servidor"
+        }.get(result, "Credenciales incorrectas")
+
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify(success=False, message=mensaje_error), 200
         else:
-            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return jsonify(success=False, message="Credenciales Incorrectas"), 200
-            else:
-                flash("Credenciales Incorrectas", "danger")
-                return redirect(url_for('auth_routes.login'))
+            flash(mensaje_error, "danger")
+            return redirect(url_for('auth_routes.login'))
 
     return render_template('auth/login.html')
-
 
 @auth_routes.route('/logout')
 def logout():

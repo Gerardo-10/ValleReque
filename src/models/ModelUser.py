@@ -10,23 +10,24 @@ class ModelUser:
             row = cursor.fetchone()
             if row is not None:
                 id_usuario, nombre_usuario, password_hash, estado = row
-                if not estado:  # Estado 0 = inactivo
+                if not estado:
                     print("[DEBUG] Usuario inactivo o no autorizado")
-                    return None
+                    return 'inactivo'
                 if User.check_password(password_hash, password):
                     print("[DEBUG] Contraseña correcta")
                     user = User(id_usuario=id_usuario, nombre_usuario=nombre_usuario)
                     return user, password_hash
                 else:
                     print("[DEBUG] Contraseña incorrecta")
+                    return 'incorrecto'
             else:
                 print("[DEBUG] Usuario no encontrado")
-            return None
+                return 'no_encontrado'
         except Exception as e:
             print(f"[ERROR LOGIN]: {e}")
             import traceback
             traceback.print_exc()
-            return None
+            return 'error'
 
     @classmethod
     def get_by_id(cls, db, id_usuario):

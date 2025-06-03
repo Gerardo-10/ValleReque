@@ -29,7 +29,7 @@ def insertar_financiamiento():
             filename = None
             if file and file.filename != '':
                 filename = secure_filename(file.filename)
-                upload_path = os.path.join(current_app.root_path, 'static', 'img', filename)
+                upload_path = os.path.join(current_app.root_path, 'static', 'img', 'financiamientos', filename)
                 file.save(upload_path)
 
             financiamiento = {

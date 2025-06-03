@@ -111,14 +111,14 @@
 </div>
         <div class="cards">
             {% for financiamiento in financiamientos %}
-                <div class="card" 
-                     data-id="{{ financiamiento.id_financiamiento }}" 
-                     data-estado="{{ financiamiento.estado | lower }}" 
+                <div class="card"
+                     data-id="{{ financiamiento.id_financiamiento }}"
+                     data-estado="{{ financiamiento.estado | lower }}"
                      data-tipo="{{ '1' if financiamiento.tipo == 1 else '2' }}">
                     <div class="card-header">
                         <input type="checkbox" class="card-checkbox">
                         <div class="card-logo">
-                            <img src="{{ url_for('static', filename='img/' + financiamiento.imagen) }}" alt="{{ financiamiento.nombre }}">
+                            <img src="{{ url_for('static', filename='img/financiamientos/' + financiamiento.imagen) }}" alt="{{ financiamiento.nombre }}">
                         </div>
                     </div>
                     <div class="card-body">

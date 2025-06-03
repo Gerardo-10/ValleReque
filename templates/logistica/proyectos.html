@@ -1,8 +1,318 @@
 {% block customCSS %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/proyectos.css') }}">
 {% endblock %}
 
 {% block body %}
-    <h1>Proyectos</h1>
+    <main class="main-content-proyectos">
+        <div class="projects-header">
+            <div class="header-icon">
+                <i class="fa-solid fa-building-user"></i>
+            </div>
+
+            <h2>Proyectos</h2>
+            <div class="search-container">
+                <input type="text" placeholder="Buscar Proyecto" class="search-input">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <button id="btnNuevoProyecto" class="btn-nuevo">Nuevo</button>
+        </div>
+
+        <div class="projects-container">
+            <!-- Proyecto 1: Valle Reque -->
+            <div class="project-card">
+                <div class="project-title">Valle Reque</div>
+                <div class="project-content">
+                    <div class="project-details">
+                        <h3>Detalles:</h3>
+                        <div class="details-grid">
+                            <div class="detail-row">
+                                <div class="detail-label">Dirección</div>
+                                <div class="detail-value">Av. Panamericana #556</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Etapas</div>
+                                <div class="detail-value">I - II - III - IV - V</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">N° lotes</div>
+                                <div class="detail-value">Dirección</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Nombre Proyecto</div>
+                                <div class="detail-value">Dirección</div>
+                            </div>
+                            <div class="detail-row">
+                                <div class="detail-label">Inversión</div>
+                                <div class="detail-value">S/ 155,842</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-indicators">
+                        <h3>Indicadores:</h3>
+                        <div class="indicator-row">
+                            <div class="indicator-label">Monto Recaudado:</div>
+                            <div class="indicator-value">S/ 1,250,000</div>
+                        </div>
+                        <div class="indicator-row">
+                            <div class="indicator-label">N° de Ventas:</div>
+                            <div class="indicator-value"><span class="">85</span></div>
+                        </div>
+                        <div class="indicator-row">
+                            <div class="indicator-label">N° de Reserva:</div>
+                            <div class="indicator-value"><span class="">12</span></div>
+                        </div>
+                        <div class="indicator-row">
+                            <div class="indicator-label">N° de Devoluciones:</div>
+                            <div class="indicator-value"><span class="">3</span></div>
+                        </div>
+                    </div>
+
+                    <div class="project-map">
+                        <img src="{{ url_for('static', filename='img/proyectos/mapa.png') }}"
+                             alt="Mapa del proyecto">
+                    </div>
+                </div>
+                <div class="project-actions">
+                    <button class="btn-eliminar">Eliminar</button>
+                    <button class="btn-editar">Editar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal Nuevo Proyecto -->
+    <div id="modalNuevoProyecto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Nuevo Proyecto</h3>
+                </div>
+                <span class="close" data-modal="modalNuevoProyecto">&times;</span>
+            </div>
+            <div class="modal-subtitle">
+                Bienvenido administrador! Recuerda siempre revisar los datos que estás añadiendo...
+            </div>
+            <div class="modal-body">
+                <form id="formNuevoProyecto">
+                    <div class="form-group">
+                        <label for="nombreProyecto">Nombre del proyecto*</label>
+                        <input type="text" id="nombreProyecto" placeholder="San Fernando - Chiclayo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="direccion">Dirección*</label>
+                        <input type="text" id="direccion" placeholder="Av. Ramón Castilla 12345" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="inversion">Inversión*</label>
+                        <input type="text" id="inversion" placeholder="S/ 1288890.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numLotes">N° de Lotes*</label>
+                        <input type="number" id="numLotes" placeholder="300" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numEtapas">N° De Etapas*</label>
+                        <input type="number" id="numEtapas" placeholder="2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precioTerreno">Precio Terreno (c/u)*</label>
+                        <input type="text" id="precioTerreno" placeholder="S/ 10000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fotoReferencia">Foto de referencia*</label>
+                        <div class="upload-container">
+                            <div class="upload-button">
+                                <i class="fas fa-upload"></i>
+                                <span class="upload-text">Click to upload</span>
+                            </div>
+                            <div class="upload-info">Insertar imagen de Google Maps<br>(PNG o JPG max.
+                                800x450px)
+                            </div>
+                        </div>
+                        <div class="map-preview">
+                            <img src="{{ url_for('static', filename='img/proyectos/mapa.png') }}"
+                                 alt="Mapa de referencia">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" data-modal="modalNuevoProyecto">Cancelar</button>
+                <button class="btn-primary" id="btnSiguienteEtapa">Siguiente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plantilla para Modal Etapa (se clonará dinámicamente) -->
+    <div id="modalEtapaTemplate" class="modal template">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <h3>Bienvenido a la ETAPA <span class="etapa-num">I</span></h3>
+                </div>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-subtitle">
+                Es hora de configurar esta primera parte del proyecto :D. Recuerda que los terrenos por defecto el
+                estado será <strong>Libre</strong> y el tipo de terreno <strong>Calle</strong>.
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>El total de terrenos por etapas y manzanas debe coincidir con el número total de terrenos del proyecto. Distribúyelos de forma equilibrada.</span>
+                </div>
+
+                <form class="form-etapa">
+                    <div class="manzanas-container">
+                        <div class="manzana-row">
+                            <div class="form-group">
+                                <label>Manzana*</label>
+                                <div class="select-container">
+                                    <select>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>N° de lotes*</label>
+                                <input type="number" placeholder="123">
+                            </div>
+                            <div class="row-actions">
+                                <button type="button" class="btn-icon btn-delete-row"><i
+                                        class="fas fa-minus-circle"></i></button>
+                                <button type="button" class="btn-icon btn-add-row"><i class="fas fa-plus-circle"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resumen*</label>
+                        <textarea class="resumen-etapa" readonly>Manzana: A - N° de Lotes: 1 | Manzana: B - N° de Lotes: 2</textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary btn-anterior">Anterior</button>
+                <button class="btn-primary btn-siguiente">Siguiente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Éxito -->
+    <div id="modalExito" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header success">
+                <div class="modal-title">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>¡Proyecto guardado exitosamente!</h3>
+                </div>
+                <span class="close" data-modal="modalExito">&times;</span>
+            </div>
+            <div class="modal-body text-center">
+                <p>Para poder editar las características específicas de los terrenos asignados, visitar la pestaña de
+                    <strong>Terrenos</strong>.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Proyecto -->
+    <div id="modalEditarProyecto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <i class="fas fa-edit"></i>
+                    <h3>Editar Detalles del Proyecto</h3>
+                </div>
+                <span class="close" data-modal="modalEditarProyecto">&times;</span>
+            </div>
+            <div class="modal-subtitle">
+                Ojo si quieres editar o cambiar las propiedades de las <strong>Etapas</strong>,
+                <strong>Manzanas</strong> y los <strong>Terrenos</strong>. Tiene que eliminar el proyecto y realizar uno
+                nuevo.
+            </div>
+            <div class="modal-body">
+                <form id="formEditarProyecto">
+                    <div class="form-group">
+                        <label for="editNombreProyecto">Nombre Proyecto*</label>
+                        <input type="text" id="editNombreProyecto" value="Dirección" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDireccion">Dirección*</label>
+                        <input type="text" id="editDireccion" value="Av. Panamericana #126" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editInversion">Inversión*</label>
+                        <input type="text" id="editInversion" value="S/ 155,842" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editFotoReferencia">Foto de referencia*</label>
+                        <div class="upload-container">
+                            <div class="upload-button">
+                                <i class="fas fa-upload"></i>
+                                <span class="upload-text">Click to upload</span>
+                            </div>
+                            <div class="upload-info">Insertar imagen de Google Maps<br>(SVG, PNG, JPG o GIF max.
+                                800x450px)
+                            </div>
+                        </div>
+                        <div class="map-preview">
+                            <img src="{{ url_for('static', filename='img/proyectos/mapa.png') }}"
+                             alt="Mapa del proyecto">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" data-modal="modalEditarProyecto">Cancelar</button>
+                <button class="btn-primary" id="btnGuardarEdicion">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Eliminación -->
+    <div id="modalConfirmarEliminar" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header danger">
+                <div class="modal-title">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>¿Desea eliminar este Proyecto?</h3>
+                </div>
+                <span class="close" data-modal="modalConfirmarEliminar">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Tenga en cuenta que al eliminar todo el proyecto, las etapas, manzanas y terrenos asociados a este.
+                    También serán eliminados.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" data-modal="modalConfirmarEliminar">Cancelar</button>
+                <button class="btn-danger" id="btnConfirmarEliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Eliminado con Éxito -->
+    <div id="modalEliminadoExito" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header eliminar">
+                <div class="modal-title">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>¡Se ha eliminado el Proyecto!!!</h3>
+                </div>
+                <span class="close" data-modal="modalEliminadoExito">&times;</span>
+            </div>
+            <div class="modal-body text-center">
+                <p>Puede verificar en la pestaña Terrenos.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-backdrop" id="modalBackdrop"></div>
 {% endblock %}

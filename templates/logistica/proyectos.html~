@@ -1,7 +1,0 @@
-{% block customCSS %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
-{% endblock %}
-
-{% block body %}
-    <h1>Proyectos</h1>
-{% endblock %}

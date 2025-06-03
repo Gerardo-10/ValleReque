@@ -191,3 +191,34 @@ def reenviar_codigo():
         return jsonify({'success': True, 'message': 'Código reenviado.'}), 200
     except Exception as e:
         return jsonify({'success': False, 'message': f'Error al reenviar: {str(e)}'}), 500
+
+@auth_routes.route('/actualizar_contrasena_inicial', methods=['POST'])
+@login_required
+def actualizar_contrasena_inicial():
+    data = request.json
+    password_actual = data.get('password_actual')
+    password_nueva = data.get('password_nueva')
+    password_confirmar = data.get('password_confirmar')
+
+    if not password_actual or not password_nueva or not password_confirmar:
+        return jsonify({'success': False, 'message': 'Completa todos los campos.'}), 400
+
+    if password_nueva != password_confirmar:
+        return jsonify({'success': False, 'message': 'Las contraseñas no coinciden.'}), 400
+
+    if not validar_contrasena(password_nueva):
+        return jsonify({'success': False, 'message': 'La nueva contraseña no cumple con los requisitos.'}), 400
+
+    user_id = session.get('user_id')
+    password_hash = ModelUser.get_password_hash_by_id(current_app.db, user_id)
+
+    if not password_hash or not User.check_password(password_hash, password_actual):
+        return jsonify({'success': False, 'message': 'La contraseña actual es incorrecta.'}), 401
+
+    nueva_hash = generate_password_hash(password_nueva)
+    ModelUser.update_password(current_app.db, user_id, nueva_hash)
+
+    return jsonify({'success': True, 'message': 'Contraseña actualizada correctamente.'}), 200
+
+
+

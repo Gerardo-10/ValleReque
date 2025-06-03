@@ -56,3 +56,27 @@ class ModelUser:
             import traceback
             traceback.print_exc()
             return None, None
+
+    @classmethod
+    def get_password_hash_by_id(cls, db, id_usuario):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("SELECT pwd FROM usuario WHERE id_usuario = %s", (id_usuario,))
+            row = cursor.fetchone()
+            cursor.close()
+            if row:
+                return row[0]
+            return None
+        except Exception as e:
+            print(f"[ERROR get_password_hash_by_id]: {e}")
+            return None
+
+    @classmethod
+    def update_password(cls, db, id_usuario, new_hash):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("UPDATE usuario SET pwd = %s WHERE id_usuario = %s", (new_hash, id_usuario))
+            db.connection.commit()
+            cursor.close()
+        except Exception as e:
+            print(f"[ERROR update_password]: {e}")

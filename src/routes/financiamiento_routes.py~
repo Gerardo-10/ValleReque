@@ -78,13 +78,7 @@ def cambiar_estado():
     try:
         if request.headers.get("X-Requested-With") == "XMLHttpRequest":
             data = request.get_json()
-
-            id_raw = data.get("id_financiamiento")
-            if not id_raw or not str(id_raw).isdigit():
-                return jsonify({"error": "ID de financiamiento inválido"}), 400
-
-            id_financiamiento = int(id_raw)
-
+            id_financiamiento = int(data.get("id_financiamiento", 0))
             estado = data.get("estado", "").capitalize()
 
             if estado not in ["Activo", "Inactivo"]:

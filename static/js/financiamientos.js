@@ -120,7 +120,7 @@ window.initFinanciamientosModals = function () {
                 card.innerHTML = `
                     <div class="card-header">
                         <div class="card-logo">
-                            <img src="/static/img/financiamientos/${f.imagen}" alt="${f.nombre}">
+                            <img src="/static/img/${f.imagen}" alt="${f.nombre}">
                         </div>
                     </div>
                     <div class="card-body">

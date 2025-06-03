@@ -34,6 +34,7 @@ logger.addHandler(console_handler)
 
 # Inicializar app
 app = Flask(__name__)
+
 app.config.from_object(config['development'])
 app.secret_key = app.config['SECRET_KEY']
 app.config['REMEMBER_COOKIE_DURATION'] = timedelta(days=7)

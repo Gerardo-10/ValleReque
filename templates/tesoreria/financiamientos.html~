@@ -50,7 +50,7 @@
         class="card-img-top object-fit-contain"
       />
       <div class="card-body m-auto" style="width: 90%;">
-        <div class="card-title text-center">
+        <div class="card-title m-auto">
           <h2>{{ financiamiento.nombre }}</h2>
           <span
             class="rounded p-1 my-2 financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}"
@@ -109,57 +109,6 @@
     {% endfor %}
   </div>
 </div>
-        <div class="cards">
-            {% for financiamiento in financiamientos %}
-                <div class="card"
-                     data-id="{{ financiamiento.id_financiamiento }}"
-                     data-estado="{{ financiamiento.estado | lower }}"
-                     data-tipo="{{ '1' if financiamiento.tipo == 1 else '2' }}">
-                    <div class="card-header">
-                        <input type="checkbox" class="card-checkbox">
-                        <div class="card-logo">
-                            <img src="{{ url_for('static', filename='img/financiamientos/' + financiamiento.imagen) }}" alt="{{ financiamiento.nombre }}">
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="card-title-badge">
-                            <h2>{{ financiamiento.nombre }}</h2>
-                            <span class="financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}">
-                                {{ 'Activo' if financiamiento.estado == 'Activo' else 'Inactivo' }}
-                            </span>
-                        </div>
-                        <div class="card-info">
-                            <div>
-                                <span class="label">Tipo:</span>
-                                <span class="value">{% if financiamiento.tipo == 1 %}Estatal{% elif financiamiento.tipo == 2 %}Privado{% endif %}</span>
-                            </div>
-                            <div>
-                                <span class="label">Monto:</span>
-                                <span class="value">S/ {{ "{:,.2f}".format(financiamiento.monto) }}</span>
-                            </div>
-                            <div>
-                                <span class="label">Interés:</span>
-                                <span class="value highlight">{{ financiamiento.interes }}% Anual</span>
-                            </div>
-                            <div>
-                                <span class="label">Creación:</span>
-                                <span class="value">{{ financiamiento.fecha_creacion.strftime('%d/%m/%Y') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="btn-outline {{ 'btn-danger' if financiamiento.estado == 'Activo' else 'btn-success' }} toggle-status">
-                            <i class="fas fa-power-off"></i>
-                            {{ 'Desactivar' if financiamiento.estado == 'Activo' else 'Activar' }}
-                        </button>
-                        <button class="btn-outline btn-info show-details">
-                            <i class="fas fa-info-circle"></i> Detalles
-                        </button>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
 
 <!-- Modal para agregar financiamiento -->
 <div class="modal-financiamiento" id="modalAgregarFinanciamiento">

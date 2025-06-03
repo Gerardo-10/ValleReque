@@ -37,6 +37,7 @@ window.initFinanciamientosModals = function () {
         if (tipo === 'error') mensaje.classList.add('alert-error');
         else if (tipo === 'success') mensaje.classList.add('alert-success');
     }
+
     function limpiarMensaje() {
         const mensaje = modalAgregar.querySelector('.alert');
         if (mensaje) mensaje.remove();
@@ -113,39 +114,62 @@ window.initFinanciamientosModals = function () {
 
                 const card = document.createElement("div");
                 card.classList.add("card");
+                card.offsetHeight;
                 card.setAttribute("data-id", f.id);
                 card.setAttribute("data-estado", f.estado.toLowerCase());
                 card.setAttribute("data-tipo", f.tipo.toString());
 
                 card.innerHTML = `
-                    <div class="card-header">
-                        <div class="card-logo">
-                            <img src="/static/img/financiamientos/${f.imagen}" alt="${f.nombre}">
+                <img
+                    src="/static/img/financiamientos/${f.imagen}"
+                    alt="${f.nombre}"
+                    class="card-img-top"
+                    style="height: 200px; width: 100%; object-fit: contain;"
+                />
+                <div class="card-body m-auto" style="width: 90%;">
+                    <div class="card-title text-center">
+                        <h2>${f.nombre}</h2>
+                        <span class="rounded p-1 my-2 financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
+                            ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
+                        </span>
+                    </div>
+                    <div class="card-text d-flex flex-column gap-2">
+                        <div class="d-flex flex-row justify-content-between">
+                            <div>
+                                <span class="label">Tipo:</span>
+                                <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span>
+                            </div>
+                            <div>
+                                <span class="label">Monto:</span>
+                                <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-row justify-content-between">
+                            <div>
+                                <span class="label">Interés:</span>
+                                <span class="value highlight">${f.interes}% Anual</span>
+                            </div>
+                            <div>
+                                <span class="label">Creación:</span>
+                                <span class="value">${new Date(f.fecha_creacion).toLocaleDateString('es-PE')}</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="card-title">
-                            <h2>${f.nombre}</h2>
-                            <span class="financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
-                                ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
-                            </span>
-                        </div>
-                        <div class="card-info">
-                            <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
-                            <div><span class="label">Monto:</span> <span class="value">S/ ${f.monto ? parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2}) : "0.00"}</span></div>
-                            <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>
-                            <div><span class="label">Creación:</span> <span class="value">${f.fecha_creacion}</span></div>
+                </div>
+                <div class="card-footer">
+                    <div style="width: 90%;" class="m-auto">
+                        <div class="d-flex justify-content-between">
+                            <button class="btn-outline ${f.estado === 'Activo' ? 'btn-danger' : 'btn-success'} toggle-status">
+                                <i class="fas fa-power-off"></i>
+                                ${f.estado === "Activo" ? 'Desactivar' : 'Activar'}
+                            </button>
+                            <button class="btn-outline btn-info show-details">
+                                <i class="fas fa-info-circle"></i> Detalles
+                            </button>
                         </div>
                     </div>
-                    <div class="card-footer">
-                        <button class="btn-outline btn-danger toggle-status">
-                            <i class="fas fa-power-off"></i> Desactivar
-                        </button>
-                        <button class="btn-outline btn-info show-details">
-                            <i class="fas fa-info-circle"></i> Detalles
-                        </button>
-                    </div>
-                `;
+                </div>
+            `;
 
                 document.querySelector(".cards").prepend(card);
                 form.reset();

@@ -52,18 +52,16 @@
                     <div class="card-body m-auto" style="width: 90%;">
                         <div class="card-title text-center">
                             <h2>{{ financiamiento.nombre }}</h2>
-                            <span
-                                    class="rounded p-1 my-2 financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}"
-                            >
-            {{ 'Activo' if financiamiento.estado == 'Activo' else 'Inactivo' }}
-          </span>
+                            <span class="rounded p-1 my-2 financiamiento-badge {{ 'active' if financiamiento.estado == 'Activo' else 'inactive' }}">
+                                {{ 'Activo' if financiamiento.estado == 'Activo' else 'Inactivo' }}
+                            </span>
                         </div>
                         <div class="card-text d-flex flex-column gap-2">
                             <div class="d-flex flex-row justify-content-between">
                                 <div>
                                     <span class="label">Tipo:</span>
                                     <span class="value">{% if financiamiento.tipo == 1 %}Estatal
-                                        {% elif financiamiento.tipo == 2 %}
+                                    {% elif financiamiento.tipo == 2 %}
                                         Privado{% endif %}</span>
                                 </div>
                                 <div>

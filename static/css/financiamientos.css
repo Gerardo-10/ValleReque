@@ -222,6 +222,12 @@ button {
     object-fit: cover;
 }
 
+.card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: contain;
+}
+
 .card-title-badge .financiamiento-badge {
     margin: 10px 0;
     padding: 3px 8px;

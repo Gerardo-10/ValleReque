@@ -13,8 +13,8 @@ window.initFinanciamientosModals = function () {
         document.body.style.overflow = 'hidden';
     });
 
-    [btnCancelarAgregar1, btnCancelarAgregar2].forEach(el => {
-        el?.addEventListener("click", () => {
+    [btnCancelarAgregar1, btnCancelarAgregar2].filter(Boolean).forEach(el => {
+        el.addEventListener("click", () => {
             modalAgregar.classList.remove("active");
             overlay.classList.remove("active");
             document.body.style.overflow = '';
@@ -22,19 +22,6 @@ window.initFinanciamientosModals = function () {
             document.getElementById("formAgregarFinanciamiento").reset();
         });
     });
-
-    function mostrarMensaje(texto, tipo = 'error') {
-        let mensaje = modalAgregar.querySelector('.alert');
-        if (!mensaje) {
-            mensaje = document.createElement('div');
-            mensaje.classList.add('alert');
-            modalAgregar.querySelector('.modal-body').appendChild(mensaje);
-        }
-        mensaje.textContent = texto;
-        mensaje.className = 'alert';
-        if (tipo === 'error') mensaje.classList.add('alert-error');
-        else if (tipo === 'success') mensaje.classList.add('alert-success');
-    }
 
     function limpiarMensaje() {
         const mensaje = modalAgregar.querySelector('.alert');
@@ -47,17 +34,15 @@ window.initFinanciamientosModals = function () {
     const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarFinanciamiento .btn-secondary");
     const btnConfirmarGuardar = document.getElementById('btn-confirmar-guardar-financiamiento');
 
+    // ✅ Validación nativa automática
     btnAbrirModalGuardar?.addEventListener("click", (e) => {
         e.preventDefault();
         limpiarMensaje();
 
         const form = document.getElementById("formAgregarFinanciamiento");
-        const nombre = form.nombre.value.trim();
-        const monto = form.monto.value.trim();
-        const interes = form.interes.value.trim();
 
-        if (nombre === '' || monto === '' || interes === '') {
-            mostrarMensaje('Todos los campos obligatorios deben completarse.');
+        if (!form.checkValidity()) {
+            form.reportValidity();
             return;
         }
 
@@ -66,8 +51,8 @@ window.initFinanciamientosModals = function () {
         document.body.style.overflow = 'hidden';
     });
 
-    [btnCancelarGuardar1, btnCancelarGuardar2].forEach(el => {
-        el?.addEventListener("click", () => {
+    [btnCancelarGuardar1, btnCancelarGuardar2].filter(Boolean).forEach(el => {
+        el.addEventListener("click", () => {
             modalGuardar.classList.remove("active");
             overlay.classList.remove("active");
             document.body.style.overflow = '';
@@ -109,12 +94,14 @@ window.initFinanciamientosModals = function () {
                     <div class="card-body m-auto" style="width: 90%;">
                         <div class="card-title text-center">
                             <h2>${f.nombre}</h2>
-                            <span class="rounded p-1 my-2 financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">${f.estado}</span>
+                            <span class="rounded p-1 my-2 financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
+                                ${f.estado}
+                            </span>
                         </div>
                         <div class="card-text d-flex flex-column gap-2">
                             <div class="d-flex flex-row justify-content-between">
                                 <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
-                                <div><span class="label">Monto:</span> <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
+                                <div><span class="label">Monto:</span> <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
                             </div>
                             <div class="d-flex flex-row justify-content-between">
                                 <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>
@@ -160,17 +147,18 @@ window.initFinanciamientosModals = function () {
         }, 3000);
     }
 
+    // --- Cambiar estado (se mantiene igual) ---
     const modalEstado = document.getElementById('modalConfirmarEstadoFinanciamiento');
     const confirmText = document.getElementById('confirmText');
     const btnConfirmar = document.getElementById('btn-confirmar-estado');
     const btnCerrar1 = document.getElementById('btn-cancelar-estado');
-    const btnCerrar2 = document.getElementById('btn-cancelar-financiamiento-footer');
+    const btnCerrar2 = document.getElementById('btnCancelarEstadoFooter');
 
     let financiamientoId = null;
     let nuevoEstado = null;
 
-    [btnCerrar1, btnCerrar2].forEach(btn => {
-        btn?.addEventListener("click", () => {
+    [btnCerrar1, btnCerrar2].filter(Boolean).forEach(btn => {
+        btn.addEventListener("click", () => {
             modalEstado.classList.remove("active");
             overlay.classList.remove("active");
             document.body.style.overflow = '';
@@ -225,10 +213,10 @@ window.initFinanciamientosModals = function () {
                 const modalExito = document.getElementById("modalExitoEstado");
 
                 card.setAttribute('data-estado', nuevoEstado.toLowerCase());
-
                 badge.textContent = nuevoEstado;
                 badge.classList.toggle("active", nuevoEstado === "Activo");
                 badge.classList.toggle("inactive", nuevoEstado === "Inactivo");
+
                 btnToggle.innerHTML = `<i class="fas fa-power-off"></i> ${nuevoEstado === "Activo" ? "Desactivar" : "Activar"}`;
                 btnToggle.classList.remove("btn-danger", "btn-success", "btn-outline");
                 btnToggle.classList.add("btn-outline", nuevoEstado === "Activo" ? "btn-danger" : "btn-success");
@@ -260,6 +248,7 @@ window.initFinanciamientosModals = function () {
         document.body.style.overflow = '';
     });
 
+    // 🔎 Filtro
     const inputBusqueda = document.querySelector('.financiamiento-search-box input');
     const filtroEstado = document.getElementById('filterEstado');
     const filtroTipo = document.getElementById('filterTipo');
@@ -288,40 +277,26 @@ window.initFinanciamientosModals = function () {
     inputBusqueda.addEventListener('input', filtrarFinanciamientos);
     filtroEstado.addEventListener('change', filtrarFinanciamientos);
     filtroTipo.addEventListener('change', filtrarFinanciamientos);
-
     filtrarFinanciamientos();
 
-    // ✅ Validación en tiempo real
-    function validarSoloLetras(input) {
-        input.addEventListener('input', () => {
-            input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
-        });
-    }
+    // 🚫 Restricciones automáticas de entrada
+    document.getElementById('nombre').addEventListener('input', function () {
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+    });
 
-    function validarSoloNumeros(input) {
-        input.addEventListener('input', () => {
-            input.value = input.value.replace(/[^\d]/g, '');
-        });
-    }
+    document.getElementById('monto').addEventListener('input', function () {
+        this.value = this.value.replace(/\D/g, '').slice(0, 20);
+    });
 
-    function validarDecimal(input) {
-        input.addEventListener('input', () => {
-            let valor = input.value.replace(/[^0-9.]/g, '');
-            const partes = valor.split('.');
-            if (partes.length > 2) {
-                valor = partes[0] + '.' + partes.slice(1).join('');
-            }
-            input.value = valor;
-        });
-    }
+    document.getElementById('interes').addEventListener('input', function () {
+    // Permitir solo 1 punto o 1 coma y números
+    this.value = this.value
+        .replace(/[^0-9.,]/g, '')           // Elimina todo excepto números, punto y coma
+        .replace(/[.,](?=.*[.,])/g, '')     // Permite solo un separador
+        .slice(0, 5);                       // Limita longitud máxima
+    });
 
-    const inputNombre = document.getElementById('nombre');
-    const inputMonto = document.getElementById('monto');
-    const inputInteres = document.getElementById('interes');
 
-    if (inputNombre) validarSoloLetras(inputNombre);
-    if (inputMonto) validarSoloNumeros(inputMonto);
-    if (inputInteres) validarDecimal(inputInteres);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

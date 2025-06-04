@@ -1,7 +1,6 @@
 window.initFinanciamientosModals = function () {
     const overlay = document.getElementById('modalOverlay');
 
-    // Botones y modales
     const btnAgregarFinanciamiento = document.getElementById('btnAgregarFinanciamiento');
     const modalAgregar = document.getElementById('modalAgregarFinanciamiento');
     const btnCancelarAgregar1 = document.querySelector("#modalAgregarFinanciamiento .close");
@@ -24,7 +23,6 @@ window.initFinanciamientosModals = function () {
         });
     });
 
-    // Funciones para mostrar y limpiar mensajes dentro del modal
     function mostrarMensaje(texto, tipo = 'error') {
         let mensaje = modalAgregar.querySelector('.alert');
         if (!mensaje) {
@@ -33,7 +31,7 @@ window.initFinanciamientosModals = function () {
             modalAgregar.querySelector('.modal-body').appendChild(mensaje);
         }
         mensaje.textContent = texto;
-        mensaje.className = 'alert'; // reset clases
+        mensaje.className = 'alert';
         if (tipo === 'error') mensaje.classList.add('alert-error');
         else if (tipo === 'success') mensaje.classList.add('alert-success');
     }
@@ -43,7 +41,6 @@ window.initFinanciamientosModals = function () {
         if (mensaje) mensaje.remove();
     }
 
-    // Guardar nuevo financiamiento con validación previa
     const modalGuardar = document.getElementById('modalConfirmarGuardarFinanciamiento');
     const btnAbrirModalGuardar = document.getElementById('btn-guardar-financiamiento');
     const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarFinanciamiento .close");
@@ -59,23 +56,11 @@ window.initFinanciamientosModals = function () {
         const monto = form.monto.value.trim();
         const interes = form.interes.value.trim();
 
-        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(nombre)) {
-            mostrarMensaje('El nombre solo debe contener letras y espacios.');
-            form.nombre.focus();
-            return;
-        }
-        if (!/^\d{1,3}(,\d{3})*(\.\d{1,2})?$/.test(monto) && !/^\d+(\.\d{1,2})?$/.test(monto)) {
-            mostrarMensaje('El monto debe ser un número válido');
-            form.monto.focus();
-            return;
-        }
-        if (!/^\d+(\.\d+)?$/.test(interes)) {
-            mostrarMensaje('El interés debe ser un número decimal válido');
-            form.interes.focus();
+        if (nombre === '' || monto === '' || interes === '') {
+            mostrarMensaje('Todos los campos obligatorios deben completarse.');
             return;
         }
 
-        // Si pasa validación, abrir modal de confirmación
         modalGuardar.classList.add("active");
         overlay.classList.add("active");
         document.body.style.overflow = 'hidden';
@@ -120,65 +105,43 @@ window.initFinanciamientosModals = function () {
                 card.setAttribute("data-tipo", f.tipo.toString());
 
                 card.innerHTML = `
-                <img
-                    src="/static/img/financiamientos/${f.imagen}"
-                    alt="${f.nombre}"
-                    class="card-img-top"
-                    style="height: 200px; width: 100%; object-fit: contain;"
-                />
-                <div class="card-body m-auto" style="width: 90%;">
-                    <div class="card-title text-center">
-                        <h2>${f.nombre}</h2>
-                        <span class="rounded p-1 my-2 financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">
-                            ${f.estado === "Activo" ? 'Activo' : 'Inactivo'}
-                        </span>
-                    </div>
-                    <div class="card-text d-flex flex-column gap-2">
-                        <div class="d-flex flex-row justify-content-between">
-                            <div>
-                                <span class="label">Tipo:</span>
-                                <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span>
-                            </div>
-                            <div>
-                                <span class="label">Monto:</span>
-                                <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                            </div>
+                    <img src="/static/img/financiamientos/${f.imagen}" alt="${f.nombre}" class="card-img-top" style="height: 200px; width: 100%; object-fit: contain;" />
+                    <div class="card-body m-auto" style="width: 90%;">
+                        <div class="card-title text-center">
+                            <h2>${f.nombre}</h2>
+                            <span class="rounded p-1 my-2 financiamiento-badge ${f.estado === "Activo" ? 'active' : 'inactive'}">${f.estado}</span>
                         </div>
-                        <div class="d-flex flex-row justify-content-between">
-                            <div>
-                                <span class="label">Interés:</span>
-                                <span class="value highlight">${f.interes}% Anual</span>
+                        <div class="card-text d-flex flex-column gap-2">
+                            <div class="d-flex flex-row justify-content-between">
+                                <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
+                                <div><span class="label">Monto:</span> <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, {minimumFractionDigits: 2})}</span></div>
                             </div>
-                            <div>
-                                <span class="label">Creación:</span>
-                                <span class="value">${new Date(f.fecha_creacion).toLocaleDateString('es-PE')}</span>
+                            <div class="d-flex flex-row justify-content-between">
+                                <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>
+                                <div><span class="label">Creación:</span> <span class="value">${new Date(f.fecha_creacion).toLocaleDateString('es-PE')}</span></div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-footer">
-                    <div style="width: 90%;" class="m-auto">
-                        <div class="d-flex justify-content-between">
-                            <button class="btn-outline ${f.estado === 'Activo' ? 'btn-danger' : 'btn-success'} toggle-status">
-                                <i class="fas fa-power-off"></i>
-                                ${f.estado === "Activo" ? 'Desactivar' : 'Activar'}
-                            </button>
-                            <button class="btn-outline btn-info show-details">
-                                <i class="fas fa-info-circle"></i> Detalles
-                            </button>
+                    <div class="card-footer">
+                        <div style="width: 90%;" class="m-auto">
+                            <div class="d-flex justify-content-between">
+                                <button class="btn-outline ${f.estado === 'Activo' ? 'btn-danger' : 'btn-success'} toggle-status">
+                                    <i class="fas fa-power-off"></i> ${f.estado === "Activo" ? 'Desactivar' : 'Activar'}
+                                </button>
+                                <button class="btn-outline btn-info show-details">
+                                    <i class="fas fa-info-circle"></i> Detalles
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            `;
+                `;
 
                 document.querySelector(".cards").prepend(card);
                 form.reset();
                 mostrarModalExitoAgregar();
 
                 card.querySelector(".toggle-status").addEventListener("click", toggleStatusHandler);
-
                 filtrarFinanciamientos();
-
             } else {
                 alert("Error al guardar: " + (result.error || "desconocido"));
             }
@@ -281,7 +244,6 @@ window.initFinanciamientosModals = function () {
                 }, 2500);
 
                 filtrarFinanciamientos();
-
             } else {
                 alert("No se pudo cambiar el estado.");
             }
@@ -298,7 +260,6 @@ window.initFinanciamientosModals = function () {
         document.body.style.overflow = '';
     });
 
-    // Variables para filtros y búsqueda
     const inputBusqueda = document.querySelector('.financiamiento-search-box input');
     const filtroEstado = document.getElementById('filterEstado');
     const filtroTipo = document.getElementById('filterTipo');
@@ -320,11 +281,7 @@ window.initFinanciamientosModals = function () {
             const cumpleTipo = (tipoSeleccionado === 'todos' || tipoCard === tipoSeleccionado);
             const cumpleBusqueda = nombre.includes(texto);
 
-            if (cumpleEstado && cumpleTipo && cumpleBusqueda) {
-                card.style.display = '';
-            } else {
-                card.style.display = 'none';
-            }
+            card.style.display = (cumpleEstado && cumpleTipo && cumpleBusqueda) ? '' : 'none';
         });
     }
 
@@ -333,6 +290,38 @@ window.initFinanciamientosModals = function () {
     filtroTipo.addEventListener('change', filtrarFinanciamientos);
 
     filtrarFinanciamientos();
+
+    // ✅ Validación en tiempo real
+    function validarSoloLetras(input) {
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        });
+    }
+
+    function validarSoloNumeros(input) {
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/[^\d]/g, '');
+        });
+    }
+
+    function validarDecimal(input) {
+        input.addEventListener('input', () => {
+            let valor = input.value.replace(/[^0-9.]/g, '');
+            const partes = valor.split('.');
+            if (partes.length > 2) {
+                valor = partes[0] + '.' + partes.slice(1).join('');
+            }
+            input.value = valor;
+        });
+    }
+
+    const inputNombre = document.getElementById('nombre');
+    const inputMonto = document.getElementById('monto');
+    const inputInteres = document.getElementById('interes');
+
+    if (inputNombre) validarSoloLetras(inputNombre);
+    if (inputMonto) validarSoloNumeros(inputMonto);
+    if (inputInteres) validarDecimal(inputInteres);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

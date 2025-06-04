@@ -175,48 +175,51 @@ window.initSecurityModals = function () {
 
     // === CAMBIAR ESTADO EMPLEADOS ===
     btnConfirmarEstado.addEventListener('click', function () {
-        if (!estadoSeleccionado || empleadosSeleccionados.length === 0) {
-            alert('Seleccione al menos un empleado y un estado.');
-            return;
-        }
+    if (!estadoSeleccionado || empleadosSeleccionados.length === 0) {
+        alert('Seleccione al menos un empleado y un estado.');
+        return;
+    }
 
-        fetch('/cambiar_estado_empleados', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
-            },
-            body: JSON.stringify({ ids: empleadosSeleccionados, estado: estadoSeleccionado })
-        })
-            .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
-            .then(data => {
-                if (data.success) {
-                    empleadosSeleccionados.forEach(id => {
-                        const fila = document.querySelector(`.checkbox-empleado[data-id="${id}"]`)?.closest('tr');
-                        if (fila) {
-                            const nuevoEstado = estadoSeleccionado == 1 ? 'Activo' : 'Inactivo';
-                            const estadoClase = estadoSeleccionado == 1 ? 'activo' : 'inactivo';
-                            fila.querySelector('.estado-badge').textContent = nuevoEstado;
-                            fila.querySelector('.estado-badge').className = `estado-badge ${estadoClase}`;
-                            fila.setAttribute('data-estado', estadoClase === 'activo' ? 'activos' : 'inactivos');
-                        }
-                    });
-
-                    opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
-                    estadoSeleccionado = null;
-                    document.querySelectorAll('.checkbox-empleado').forEach(cb => cb.checked = false);
-                    empleadosSeleccionados = [];
-                    cerrarModal(modalCambiarEstado);
-                    mostrarExito('Estado Actualizado', `Se actualizó el estado de ${empleadosSeleccionados.length} empleado(s).`);
-                    actualizarEmpleadosSeleccionados();
-                } else {
-                    alert(data.message || 'Error al actualizar estado.');
+    fetch('/cambiar_estado_empleados', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+        },
+        body: JSON.stringify({ ids: empleadosSeleccionados, estado: estadoSeleccionado })
+    })
+    .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+    .then(data => {
+        if (data.success) {
+            empleadosSeleccionados.forEach(id => {
+                const fila = document.querySelector(`.checkbox-empleado[data-id="${id}"]`)?.closest('tr');
+                if (fila) {
+                    const nuevoEstado = estadoSeleccionado === 'activo' ? 'Activo' : 'Inactivo';
+                    const estadoClase = estadoSeleccionado === 'activo'? 'activo' : 'inactivo';
+                    fila.querySelector('.estado-badge').textContent = nuevoEstado;
+                    fila.querySelector('.estado-badge').className = `estado-badge ${estadoClase}`;
+                    fila.setAttribute('data-estado', estadoClase === 'activo' ? 'activos' : 'inactivos');
                 }
-            })
-            .catch(error => {
-                alert('Error inesperado: ' + error);
             });
+
+            const cantidad = empleadosSeleccionados.length;  // 👈 Capturamos el número ANTES de vaciar el arreglo
+
+            opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+            estadoSeleccionado = null;
+            document.querySelectorAll('.checkbox-empleado').forEach(cb => cb.checked = false);
+            empleadosSeleccionados = [];
+
+            cerrarModal(modalCambiarEstado);
+            mostrarExito('Estado Actualizado', `Se actualizó el estado de ${cantidad} empleado(s).`);
+            actualizarEmpleadosSeleccionados();
+        } else {
+            alert(data.message || 'Error al actualizar estado.');
+        }
+    })
+    .catch(error => {
+        alert('Error inesperado: ' + error);
     });
+});
 
     // === EVENTOS GENERALES ===
     btnCambiarEstado.addEventListener('click', () => {

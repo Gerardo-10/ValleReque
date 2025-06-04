@@ -50,16 +50,28 @@ def cambiar_estado_empleados():
         ids = datos.get("ids", [])
         nuevo_estado = datos.get("estado")
 
-        # Traducción si es texto (opcional)
+        # Validar que se haya enviado el estado
+        if nuevo_estado is None:
+            return jsonify({"success": False, "message": "No se seleccionó ningún estado."}), 400
+
+        # Traducción si es texto
         if nuevo_estado == 'activo':
             nuevo_estado = 1
         elif nuevo_estado == 'inactivo':
             nuevo_estado = 0
         else:
-            nuevo_estado = int(nuevo_estado)
+            try:
+                nuevo_estado = int(nuevo_estado)
+            except (ValueError, TypeError):
+                return jsonify({"success": False, "message": "Estado inválido."}), 400
 
-        if not ids or nuevo_estado is None:
-            return jsonify({"success": False, "message": "Datos incompletos."}), 400
+        # Validar que el estado sea 0 o 1
+        if nuevo_estado not in [0, 1]:
+            return jsonify({"success": False, "message": "Estado no permitido."}), 400
+
+        # Validar que haya al menos un ID
+        if not ids:
+            return jsonify({"success": False, "message": "No se seleccionaron empleados."}), 400
 
         success, message = ModelEmpleado.cambiar_estado_empleados(current_app.db, ids, nuevo_estado)
 
@@ -67,8 +79,10 @@ def cambiar_estado_empleados():
             return jsonify({"success": True, "message": message})
         else:
             return jsonify({"success": False, "message": message}), 500
+
     except Exception as e:
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 @empleado_routes.route('/insertar_empleado', methods=['POST'])
 @login_required

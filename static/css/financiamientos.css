@@ -924,3 +924,110 @@ button {
   background-color: #f8f9fa;
   color: var(--gray-800);
 }
+
+/* Estilo reducido para los modales de confirmación y éxito */
+#modalConfirmarGuardarFinanciamiento .modal-content,
+#modalExitoAgregar .modal-content,
+#modalConfirmarEstadoFinanciamiento .modal-content,
+#modalExitoEstado .modal-content {
+  max-width: 540px; /* antes 800px */
+  width: 90%;
+  padding: 1.5rem 2rem;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Encabezado e íconos */
+#modalConfirmarGuardarFinanciamiento .modal-title,
+#modalExitoAgregar .modal-title,
+#modalConfirmarEstadoFinanciamiento .modal-title,
+#modalExitoEstado .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#modalConfirmarGuardarFinanciamiento .modal-title h2,
+#modalExitoAgregar .modal-title h2,
+#modalConfirmarEstadoFinanciamiento .modal-title h2,
+#modalExitoEstado .modal-title h2 {
+  font-size: 1.4rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+/* Botones más pequeños */
+#modalConfirmarGuardarFinanciamiento .modal-footer button,
+#modalConfirmarEstadoFinanciamiento .modal-footer button {
+  padding: 10px 20px !important;
+  font-size: 0.95rem !important;
+  min-width: auto !important;
+}
+
+/* Footer ordenado horizontalmente */
+#modalConfirmarGuardarFinanciamiento .modal-footer,
+#modalConfirmarEstadoFinanciamiento .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+/* Íconos */
+.icon-warning,
+.icon-success {
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+}
+
+/* Reducir espaciado del modal */
+#modalConfirmarEstadoFinanciamiento .modal-content {
+  padding: 1.2rem 1.8rem;
+}
+
+/* Reducir espacio del título */
+#modalConfirmarEstadoFinanciamiento .modal-header {
+  margin-bottom: 0.5rem;
+}
+
+/* Alinear vertical mejor el título con ícono */
+#modalConfirmarEstadoFinanciamiento .modal-title {
+  align-items: center;
+}
+
+/* Reducir icono y márgenes */
+#modalConfirmarEstadoFinanciamiento .icon-warning {
+  width: 36px;
+  height: 36px;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+/* Reducir espacio entre ícono y texto del body */
+#modalConfirmarEstadoFinanciamiento .confirm-message {
+  padding: 10px 0;
+  margin-top: 0.2rem;
+}
+
+/* Reducir espacio en el footer */
+#modalConfirmarEstadoFinanciamiento .modal-footer {
+  margin-top: 1.2rem;
+}
+
+/* Reducir tamaño del texto */
+#modalConfirmarEstadoFinanciamiento p {
+  font-size: 1rem;
+  margin: 0.5rem 0 0;
+}
+
+#modalConfirmarGuardarFinanciamiento .modal-footer {
+  border-top: none;
+}

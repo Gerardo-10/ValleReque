@@ -51,7 +51,7 @@
                 <div class="card-text d-flex flex-column gap-2">
                     <div class="d-flex flex-row justify-content-between">
                         <div><span class="label">Tipo:</span> <span class="value">{{ 'Estatal' if financiamiento.tipo == 1 else 'Privado' }}</span></div>
-                        <div><span class="label">Monto:</span> <span class="value">S/ {{ "{:,.2f}".format(financiamiento.monto) }}</span></div>
+                        <div><span class="label">Monto:</span> <span class="value">S/ {{ "{:,.0f}".format(financiamiento.monto) }}</span></div>
                     </div>
                     <div class="d-flex flex-row justify-content-between">
                         <div><span class="label">Interés:</span> <span class="value highlight">{{ financiamiento.interes }}% Anual</span></div>
@@ -103,7 +103,7 @@
                     <input id="monto" name="monto" type="text" required
                            pattern="^\d{1,3}(,\d{3})*(\.\d{1,2})?$|^\d+(\.\d{1,2})?$"
                            title="Número válido: 25,000 o 25000.00"
-                           placeholder="Ej: 10000.00"
+                           placeholder="Ej: S/10000"
                            autocomplete="off" />
                 </div>
                 <div class="form-group">

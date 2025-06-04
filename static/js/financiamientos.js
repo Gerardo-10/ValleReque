@@ -101,7 +101,7 @@ window.initFinanciamientosModals = function () {
                         <div class="card-text d-flex flex-column gap-2">
                             <div class="d-flex flex-row justify-content-between">
                                 <div><span class="label">Tipo:</span> <span class="value">${f.tipo === 1 ? 'Estatal' : 'Privado'}</span></div>
-                                <div><span class="label">Monto:</span> <span class="value">S/ ${parseFloat(f.monto).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span></div>
+                                <div><span class="value">S/ ${parseFloat(f.monto).toLocaleString('es-PE', { maximumFractionDigits: 0 })}</span></div>
                             </div>
                             <div class="d-flex flex-row justify-content-between">
                                 <div><span class="label">Interés:</span> <span class="value highlight">${f.interes}% Anual</span></div>

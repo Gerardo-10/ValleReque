@@ -123,72 +123,66 @@
             </div>
             <div class="modal-body">
                 <form id="formAgregarFinanciamiento" novalidate>
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <input type="hidden" name="estado" value="Activo"/>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <input type="hidden" name="estado" value="Activo" />
                     <div class="form-group">
                         <label for="nombre">Nombre*</label>
                         <input
-                                id="nombre"
-                                name="nombre"
-                                type="text"
-                                required
-                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-                                title="Solo letras y espacios, sin números ni símbolos"
-                                autocomplete="off"
+                            id="nombre"
+                            name="nombre"
+                            type="text"
+                            autocomplete="off"
                         />
                     </div>
+
                     <div class="form-group">
                         <label for="monto">Monto del Bono*</label>
                         <input
-                                id="monto"
-                                name="monto"
-                                type="text"
-                                required
-                                pattern="^\d{1,3}(,\d{3})*(\.\d{1,2})?$|^\d+(\.\d{1,2})?$"
-                                title="Número válido: 25,000 o 25000.00"
-                                autocomplete="off"
+                            id="monto"
+                            name="monto"
+                            type="text"
+                            autocomplete="off"
                         />
                     </div>
+
                     <div class="form-group">
                         <label for="interes">Interés anualmente*</label>
                         <input
-                                id="interes"
-                                name="interes"
-                                type="text"
-                                required
-                                pattern="^\d+(\.\d+)?$"
-                                title="Número decimal válido, ejemplo: 2.5"
-                                autocomplete="off"
+                            id="interes"
+                            name="interes"
+                            type="text"
+                            autocomplete="off"
                         />
                     </div>
+
                     <div class="form-group">
                         <label for="tipo">Tipo de Financiamiento*</label>
-                        <select id="tipo" name="tipo" required>
+                        <select id="tipo" name="tipo">
                             <option value="">Seleccionar...</option>
                             <option value="1">Estatal</option>
                             <option value="2">Privado</option>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="fecha_creacion">Fecha de Creación*</label>
                         <input
-                                id="fecha_creacion"
-                                name="fecha_creacion"
-                                type="date"
-                                required
+                            id="fecha_creacion"
+                            name="fecha_creacion"
+                            type="date"
                         />
                     </div>
+
                     <div class="form-group">
                         <label for="imagen">Foto de Referencia*</label>
                         <input
-                                type="file"
-                                name="imagen"
-                                accept="image/png, image/jpeg"
-                                required
+                            type="file"
+                            name="imagen"
+                            accept="image/png, image/jpeg"
                         />
                     </div>
                 </form>
-            </div>
+
             <div class="modal-footer">
                 <button class="btn-secondary" id="btn-cancelar-financiamiento-footer">
                     Cancelar

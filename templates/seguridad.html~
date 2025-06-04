@@ -204,6 +204,7 @@
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
                         <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
+                        <div id="modalOverlay" class="overlay"></div>
                     </div>
                 </form>
             </div>

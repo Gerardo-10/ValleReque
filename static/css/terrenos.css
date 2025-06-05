@@ -241,3 +241,320 @@ textarea:focus {
         transform: translateY(0);
     }
 }
+
+/* === ESTILO UNIFICADO PARA MODAL EDITAR TERRENO === */
+#modalEditarTerreno.modal-terreno {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#modalEditarTerreno.modal-terreno.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+#modalEditarTerreno .modal-content {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* HEADER */
+#modalEditarTerreno .modal-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-300);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#modalEditarTerreno .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#modalEditarTerreno .modal-title h2 {
+  font-size: 1.6rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin: 0;
+}
+
+#modalEditarTerreno .modal-title p {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+#modalEditarTerreno .icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* FORM */
+#modalEditarTerreno .modal-body {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+#modalEditarTerreno form#formEditarTerreno {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+#modalEditarTerreno label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--gray-800);
+  margin-bottom: 4px;
+}
+
+#modalEditarTerreno input,
+#modalEditarTerreno select {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1.5px solid var(--gray-300);
+  border-radius: 8px;
+  background-color: white;
+  color: var(--gray-900);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#modalEditarTerreno input:focus,
+#modalEditarTerreno select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 4px rgba(33, 150, 243, 0.25);
+  outline: none;
+}
+
+/* FOOTER */
+#modalEditarTerreno .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+#modalEditarTerreno button.btn-secondary {
+  background-color: var(--gray-200);
+  color: var(--gray-800);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalEditarTerreno button.btn-secondary:hover {
+  background-color: var(--gray-300);
+}
+
+#modalEditarTerreno button.btn-editar {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalEditarTerreno button.btn-editar:hover {
+  background-color: #1976D2;
+}
+
+#modalEditarTerreno select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%23666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 18px 18px;
+}
+
+:root {
+  --primary: #2196F3;
+  --gray-300: #dee2e6;
+  --gray-900: #212529;
+}
+
+/* === ESTILO UNIFICADO PARA MODAL AGREGAR TERRENO === */
+#modalAgregarTerreno.modal-terreno {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#modalAgregarTerreno.modal-terreno.active {
+  display: flex;
+  opacity: 1;
+  visibility: visible;
+}
+
+#modalAgregarTerreno .modal-content {
+  background: #fff;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* HEADER */
+#modalAgregarTerreno .modal-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gray-300);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#modalAgregarTerreno .modal-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#modalAgregarTerreno .modal-title h2 {
+  font-size: 1.6rem;
+  color: var(--primary);
+  font-weight: 700;
+  margin: 0;
+}
+
+#modalAgregarTerreno .modal-title p {
+  font-size: 0.95rem;
+  color: var(--gray-600);
+  margin: 0;
+}
+
+#modalAgregarTerreno .icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--primary);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+}
+
+/* FORM */
+#modalAgregarTerreno .modal-body {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+#modalAgregarTerreno form#formAgregarTerreno {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+#modalAgregarTerreno label {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--gray-800);
+  margin-bottom: 4px;
+}
+
+#modalAgregarTerreno input,
+#modalAgregarTerreno select {
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: 1.5px solid var(--gray-300);
+  border-radius: 8px;
+  background-color: white;
+  color: var(--gray-900);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+#modalAgregarTerreno input:focus,
+#modalAgregarTerreno select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+  outline: none;
+}
+
+#modalAgregarTerreno select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='%23666' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 18px 18px;
+}
+
+/* FOOTER */
+#modalAgregarTerreno .modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 2rem;
+}
+
+#modalAgregarTerreno button.btn-secondary {
+  background-color: var(--gray-200);
+  color: var(--gray-800);
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalAgregarTerreno button.btn-secondary:hover {
+  background-color: var(--gray-300);
+}
+
+#modalAgregarTerreno button.btn-agregar {
+  background-color: var(--primary);
+  color: white;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 700;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+#modalAgregarTerreno button.btn-agregar:hover {
+  background-color: #1976D2;
+}

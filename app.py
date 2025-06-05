@@ -66,4 +66,4 @@ register_error_handlers(app)
 # Ejecutar la app
 if __name__ == '__main__':
     logger.info("Aplicación iniciada en modo desarrollo")
-    app.run()
+    app.run(debug=True)

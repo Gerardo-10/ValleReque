@@ -156,31 +156,30 @@ function initTerrenosModals() {
                 modalGuardar.classList.remove("active");
                 overlay.classList.remove("active");
                 modalAgregar.classList.remove("active");
-
                 const terreno = result.terreno;
-
+                const estado = (terreno.estado || 'Disponible').toLowerCase();
+                if (estado === "eliminado") return;
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.setAttribute('data-id', terreno.id_terreno);
-                nuevaFila.setAttribute('data-estado', (terreno.estado || 'Disponible').toLowerCase());
+                nuevaFila.setAttribute('data-estado', estado);
                 nuevaFila.innerHTML = `
-                    <td>${terreno.id_terreno}</td>
-                    <td>${terreno.nombre_proyecto}</td>
-                    <td>${terreno.etapa}</td>
-                    <td>${terreno.codigo_unidad}</td>
-                    <td>${terreno.unidad}</td>
-                    <td>${terreno.manzana}</td>
-                    <td>${terreno.lote}</td>
-                    <td>${terreno.area}</td>
-                    <td>${terreno.precio}</td>
-                    <td>${terreno.tipo}</td>
-                    <td>${terreno.estado || 'Disponible'}</td>
-                    <td class="acciones">
-                        <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>
-                        <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}">Eliminar</button>
-                    </td>
+                  <td>${terreno.id_terreno}</td>
+                  <td>${terreno.nombre_proyecto}</td>
+                  <td>${terreno.etapa}</td>
+                  <td>${terreno.area}</td>
+                  <td>${terreno.precio}</td>
+                  <td>${estado}</td>
+                  <td>${terreno.tipo}</td>
+                  <td>${terreno.manzana}</td>
+                  <td>${terreno.lote}</td>
+                  <td>${terreno.codigo_unidad}</td>
+                  <td class="acciones">
+                    <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>
+                    <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}">Eliminar</button>
+                  </td>
                 `;
                 document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
-
+                initTerrenosModals(); // re-vincula los eventos de los botones recién creados
                 form.reset();
                 mostrarModalExitoAgregar();
             } else {
@@ -238,18 +237,22 @@ function initTerrenosModals() {
 
                 // Actualizar la fila en la tabla
                 const fila = document.querySelector(`tr[data-id="${idTerreno}"]`);
+                if (terreno.estadoTerreno.toLowerCase() === "eliminado") {
+                    fila.remove(); // Elimina la fila si ahora está eliminada
+                    return;
+                }
                 if (fila) {
                     fila.innerHTML = `
                     <td>${terreno.id_terreno}</td>
                     <td>${terreno.nombre_proyecto}</td>
                     <td>${terreno.etapa}</td>
-                    <td>${terreno.codigo_unidad}</td>
-                    <td>${terreno.unidad}</td>
-                    <td>${terreno.manzana}</td>
-                    <td>${terreno.lote}</td>
                     <td>${terreno.area}</td>
                     <td>${terreno.precio}</td>
-                    <td>${terreno.tipoTerreno}</td>
+                    <td>${terreno.estado}</td>
+                    <td>${terreno.tipo}</td>
+                    <td>${terreno.manzana}</td>
+                    <td>${terreno.lote}</td>
+                    <td>${terreno.codigo_unidad}</td>
                     <td>${terreno.estadoTerreno}</td>
                     <td class="acciones">
                         <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>

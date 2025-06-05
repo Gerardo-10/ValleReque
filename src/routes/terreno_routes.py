@@ -14,8 +14,8 @@ def terrenos():
     terrenos = ModelTerreno.get_all(current_app.db)
     proyectos = ModelProyecto.get_all(current_app.db)
 
-    # Crear diccionario: id_proyecto -> nombre
-    proyectos_dict = {proy.id_proyecto: proy.nombre for proy in proyectos}
+    # Crear diccionario: id_proyecto -> nombre_proyecto
+    proyectos_dict = {proy.id_proyecto: proy.nombre_proyecto for proy in proyectos}
 
     # Enlazar el nombre del proyecto a cada terreno
     for t in terrenos:
@@ -40,7 +40,6 @@ def insertar_terreno():
             terreno = {
                 'id_proyecto': form['proyecto'],
                 'etapa': form['etapa'],
-                'unidad': form['unidad'],
                 'tipoTerreno': form['tipoTerreno'],
                 'area': form['area'],
                 'precio': form['precio'],
@@ -54,13 +53,12 @@ def insertar_terreno():
             id_terreno = ModelTerreno.insert(current_app.db, terreno, id_proyecto)
 
             proyecto = ModelProyecto.get_by_id(current_app.db, id_proyecto)
-            nombre_proyecto = proyecto.nombre
+            nombre_proyecto = proyecto.nombre_proyecto
 
             terreno_json = {
                 'id_terreno': id_terreno,
                 'nombre_proyecto': nombre_proyecto,
                 'etapa': terreno['etapa'],
-                'unidad': terreno['unidad'],
                 'area': terreno['area'],
                 'precio': terreno['precio'],
                 'tipo': terreno['tipoTerreno'],
@@ -97,7 +95,6 @@ def actualizar_terreno():
 
             terreno = {
                 'etapa': form['etapa'],
-                'unidad': form['unidad'],
                 'tipoTerreno': form['tipoTerreno'],
                 'area': form['area'],
                 'precio': form['precio'],
@@ -117,7 +114,6 @@ def actualizar_terreno():
                 'nombre_proyecto': nombre_proyecto,
                 'etapa': terreno['etapa'],
                 'codigo_unidad': terreno['codigo_unidad'],
-                'unidad': terreno['unidad'],
                 'manzana': terreno['manzana'],
                 'lote': terreno['lote'],
                 'area': terreno['area'],

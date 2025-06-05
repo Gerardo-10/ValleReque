@@ -28,7 +28,7 @@
                         <option value="">Filtrar por...</option>
                         <option value="proyecto">Proyecto</option>
                         <option value="etapa">Etapa</option>
-                        <option value="unidad">Unidad</option>
+                        <option value="unidad">Codigo Unidad</option>
                     </select>
                 </div>
                 <div class="filtro-container">
@@ -54,14 +54,13 @@
                         <th>ID</th>
                         <th>Proyecto</th>
                         <th>Etapa</th>
-                        <th>Codigo Unidad</th>
-                        <th>Unidad</th>
-                        <th>Manzana</th>
-                        <th>N° Lote</th>
                         <th>Área</th>
                         <th>Precio</th>
-                        <th>Tipo</th>
                         <th>Estado</th>
+                        <th>Tipo / Terreno</th>
+                        <th>Manzana</th>
+                        <th>N° de Lote</th>
+                        <th>Codigo Unidad</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
@@ -70,15 +69,14 @@
                         <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower }}">
                             <td>{{ terreno.id_terreno }}</td>
                             <td>{{ terreno.nombre_proyecto }}</td>
-                            <td>{{ terreno.etapa }}</td>
-                            <td>{{ terreno.codigo_unidad }}</td>
-                            <td>{{ terreno.unidad }}</td>
-                            <td>{{ terreno.manzana }}</td>
-                            <td>{{ terreno.lote }}</td>
+                            <td>{{ terreno.etapa}}</td>
                             <td>{{ terreno.area }}</td>
-                            <td>{{ terreno.precio }}</td>
-                            <td>{{ terreno.tipo }}</td>
-                            <td>{{ terreno.estado }}</td>
+                            <td>{{ terreno.precio_terreno }}</td>
+                            <td>{{ terreno.estado_terreno}}</td>
+                            <td>{{ terreno.tipo_terreno}}</td>
+                            <td>{{ terreno.manzana }}</td>
+                            <td>{{ terreno.numero_lote}}</td>
+                            <td>{{ terreno.codigo_unidad }}</td>
                             <td class="acciones">
                                 <button class="btn-editar-terreno"
                                         data-id="{{ terreno.id_terreno }}">Editar
@@ -134,10 +132,6 @@
                             <option value="1">1</option>
                             <option value="2">2</option>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="unidad">Unidad*</label>
-                        <input id="unidad" name="unidad" type="number" required>
                     </div>
                     <div class="form-group">
                         <label for="manzana">Manzana*</label>
@@ -213,10 +207,6 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="unidad">Unidad*</label>
-                        <input id="unidad" name="unidad" type="number" required>
-                    </div>
-                    <div class="form-group">
                         <label for="manzana">Selecciona la Manzana*</label>
                         <select id="manzana" name="manzana" required>
                             <option value="">Seleccionar...</option>
@@ -278,7 +268,7 @@
                     <div>
                         <h2>¿Desea eliminar este terreno?</h2>
                         <p>Esta acción no se puede deshacer.</p>
-                        <p>El terreno será eliminado permanentemente.</p>
+                        <p>El terreno será marcado como eliminado y no será visible para los usuarios.</p>
                     </div>
                 </div>
                 <span class="close" id="btn-cancelar-terreno">&times;</span>

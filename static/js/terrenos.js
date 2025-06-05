@@ -19,6 +19,44 @@ function initTerrenosModals() {
         });
     });
 
+    // === LÓGICA DE BÚSQUEDA Y FILTRO DE TERRENOS ===
+    const inputBuscarTerreno = document.getElementById("buscarTerreno");
+    const filtroCampoTerreno = document.getElementById("filtroTerrenos");
+    const filtroEstadoTerreno = document.getElementById("filtroTerrenosEstado");
+
+    function filtrarTerrenos() {
+        const texto = inputBuscarTerreno.value.trim().toLowerCase();
+        const campo = filtroCampoTerreno.value;
+        const estado = filtroEstadoTerreno.value.toLowerCase();
+
+        document.querySelectorAll("#tabla_terrenos tbody tr").forEach(fila => {
+            const cols = fila.children;
+            const data = {
+                proyecto: cols[1].textContent.toLowerCase(),
+                etapa: cols[2].textContent.toLowerCase(),
+                unidad: cols[9].textContent.toLowerCase(),
+                estado: cols[5].textContent.toLowerCase()
+            };
+
+            // Filtro por campo específico
+            const coincideCampo = campo
+                ? data[campo]?.includes(texto)
+                : Object.values(data).some(val => val.includes(texto));
+
+            // Filtro por estado
+            const coincideEstado = estado === "todos" || data.estado === estado;
+
+            fila.style.display = (coincideCampo && coincideEstado) ? "" : "none";
+        });
+    }
+
+    inputBuscarTerreno.addEventListener("input", filtrarTerrenos);
+    filtroCampoTerreno.addEventListener("change", () => {
+        inputBuscarTerreno.value = "";
+        filtrarTerrenos();
+    });
+    filtroEstadoTerreno.addEventListener("change", filtrarTerrenos);
+
     // Editar Terreno
     const modalEditar = document.getElementById("modalEditarTerreno");
     const btnCancelarEditar1 = document.querySelector("#modalEditarTerreno .close");

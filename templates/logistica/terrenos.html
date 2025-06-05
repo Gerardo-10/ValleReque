@@ -122,27 +122,19 @@
                         <label for="proyecto">Selecciona el Proyecto*</label>
                         <select id="proyecto" name="proyecto" required>
                             <option value="">Seleccionar...</option>
-                            <option value="1">Valle Reque</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="etapa">Selecciona la Etapa*</label>
-                        <select id="etapa" name="etapa" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
+                        <label for="etapa">Etapa*</label>
+                       <input type="number" id="etapa" name="etapa" min="1" disabled required>
                     </div>
                     <div class="form-group">
                         <label for="manzana">Manzana*</label>
-                        <select id="manzana" name="manzana" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                            <option value="C">C</option>
-                            <option value="D">D</option>
-                            <option value="E">E</option>
-                        </select>
+                        <input type="text" id="manzana" name="manzana" pattern="[A-Za-z]{1,2}" maxlength="2" required
+                               oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();">
                     </div>
                     <div class="form-group">
                         <label for="lote">N° de Lote*</label>
@@ -199,20 +191,13 @@
                     <input type="hidden" name="codigo_unidad" id="codigo_unidad">
                     <input type="hidden" name="nombre_proyecto" id="nombre_proyecto">
                     <div class="form-group">
-                        <label for="etapa">Selecciona la Etapa*</label>
-                        <select id="etapa" name="etapa" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                        </select>
+                        <label for="etapa">Etapa*</label>
+                        <input type="number" id="etapaEditar" name="etapa" min="1" max="99" maxlength="2" required>
                     </div>
                     <div class="form-group">
-                        <label for="manzana">Selecciona la Manzana*</label>
-                        <select id="manzana" name="manzana" required>
-                            <option value="">Seleccionar...</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                        </select>
+                        <label for="manzana">Manzana*</label>
+                        <input type="text" id="manzana" name="manzana" pattern="[A-Za-z]{1,2}" maxlength="2" required
+                               oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();">
                     </div>
                     <div class="form-group">
                         <label for="lote">N° de Lote*</label>
@@ -377,8 +362,10 @@
         </div>
     </div>
 
-    <!-- Overlay para modales -->
     <div class="modal-overlay-terreno" id="modalOverlay"></div>
-
+   <script>
+        window.etapasPorProyecto = {{ etapas_dict | tojson | safe }};
+    </script>
     <script src="{{ url_for('static', filename='js/terrenos.js') }}"></script>
+
 {% endblock %}

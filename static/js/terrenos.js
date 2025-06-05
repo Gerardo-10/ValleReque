@@ -12,6 +12,37 @@ function initTerrenosModals() {
         overlay.classList.add("active");
     });
 
+    document.addEventListener("DOMContentLoaded", () => {
+    const etapasPorProyecto = window.etapasPorProyecto || {};
+    const selectProyecto = document.getElementById("proyecto");
+    const inputEtapa = document.getElementById("etapa");
+
+    if (!selectProyecto || !inputEtapa) return;
+
+    selectProyecto.addEventListener("change", function () {
+        const proyectoId = this.value;
+        const numEtapas = etapasPorProyecto[proyectoId];
+
+        if (numEtapas === undefined) {
+            inputEtapa.value = "";
+            inputEtapa.setAttribute("disabled", true);
+            return;
+        }
+
+        if (numEtapas === 0) {
+            alert("Este proyecto no tiene etapas definidas. Por favor, cree las etapas en la sección de proyectos.");
+            inputEtapa.value = "";
+            inputEtapa.setAttribute("disabled", true);
+            return;
+        }
+
+        inputEtapa.setAttribute("max", numEtapas);
+        inputEtapa.setAttribute("min", 1);
+        inputEtapa.removeAttribute("disabled");
+    });
+});
+
+
     [btnCancelarAgregar1, btnCancelarAgregar2].forEach(el => {
         el?.addEventListener("click", () => {
             modalAgregar.classList.remove("active");
@@ -364,3 +395,6 @@ function initTerrenosModals() {
         overlay.classList.remove("active");
     });
 }
+document.addEventListener("DOMContentLoaded", () => {
+    initTerrenosModals();
+});

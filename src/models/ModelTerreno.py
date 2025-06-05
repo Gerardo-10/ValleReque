@@ -42,18 +42,17 @@ class ModelTerreno:
             cursor.execute(
                 "CALL sp_insertar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
-                    id_proyecto,
-                    terreno['etapa'],
-                    terreno['tipoTerreno'],
-                    terreno['area'],
-                    terreno['precio'],
-                    terreno['estadoTerreno'],  # Puedes pasar 'Disponible' si no se especifica
-                    terreno['manzana'],
-                    terreno['lote'],
+                    id_proyecto,  # 1
+                    terreno['etapa'],  # 2
+                    terreno['area'],  # 3
+                    terreno['precio'],  # 4
+                    terreno['estadoTerreno'],  # 5
+                    terreno['tipoTerreno'],  # 6
+                    terreno['manzana'],  # 7
+                    terreno['lote'],  # 8
                     terreno['codigo_unidad']
                 )
             )
-
             while cursor.nextset():
                 if cursor.description:
                     break

@@ -268,26 +268,78 @@ window.initFinanciamientosModals = function () {
     filtrarFinanciamientos();
 
     document.getElementById('nombre').addEventListener('input', function () {
-        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '')
+        .slice(0, 50); 
     });
 
     document.getElementById('monto').addEventListener('input', function () {
-        let valor = this.value.replace(/\D/g, ''); //Solo números
-        this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        let valor = this.value.replace(/\D/g, '').slice(0, 10); // Limita a 10 dígitos
+        this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Agrega separador de miles
     });
 
     document.getElementById('interes').addEventListener('input', function () {
-    let valor = this.value;
-
-    valor = valor.replace(/,/g, '.');
-    valor = valor.replace(/[^0-9.]/g, '');
-    const partes = valor.split('.');
-    if (partes.length > 2) {
-        valor = partes[0] + '.' + partes[1]; // Ignora puntos extra
-    }
-
-    this.value = valor.slice(0, 5); // Limita a 5 caracteres
+        let valor = this.value;
+        valor = valor.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+        const partes = valor.split('.');
+        if (partes.length > 2) {
+            valor = partes[0] + '.' + partes[1];
+        }
+        this.value = valor.slice(0, 5);
     });
+
+    document.getElementById('imagen').addEventListener('change', async function () {
+    const archivo = this.files[0];
+    if (archivo) {
+        const tipo = archivo.type;
+        if (tipo !== "image/png" && tipo !== "image/jpeg") {
+            // Oculta momentáneamente el modal actual
+            modalAgregar.classList.remove("active");
+            overlay.classList.remove("active");
+            document.body.style.overflow = '';
+
+            await Swal.fire({
+                icon: 'warning',
+                title: 'Archivo no permitido',
+                text: 'Solo se permiten imágenes PNG o JPG.',
+                confirmButtonColor: '#f44336'
+            });
+
+            this.value = "";
+
+            // Reabre el modal
+            modalAgregar.classList.add("active");
+            overlay.classList.add("active");
+            document.body.style.overflow = 'hidden';
+        }
+    }
+});
+
+document.getElementById('fecha_creacion').addEventListener('change', async function () {
+    const hoy = new Date().toISOString().split('T')[0];
+    if (this.value > hoy) {
+        // Cerrar momentáneamente el modal para que Swal se vea al frente
+        modalAgregar.classList.remove("active");
+        overlay.classList.remove("active");
+        document.body.style.overflow = '';
+
+        await Swal.fire({
+            icon: 'warning',
+            title: 'Fecha inválida',
+            text: 'La fecha no puede ser futura.',
+            confirmButtonColor: '#f44336'
+        });
+
+        this.value = "";
+
+        // Reabrir el modal
+        modalAgregar.classList.add("active");
+        overlay.classList.add("active");
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+
+
 
 
 };

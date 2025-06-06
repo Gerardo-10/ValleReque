@@ -1031,3 +1031,11 @@ button {
 #modalConfirmarGuardarFinanciamiento .modal-footer {
   border-top: none;
 }
+
+.card.actualizado {
+    outline: 2px solid #28a745;
+    box-shadow: 0 0 6px #28a745;
+    transition: all 0.3s ease-in-out;
+}
+
+

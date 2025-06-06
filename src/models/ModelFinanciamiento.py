@@ -45,7 +45,7 @@ class ModelFinanciamiento:
             cursor.execute(
                 "CALL sp_insertar_financiamiento(%s, %s, %s, %s, %s, %s, %s)",
                 (financiamiento['tipo'], financiamiento['nombre'], financiamiento['monto'],
-                 financiamiento['interes'], financiamiento['estado'] ,financiamiento['fecha_creacion'], financiamiento['imagen'])
+                 financiamiento['interes'], financiamiento['estado'], financiamiento['fecha_creacion'], financiamiento['imagen'])
             )
 
             while cursor.nextset():
@@ -63,7 +63,7 @@ class ModelFinanciamiento:
             return None
 
     @classmethod
-    def update_status(cls,db, financiamiento, nuevo_estado):
+    def update_status(cls, db, financiamiento, nuevo_estado):
         try:
             cursor = db.connection.cursor()
             cursor.execute("CALL sp_actualizar_estado_financiamiento(%s, %s)", (financiamiento, nuevo_estado))
@@ -73,4 +73,27 @@ class ModelFinanciamiento:
         except Exception as ex:
             db.connection.rollback()
             print(f"Error al cambiar estados: {ex}")
+            return False
+
+    @classmethod
+    def update(cls, db, financiamiento):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute(
+                "CALL sp_actualizar_financiamiento(%s, %s, %s, %s, %s, %s, %s)",
+                (
+                    financiamiento['id_financiamiento'],
+                    financiamiento['nombre'],
+                    financiamiento['monto'],
+                    financiamiento['interes'],
+                    financiamiento['tipo'],
+                    financiamiento['fecha_creacion'],
+                    financiamiento.get('imagen', None)  # puede venir vacío
+                )
+            )
+            db.connection.commit()
+            return True
+        except Exception as e:
+            db.connection.rollback()
+            print(f"[ERROR update financiamiento]: {e}")
             return False

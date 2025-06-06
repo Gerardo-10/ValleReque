@@ -65,8 +65,8 @@
                         <button class="btn-outline {{ 'btn-danger' if financiamiento.estado == 'Activo' else 'btn-success' }} toggle-status">
                             <i class="fas fa-power-off"></i> {{ 'Desactivar' if financiamiento.estado == 'Activo' else 'Activar' }}
                         </button>
-                        <button class="btn-outline btn-info show-details">
-                            <i class="fas fa-info-circle"></i> Detalles
+                        <button class="btn-outline btn-info edit-financiamiento">
+                            <i class="fas fa-edit"></i> Editar
                         </button>
                     </div>
                 </div>
@@ -139,22 +139,101 @@
     </div>
 </div>
 
-<!-- Modal Confirmación -->
-<div class="modal-financiamiento" id="modalConfirmarGuardarFinanciamiento">
+<!-- Modal para Editar financiamiento -->
+<div class="modal-financiamiento" id="modalEditarFinanciamiento">
     <div class="modal-content">
         <div class="modal-header">
             <div class="modal-title">
-                <div class="icon-warning"><i class="fas fa-exclamation-circle"></i></div>
-                <h2>¿Desea guardar el nuevo Financiamiento?</h2>
+                <div class="icon-circle"><i class="fas fa-edit"></i></div>
+                <div><h2>Editar Financiamiento</h2></div>
             </div>
-            <span class="close" id="btnCerrarConfirmarGuardar">&times;</span>
+            <span class="close" id="btnCerrarEditar">&times;</span>
         </div>
+
+        <div class="modal-body">
+            <form id="formEditarFinanciamiento" novalidate enctype="multipart/form-data">
+                <!-- CSRF -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <!-- IDs ocultos -->
+                <input type="hidden" id="id_financiamiento_editar" name="id_financiamiento" />
+                <input type="hidden" id="imagen_actual" name="imagen_actual" />
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label for="nombreEditar">Nombre*</label>
+                    <input id="nombreEditar" name="nombre" type="text" required
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$"
+                        maxlength="50"
+                        title="Solo letras y espacios, máximo 50 caracteres"
+                        placeholder="Ej: Bono Reactiva"
+                        autocomplete="off" />
+                </div>
+
+                <!-- Monto -->
+                <div class="form-group">
+                    <label for="montoEditar">Monto del Bono*</label>
+                    <input id="montoEditar" name="monto" type="text" required
+                        pattern="^\d{1,3}(,\d{3}){0,2}$|^\d{1,6}$"
+                        maxlength="10"
+                        title="Número válido: 25,000 o 10000. Máximo 6 cifras"
+                        placeholder="Ej: 25,000 o 10000"
+                        autocomplete="off" />
+                </div>
+
+                <!-- Interés -->
+                <div class="form-group">
+                    <label for="interesEditar">Interés anualmente*</label>
+                    <input id="interesEditar" name="interes" type="text" required
+                        pattern="^\d{1,2}([.,]\d{1,2})?$"
+                        maxlength="5"
+                        placeholder="Ej: 2.5"
+                        title="Solo números con hasta dos decimales (Ej. 2.5)"
+                        autocomplete="off" />
+                </div>
+
+                <!-- Tipo -->
+                <div class="form-group">
+                    <label for="tipoEditar">Tipo de Financiamiento*</label>
+                    <select id="tipoEditar" name="tipo" required>
+                        <option value="">Seleccionar...</option>
+                        <option value="1">Estatal</option>
+                        <option value="2">Privado</option>
+                    </select>
+                </div>
+
+                <!-- Fecha -->
+                <div class="form-group">
+                    <label for="fechaEditar">Fecha de Creación*</label>
+                    <input id="fechaEditar" name="fecha_creacion" type="date" required />
+                </div>
+
+                <!-- Imagen -->
+                <div class="form-group">
+                    <label for="imagenEditar">Foto de Referencia</label>
+                    <input id="imagenEditar" type="file" name="imagen" accept="image/png, image/jpeg" />
+                </div>
+
+                <!-- Vista previa -->
+                <div class="form-group">
+                    <label>Imagen actual:</label>
+                    <img id="imagenVistaEditar"
+                        src="/static/img/default.jpg"
+                        data-ruta-base="/static/uploads/"
+                        onerror="this.src='/static/img/default.jpg'"
+                        alt="Vista previa"
+                        style="max-width: 100%; max-height: 150px; object-fit: contain; border-radius: 8px;" />
+                </div>
+            </form>
+        </div>
+
         <div class="modal-footer">
-            <button class="btn-secondary" id="btn-atras-guardar">Atrás</button>
-            <button class="btn-confirmar-financiamiento" id="btn-confirmar-guardar-financiamiento">Continuar</button>
+            <button class="btn-secondary" id="btnCancelarEditar">Cancelar</button>
+            <button class="btn-agregar" id="btn-actualizar-financiamiento">Actualizar</button>
         </div>
     </div>
 </div>
+
 
 <!-- Modal de Éxito -->
 <div class="modal-financiamiento" id="modalExitoAgregar">

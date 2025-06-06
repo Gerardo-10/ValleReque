@@ -102,3 +102,50 @@ def cambiar_estado():
         return {"error": str(e)}, 500
 
     return {"error": "No se pudo cambiar el estado del financiamiento"}, 500
+
+@financiamiento_routes.route("/actualizar_financiamiento", methods=["POST"])
+@login_required
+def actualizar_financiamiento():
+    try:
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            form = request.form
+            file = request.files.get("imagen")  # nombre correcto del input
+
+            # Manejar imagen si se sube una nueva
+            filename = None
+            if file and file.filename != "":
+                filename = secure_filename(file.filename)
+                upload_path = os.path.join(current_app.root_path, 'static', 'uploads', filename)
+
+                # ✅ Crear la carpeta si no existe
+                os.makedirs(os.path.dirname(upload_path), exist_ok=True)
+
+                # ✅ Guardar la imagen
+                file.save(upload_path)
+
+            # Si no se subió imagen nueva, mantener la anterior
+            if not filename:
+                filename = form.get("imagen_actual", None)
+
+            financiamiento = {
+                "id_financiamiento": form["id_financiamiento"],
+                "nombre": form["nombre"].strip(),
+                "monto": float(form["monto"]),
+                "interes": float(form["interes"].replace(",", ".")),
+                "tipo": form["tipo"],
+                "fecha_creacion": datetime.strptime(form["fecha_creacion"], "%Y-%m-%d"),
+                "imagen": filename  # puede ser nueva o la anterior
+            }
+
+            actualizado = ModelFinanciamiento.update(current_app.db, financiamiento)
+
+            if actualizado:
+                return jsonify({"success": True}), 200
+            else:
+                return jsonify({"success": False, "error": "No se pudo actualizar en la base de datos"}), 400
+
+    except Exception as e:
+        print(f"[ERROR actualizar financiamiento]: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify({"error": "Solicitud inválida"}), 400

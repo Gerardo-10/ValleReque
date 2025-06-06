@@ -4,6 +4,12 @@ window.initFinanciamientosModals = function () {
     const modalAgregar = document.getElementById('modalAgregarFinanciamiento');
     const btnCancelarAgregar1 = document.querySelector("#modalAgregarFinanciamiento .close");
     const btnCancelarAgregar2 = document.querySelector("#modalAgregarFinanciamiento .btn-secondary");
+    const modalEditar = document.getElementById('modalEditarFinanciamiento');
+    const btnCancelarEditar = document.querySelector("#modalEditarFinanciamiento .btn-secondary");
+    const btnCerrarEditar = document.querySelector("#modalEditarFinanciamiento .close");
+    const btnActualizar = document.getElementById("btn-actualizar-financiamiento");
+    const formEditar = document.getElementById("formEditarFinanciamiento");
+    const vistaPreviaImagen = document.getElementById("imagenVistaEditar");
 
     btnAgregarFinanciamiento?.addEventListener("click", () => {
         limpiarMensaje();
@@ -25,6 +31,11 @@ window.initFinanciamientosModals = function () {
     function limpiarMensaje() {
         const mensaje = modalAgregar.querySelector('.alert');
         if (mensaje) mensaje.remove();
+    }
+
+    function formatearFecha(fechaDDMMYYYY) {
+        const [dd, mm, yyyy] = fechaDDMMYYYY.split('/');
+        return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
     }
 
     const btnAbrirModalGuardar = document.getElementById('btn-guardar-financiamiento');
@@ -339,7 +350,199 @@ document.getElementById('fecha_creacion').addEventListener('change', async funct
 });
 
 
+[btnCancelarEditar, btnCerrarEditar].forEach(btn => {
+    btn?.addEventListener("click", () => {
+        modalEditar.classList.remove("active");
+        overlay.classList.remove("active");
+        document.body.style.overflow = '';
+        formEditar.reset();
+        if (vistaPreviaImagen) vistaPreviaImagen.src = "/static/img/default.jpg";
+    });
+});
 
+// Mostrar imagen seleccionada en la vista previa antes de guardar
+document.getElementById("imagenEditar").addEventListener("change", function (event) {
+    const archivo = event.target.files[0];
+    if (archivo && vistaPreviaImagen) {
+        const urlTemporal = URL.createObjectURL(archivo);
+        vistaPreviaImagen.src = urlTemporal;
+    }
+});
+
+document.addEventListener('click', function (e) {
+    const editBtn = e.target.closest('.edit-financiamiento');
+    if (!editBtn) return;
+
+    const card = editBtn.closest('.card');
+    if (!card) {
+        console.error("No se encontró tarjeta .card para editar");
+        return;
+    }
+
+    const id = card.getAttribute("data-id");
+    const nombre = card.querySelector(".card-title h2")?.textContent.trim();
+    const tipo = card.getAttribute("data-tipo");
+    const valores = card.querySelectorAll(".value");
+
+    const montoTexto = valores[1]?.textContent.trim();
+    const interesTexto = valores[2]?.textContent.trim();
+    const fechaTexto = valores[3]?.textContent.trim();
+    const imagenElement = card.querySelector("img.card-img-top");
+    const imagenSrc = imagenElement?.getAttribute("src");
+
+    function formatearFecha(fechaDDMMYYYY) {
+        const [dd, mm, yyyy] = fechaDDMMYYYY.split('/');
+        return `${yyyy}-${mm.padStart(2, '0')}-${dd.padStart(2, '0')}`;
+    }
+
+    const monto = montoTexto.replace(/[^\d]/g, '');
+    const interes = interesTexto.replace('% Anual', '').replace(',', '.').trim();
+    const fechaFormateada = formatearFecha(fechaTexto);
+
+    document.getElementById("id_financiamiento_editar").value = id;
+    document.getElementById("nombreEditar").value = nombre;
+    document.getElementById("tipoEditar").value = tipo;
+    document.getElementById("montoEditar").value = Number(monto).toLocaleString('es-PE');
+    document.getElementById("interesEditar").value = interes;
+    document.getElementById("fechaEditar").value = fechaFormateada;
+
+    const vistaPrevia = document.getElementById("imagenVistaEditar");
+    const baseRuta = vistaPrevia?.dataset.rutaBase || "/static/uploads/";
+
+    if (imagenSrc) {
+        const imagenNombre = imagenSrc.split("/").pop();
+        const rutaCompleta = baseRuta + imagenNombre + "?t=" + Date.now();
+        vistaPrevia.src = rutaCompleta;
+        document.getElementById("imagen_actual").value = imagenNombre;
+        console.log("✅ Cargando imagen:", rutaCompleta);
+    } else {
+        vistaPrevia.src = "/static/img/default.jpg";
+        document.getElementById("imagen_actual").value = "";
+        console.warn("⚠️ No se encontró src en la tarjeta, cargando imagen por defecto.");
+    }
+
+    modalEditar.classList.add("active");
+    overlay.classList.add("active");
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('nombreEditar').addEventListener('input', function () {
+    this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '').slice(0, 50);
+});
+
+document.getElementById('montoEditar').addEventListener('input', function () {
+    let valor = this.value.replace(/\D/g, '').slice(0, 10);
+    this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+});
+
+document.getElementById('interesEditar').addEventListener('input', function () {
+    let valor = this.value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+    const partes = valor.split('.');
+    if (partes.length > 2) {
+        valor = partes[0] + '.' + partes[1];
+    }
+    this.value = valor.slice(0, 5);
+});
+
+btnActualizar?.addEventListener("click", async (e) => {
+    e.preventDefault();
+
+    if (!formEditar.checkValidity()) {
+        formEditar.reportValidity();
+        return;
+    }
+
+    modalEditar.classList.remove("active");
+    overlay.classList.remove("active");
+    document.body.style.overflow = '';
+
+    const confirm = await Swal.fire({
+        icon: 'warning',
+        title: '¿Desea actualizar el financiamiento?',
+        showCancelButton: true,
+        confirmButtonText: 'Actualizar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#6c757d'
+    });
+
+    if (!confirm.isConfirmed) {
+        modalEditar.classList.add("active");
+        overlay.classList.add("active");
+        document.body.style.overflow = 'hidden';
+        return;
+    }
+
+    const formData = new FormData(formEditar);
+    const id = formData.get("id_financiamiento");
+    const fMonto = formData.get("monto") || "0";
+    formData.set("monto", fMonto.replace(/,/g, ''));
+
+    try {
+        const response = await fetch("/actualizar_financiamiento", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Actualizado correctamente',
+                text: 'Los datos fueron actualizados.',
+                confirmButtonColor: '#28a745',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            const card = document.querySelector(`.card[data-id="${id}"]`);
+            if (card) {
+                const nombre = document.getElementById("nombreEditar").value.trim();
+                const tipo = document.getElementById("tipoEditar").value;
+                const monto = document.getElementById("montoEditar").value.trim();
+                const interes = document.getElementById("interesEditar").value.trim();
+                const fecha = document.getElementById("fechaEditar").value;
+
+                card.querySelector(".card-title h2").textContent = nombre;
+                card.setAttribute("data-tipo", tipo);
+
+                const valores = card.querySelectorAll(".value");
+                valores[1].textContent = "S/ " + Number(monto.replace(/,/g, '')).toLocaleString('es-PE');
+                valores[2].textContent = interes + "% Anual";
+
+                const fechaObj = new Date(fecha);
+                valores[3].textContent = fechaObj.toLocaleDateString('es-PE');
+
+                const imagenInput = document.getElementById("imagenEditar");
+                const imagenCard = card.querySelector("img.card-img-top");
+                if (imagenInput && imagenInput.files.length > 0 && imagenCard) {
+                    const nombreImagen = imagenInput.files[0].name;
+                    imagenCard.src = "/static/uploads/" + nombreImagen + "?t=" + Date.now();
+                }
+                card.classList.add("actualizado");
+                setTimeout(() => card.classList.remove("actualizado"), 2000);
+            }
+
+            formEditar.reset();
+            if (vistaPreviaImagen) vistaPreviaImagen.src = "/static/img/default.jpg";
+
+        } else {
+            throw new Error(result.error || "Error al actualizar");
+        }
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: error.message || "Error al actualizar financiamiento.",
+            confirmButtonColor: '#dc3545'
+        });
+    }
+});
 
 
 };

@@ -5,6 +5,7 @@ from .financiamiento_routes import financiamiento_routes
 from .home_routes import home_routes
 from .proyecto_routes import proyecto_routes
 from .terreno_routes import terreno_routes
+from .ventas_routes import ventas_routes
 
 def register_routes(app):
     app.register_blueprint(auth_routes)
@@ -14,3 +15,4 @@ def register_routes(app):
     app.register_blueprint(terreno_routes)
     app.register_blueprint(proyecto_routes)
     app.register_blueprint(financiamiento_routes)
+    app.register_blueprint(ventas_routes)

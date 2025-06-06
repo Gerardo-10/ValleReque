@@ -9,10 +9,13 @@
       <w>basica</w>
       <w>boton</w>
       <w>busqueda</w>
+      <w>clickeado</w>
       <w>codigo</w>
       <w>confirmacion</w>
       <w>contrasena</w>
+      <w>cotizacion</w>
       <w>creacion</w>
+      <w>descripcion</w>
       <w>direccion</w>
       <w>edicion</w>
       <w>electronico</w>
@@ -36,6 +39,7 @@
       <w>urbanizacion</w>
       <w>useremote</w>
       <w>uservalle</w>
+      <w>vacio</w>
       <w>validacion</w>
     </words>
   </dictionary>

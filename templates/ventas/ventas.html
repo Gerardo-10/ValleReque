@@ -1,0 +1,275 @@
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ventas.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="contenedor-principal">
+        <form class="formulario-cotizacion-inmobiliaria">
+            <!-- Sección de Información del Comprador -->
+            <div class="seccion-formulario">
+                <div class="encabezado-seccion">
+                    <h2>Información del Comprador</h2>
+                    <div class="metadatos-info">
+                        <span>Fecha: 25/10/2025</span>
+                        <span>Asesor: Benito</span>
+                    </div>
+                </div>
+                <p class="descripcion-seccion">Verifica que los datos del comprador estén correctos</p>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="documento-identidad">DNI</label>
+                        <input type="text" id="documento-identidad" value="76961202" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="nombres-comprador">Nombres</label>
+                        <input type="text" id="nombres-comprador" value="Billy recontra gay" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="apellidos-comprador">Apellidos</label>
+                        <input type="text" id="apellidos-comprador" value="......" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="estado-evaluacion">Estado del Cliente</label>
+                        <input type="text" id="estado-evaluacion" value="Evaluado" class="control-formulario">
+                    </div>
+                </div>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="ingreso-mensual">Ingreso Neto</label>
+                        <div class="prefijo-entrada">
+                            <span>s/</span>
+                            <input type="text" id="ingreso-mensual" value="3500.00" class="control-formulario">
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="telefono-contacto">Teléfono</label>
+                        <input type="text" id="telefono-contacto" value="930805480" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="ocupacion-laboral">Ocupación</label>
+                        <input type="text" id="ocupacion-laboral" value="Piruja" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="dependientes-familiares">Carga Familiar</label>
+                        <input type="text" id="dependientes-familiares" value="Si" class="control-formulario">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Selección de Propiedad -->
+            <div class="seccion-formulario">
+                <div class="encabezado-seccion">
+                    <h2>Selección de Propiedad</h2>
+                </div>
+                <p class="descripcion-seccion">Solo podrás seleccionar aquellos terrenos que estén disponibles. Verifica
+                    en Logística > Terrenos</p>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="proyecto-inmobiliario">Seleccione el proyecto</label>
+                        <div class="envoltorio-select">
+                            <select id="proyecto-inmobiliario" class="control-formulario">
+                                <option selected>VALLE-REQUE</option>
+                                <option>OTRO PROYECTO</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="codigo-unidad-habitacional">Código de Unidad</label>
+                        <input type="text" id="codigo-unidad-habitacional" value="A-13" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="etapa-construccion">Etapa</label>
+                        <input type="text" id="etapa-construccion" value="IV" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="disponibilidad-terreno">¿Disponible?</label>
+                        <input type="text" id="disponibilidad-terreno" value="Si" class="control-formulario">
+                    </div>
+                </div>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="precio-propiedad">Precio</label>
+                        <div class="prefijo-entrada">
+                            <span>s/</span>
+                            <input type="text" id="precio-propiedad" value="10000.00" class="control-formulario">
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="tipo-ubicacion">Tipo</label>
+                        <input type="text" id="tipo-ubicacion" value="CALLE/PARQUE" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="area-terreno">Área</label>
+                        <input type="text" id="area-terreno" value="60 m2" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <!-- Espacio vacío para mantener la alineación -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Configuración Financiera -->
+            <div class="seccion-formulario">
+                <div class="encabezado-seccion">
+                    <h2>Configuración Financiera</h2>
+                </div>
+                <p class="descripcion-seccion">Verifica si los financiamientos actuales están disponibles para realizar
+                    una venta</p>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="plan-financiamiento">Seleccione el financiamiento</label>
+                        <div class="envoltorio-select">
+                            <select id="plan-financiamiento" class="control-formulario">
+                                <option selected>Techo Propio 2025</option>
+                                <option>Otro financiamiento</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="monto-subsidio">Monto del bono</label>
+                        <div class="prefijo-entrada">
+                            <span>s/</span>
+                            <input type="text" id="monto-subsidio" value="56000.00" class="control-formulario">
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="tasa-interes">Interés</label>
+                        <input type="text" id="tasa-interes" value="0.0%" class="control-formulario">
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="numero-cuotas">Cuotas</label>
+                        <input type="text" id="numero-cuotas" value="36" class="control-formulario">
+                    </div>
+                </div>
+
+                <div class="fila-campos">
+                    <div class="grupo-campo">
+                        <label for="fecha-vencimiento-cuotas">Fecha de Pagos</label>
+                        <div class="contenedor-fecha-calendario">
+                            <input type="text" id="fecha-vencimiento-cuotas" value="07/XX" class="control-formulario"
+                                   readonly>
+                            <button type="button" class="boton-calendario" id="btn-abrir-calendario">
+                                <i class="fas fa-calendar-alt"></i>
+                            </button>
+                            <!-- Calendario personalizado -->
+                            <div class="calendario-personalizado" id="calendario-fechas">
+                                <div class="encabezado-calendario">
+                                    <button type="button" class="btn-nav-calendario" id="btn-mes-anterior">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <span class="mes-actual" id="mes-actual">Enero</span>
+                                    <button type="button" class="btn-nav-calendario" id="btn-mes-siguiente">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="dias-calendario" id="dias-calendario">
+                                    <!-- Los días se generarán dinámicamente -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label for="pago-inicial">Inicial</label>
+                        <div class="prefijo-entrada">
+                            <span>s/</span>
+                            <input type="text" id="pago-inicial" value="3000.00" class="control-formulario">
+                        </div>
+                    </div>
+                    <div class="grupo-campo grupo-subida"><br>
+                        <div class="contenedor-subida-documento" id="contenedor-subida-constancia">
+                            <button type="button" class="boton boton-contorno" id="btn-subir-constancia">
+                                <i class="fas fa-upload"></i>
+                                Subir constancia
+                            </button>
+                            <input type="file" id="archivo-constancia-pdf" accept=".pdf" style="display: none;">
+                        </div>
+                        <div class="contenedor-vista-documento" id="contenedor-vista-constancia" style="display: none;">
+                            <button type="button" class="boton boton-ver-pdf" id="btn-ver-constancia">
+                                <i class="fas fa-eye"></i>
+                                Ver constancia
+                            </button>
+                            <button type="button" class="boton boton-cambiar" id="btn-cambiar-constancia">
+                                <i class="fas fa-exchange-alt"></i>
+                                Cambiar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grupo-campo"><br>
+                        <button type="button" class="boton boton-primario" id="btn-continuar-cotizacion">Continuar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección de Resumen de Cotización (inicialmente oculta) -->
+            <div class="seccion-formulario" id="seccion-resumen-cotizacion" style="display: none;">
+                <div class="encabezado-seccion">
+                    <h2>Resumen de Cotización</h2>
+                </div>
+                <p class="descripcion-seccion">Verificar los detalles e indicar al cliente el resumen de lo que se ha
+                    asignado</p>
+
+                <div class="tabla-responsiva">
+                    <table class="tabla-cotizacion">
+                        <thead>
+                        <tr>
+                            <th>Descripción</th>
+                            <th>Monto a Financiar</th>
+                            <th>Monto de venta</th>
+                            <th>Pago Inicial</th>
+                            <th>Interés</th>
+                            <th>Cuotas</th>
+                            <th>Fechas de pago</th>
+                            <th>Cronogramas</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>VALLE REQUE - ETAPA IV</td>
+                            <td>s/7000.00</td>
+                            <td>s/70000.00</td>
+                            <td>s/3000.00</td>
+                            <td>0.0%</td>
+                            <td>12</td>
+                            <td>07/XX</td>
+                            <td>
+                                <button type="button" class="boton-icono">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="acciones-formulario"
+                     style="display: flex; justify-content: center; gap: 20px; width: 100%;">
+                    <button type="button" class="boton boton-peligro">Generar venta</button>
+                    <button type="button" class="boton boton-secundario">Generar Cotización</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal para visualizar PDF -->
+    <div class="modal-pdf" id="modal-visualizar-pdf" style="display: none;">
+        <div class="contenido-modal-pdf">
+            <div class="encabezado-modal-pdf">
+                <h3>Constancia de Pago</h3>
+                <button type="button" class="cerrar-modal" id="cerrar-modal-pdf">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="cuerpo-modal-pdf">
+                <iframe id="visor-pdf" src="" width="100%" height="500px"></iframe>
+            </div>
+        </div>
+    </div>
+{% endblock %}

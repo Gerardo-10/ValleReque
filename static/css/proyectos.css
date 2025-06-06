@@ -17,6 +17,11 @@
     --proy-info-bg: #e3f2fd;
     --proy-info-color: #0d47a1;
     --proy-card-header-bg: #1a237e;
+    --proy-parque-color: #4CAF50;
+    --proy-esquina-parque-color: #2E7D32;
+    --proy-esquina-color: #FF9800;
+    --proy-avenida-color: #2196F3;
+    --proy-calle-color: #9C27B0;
 }
 
 .proy-main-content {
@@ -652,4 +657,198 @@
     margin-bottom: 20px;
     max-width: 400px;
     line-height: 1.5;
+}
+
+/* Estilos para el grid de precios */
+.proy-precios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.proy-precio-card {
+    background: #ffffff;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.proy-precio-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+}
+
+.proy-precio-parque::before {
+    background: var(--proy-parque-color);
+}
+
+.proy-precio-esquina-parque::before {
+    background: var(--proy-esquina-parque-color);
+}
+
+.proy-precio-esquina::before {
+    background: var(--proy-esquina-color);
+}
+
+.proy-precio-avenida::before {
+    background: var(--proy-avenida-color);
+}
+
+.proy-precio-calle::before {
+    background: var(--proy-calle-color);
+}
+
+.proy-precio-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.proy-precio-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.proy-precio-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.proy-precio-parque .proy-precio-icon {
+    background: var(--proy-parque-color);
+}
+
+.proy-precio-esquina-parque .proy-precio-icon {
+    background: var(--proy-esquina-parque-color);
+}
+
+.proy-precio-esquina .proy-precio-icon {
+    background: var(--proy-esquina-color);
+}
+
+.proy-precio-avenida .proy-precio-icon {
+    background: var(--proy-avenida-color);
+}
+
+.proy-precio-calle .proy-precio-icon {
+    background: var(--proy-calle-color);
+}
+
+.proy-precio-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333333;
+}
+
+.proy-input-currency {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.proy-currency-symbol {
+    position: absolute;
+    left: 12px;
+    font-weight: 600;
+    color: #666666;
+    z-index: 1;
+}
+
+.proy-input-currency input {
+    padding-left: 35px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.proy-precio-description {
+    font-size: 12px;
+    color: #666666;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
+/* Resumen de Precios */
+.proy-precio-resumen {
+    background: #f8f9fa;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.proy-precio-resumen h4 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.proy-resumen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+}
+
+.proy-resumen-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.proy-resumen-label {
+    font-weight: 500;
+    color: #666666;
+}
+
+.proy-resumen-value {
+    font-weight: 600;
+    color: #333333;
+    font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .proy-precios-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .proy-resumen-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .proy-precio-card {
+        padding: 15px;
+    }
+
+    .proy-precio-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
 }

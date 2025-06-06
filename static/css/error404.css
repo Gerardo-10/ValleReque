@@ -1,0 +1,264 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8fafc;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.error-container {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+    max-width: 600px;
+    padding: 40px;
+}
+
+.error-number {
+    font-size: 200px;
+    font-weight: 900;
+    background: linear-gradient(45deg, #22c55e, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 0.8;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.error-number::before {
+    content: '404';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: linear-gradient(45deg, #22c55e, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: blur(20px);
+    opacity: 0.3;
+    z-index: -1;
+}
+
+.error-title {
+    font-size: 42px;
+    color: #1e293b;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.error-subtitle {
+    font-size: 18px;
+    color: #64748b;
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+.btn-home {
+    display: inline-block;
+    padding: 15px 40px;
+    background: linear-gradient(135deg, #22c55e, #3b82f6);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(34, 197, 94, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-home::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-home:hover::before {
+    left: 100%;
+}
+
+.btn-home:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(34, 197, 94, 0.4);
+}
+
+/* Elementos decorativos flotantes */
+.floating-elements {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    animation: float 6s ease-in-out infinite;
+}
+
+.circle-1 {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, #22c55e, #3b82f6);
+    opacity: 0.1;
+    top: 10%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.circle-2 {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(45deg, #3b82f6, #22c55e);
+    opacity: 0.08;
+    top: 60%;
+    right: 15%;
+    animation-delay: 2s;
+}
+
+.circle-3 {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(45deg, #22c55e, #3b82f6);
+    opacity: 0.12;
+    bottom: 20%;
+    left: 20%;
+    animation-delay: 4s;
+}
+
+.circle-4 {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #3b82f6, #22c55e);
+    opacity: 0.1;
+    top: 30%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+.triangle {
+    position: absolute;
+    width: 0;
+    height: 0;
+    animation: rotate 8s linear infinite;
+}
+
+.triangle-1 {
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 50px solid #22c55e;
+    opacity: 0.1;
+    top: 20%;
+    right: 20%;
+    animation-delay: 1s;
+}
+
+.triangle-2 {
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 40px solid #3b82f6;
+    opacity: 0.08;
+    bottom: 30%;
+    right: 40%;
+    animation-delay: 3s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+    }
+    50% {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Efecto de partículas */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: particle-float 10s linear infinite;
+}
+
+.particle:nth-child(2n) {
+    background: #3b82f6;
+    animation-duration: 12s;
+}
+
+.particle:nth-child(3n) {
+    animation-duration: 8s;
+}
+
+@keyframes particle-float {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .error-number {
+        font-size: 120px;
+    }
+
+    .error-title {
+        font-size: 28px;
+    }
+
+    .error-subtitle {
+        font-size: 16px;
+    }
+
+    .error-container {
+        padding: 20px;
+    }
+}

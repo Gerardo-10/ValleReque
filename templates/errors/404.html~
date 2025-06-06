@@ -1,7 +1,39 @@
 {% extends './base.html' %}
 
+{% block customCSS %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/error404.css') }}">
+{% endblock %}
+
 {% block title %}Valle Reque - Error 404{% endblock %}
 
 {% block body %}
-    <h1>Bienvenido, {{ current_user.username }}</h1>
+    <div class="floating-elements">
+        <div class="circle circle-1"></div>
+        <div class="circle circle-2"></div>
+        <div class="circle circle-3"></div>
+        <div class="circle circle-4"></div>
+        <div class="triangle triangle-1"></div>
+        <div class="triangle triangle-2"></div>
+    </div>
+
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 4.5s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-number">404</div>
+        <h1 class="error-title">¡Oops! Página perdida</h1>
+        <p class="error-subtitle">
+            Lo sentimos, la página que estás buscando no existe o ha sido movida.
+        </p>
+        <a href="{{ url_for('home_routes.sidebar') }}" class="btn-home">Regresar al inicio</a>
+    </div>
 {% endblock %}

@@ -5,6 +5,7 @@ function initVentasModals() {
     const contenedorSubidaConstancia = document.getElementById('contenedor-subida-constancia');
     const contenedorVistaConstancia = document.getElementById('contenedor-vista-constancia');
     const btnVerConstancia = document.getElementById('btn-ver-constancia');
+    const btnVerConstanciaTabla = document.getElementById('btn-ver-constancia-tabla');
     const btnCambiarConstancia = document.getElementById('btn-cambiar-constancia');
     const btnContinuarCotizacion = document.getElementById('btn-continuar-cotizacion');
     const seccionResumenCotizacion = document.getElementById('seccion-resumen-cotizacion');
@@ -61,6 +62,13 @@ function initVentasModals() {
 
     // Funcionalidad para ver constancia PDF
     btnVerConstancia.addEventListener('click', function () {
+        if (archivoConstanciaActual) {
+            visorPdf.src = URL.createObjectURL(archivoConstanciaActual);
+            modalVisualizarPdf.style.display = 'flex';
+        }
+    });
+
+    btnVerConstanciaTabla.addEventListener('click', function () {
         if (archivoConstanciaActual) {
             visorPdf.src = URL.createObjectURL(archivoConstanciaActual);
             modalVisualizarPdf.style.display = 'flex';

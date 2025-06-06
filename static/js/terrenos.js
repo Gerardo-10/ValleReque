@@ -90,96 +90,131 @@ function initTerrenosModals() {
     });
 
     btnConfirmarGuardar?.addEventListener("click", async () => {
-        const form = document.getElementById("formAgregarTerreno");
-        const formData = new FormData(form);
-        formData.append('estadoTerreno', 'Disponible');
+    const form = document.getElementById("formAgregarTerreno");
+    const formData = new FormData(form);
+    formData.append('estadoTerreno', 'Disponible');  // Aquí se puede modificar según el valor real del estado
 
-        try {
-            const response = await fetch("/insertar_terreno", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            });
+    try {
+        const response = await fetch("/insertar_terreno", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        });
 
-            const result = await response.json();
+        const result = await response.json();
 
-            if (result.success) {
-                modalGuardar.classList.remove("active");
-                overlay.classList.remove("active");
-                modalAgregar.classList.remove("active");
-                const terreno = result.terreno;
-                const estado = (terreno.estado || 'Disponible').toLowerCase();
-                if (estado === "eliminado") return;
-                const nuevaFila = document.createElement('tr');
-                nuevaFila.setAttribute('data-id', terreno.id_terreno);
-                nuevaFila.setAttribute('data-estado', estado);
-                nuevaFila.innerHTML = `
-                  <td>${terreno.id_terreno}</td>
-                  <td>${terreno.nombre_proyecto}</td>
-                  <td>${terreno.etapa}</td>
-                  <td>${terreno.area}</td>
-                  <td>${parseFloat(terreno.precio).toFixed(2)}</td>
-                  <td>${estado}</td>
-                  <td>${terreno.tipo}</td>
-                  <td>${terreno.manzana}</td>
-                  <td>${terreno.lote}</td>
-                  <td>${terreno.codigo_unidad}</td>
-                  <td class="acciones">
+        if (result.success) {
+            modalGuardar.classList.remove("active");
+            overlay.classList.remove("active");
+            modalAgregar.classList.remove("active");
+            const terreno = result.terreno;
+            const estado = (terreno.estado || 'Disponible').toLowerCase(); // Se asegura de que el estado esté en minúsculas
+
+            if (estado === "eliminado") return;
+
+            // Asignamos la clase correspondiente según el estado
+            const clasesEstado = {
+                'disponible': 'disponible',
+                'vendido': 'vendido',
+                'reservado': 'reservado',
+                'enproceso': 'enproceso',
+                'nodisponible': 'nodisponible',
+                'eliminado': 'eliminado'
+            };
+
+            const nuevaFila = document.createElement('tr');
+            nuevaFila.setAttribute('data-id', terreno.id_terreno);
+            nuevaFila.setAttribute('data-estado', estado);
+
+            // Aquí agregamos la clase correspondiente al estado
+            const claseEstado = clasesEstado[estado] || 'disponible';  // Si no hay coincidencia, asigna 'disponible' como predeterminado
+            nuevaFila.innerHTML = `
+                <td>${terreno.id_terreno}</td>
+                <td>${terreno.nombre_proyecto}</td>
+                <td>${terreno.etapa}</td>
+                <td>${terreno.area}</td>
+                <td>${parseFloat(terreno.precio).toFixed(2)}</td>
+                <td><span class="estado-terreno ${claseEstado}">${estado}</span></td>
+                <td>${terreno.tipo}</td>
+                <td>${terreno.manzana}</td>
+                <td>${terreno.lote}</td>
+                <td>${terreno.codigo_unidad}</td>
+                <td class="acciones">
                     <button class="btn-editar-terreno" data-id="${terreno.id_terreno}"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}"><i class="fa-solid fa-trash"></i></button>
-                  </td>`;
-                document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
-                initTerrenosModals();
-                form.reset();
-                mostrarModalExitoAgregar();
-            } else {
-                alert("Error al guardar el terreno: " + (result.error || "desconocido"));
-            }
-        } catch (error) {
-            alert("Error en la solicitud: " + error.message);
+                </td>`;
+
+            document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
+            initTerrenosModals();  // Asegúrate de inicializar los modales si es necesario
+            form.reset();
+            mostrarModalExitoAgregar();
+        } else {
+            alert("Error al guardar el terreno: " + (result.error || "desconocido"));
         }
-    });
+    } catch (error) {
+        alert("Error en la solicitud: " + error.message);
+    }
+});
+
 
 
     // === LÓGICA DE BÚSQUEDA Y FILTRO DE TERRENOS ===
-    const inputBuscarTerreno = document.getElementById("buscarTerreno");
-    const filtroCampoTerreno = document.getElementById("filtroTerrenos");
-    const filtroEstadoTerreno = document.getElementById("filtroTerrenosEstado");
+const inputBuscarTerreno = document.getElementById("buscarTerreno");
+const filtroCampoTerreno = document.getElementById("filtroTerrenos");
+const filtroEstadoTerreno = document.getElementById("filtroTerrenosEstado");
 
-    function filtrarTerrenos() {
-        const texto = inputBuscarTerreno.value.trim().toLowerCase();
-        const campo = filtroCampoTerreno.value;
-        const estado = filtroEstadoTerreno.value.toLowerCase();
+// Función de filtrado
+function filtrarTerrenos() {
+    const texto = inputBuscarTerreno.value.trim().toLowerCase();
+    const campo = filtroCampoTerreno.value;
+    const estado = filtroEstadoTerreno.value.toLowerCase();
 
-        document.querySelectorAll("#tabla_terrenos tbody tr").forEach(fila => {
-            const cols = fila.children;
-            const data = {
-                proyecto: cols[1].textContent.toLowerCase(),
-                etapa: cols[2].textContent.toLowerCase(),
-                unidad: cols[9].textContent.toLowerCase(),
-                estado: cols[5].textContent.toLowerCase()
-            };
+    document.querySelectorAll("#tabla_terrenos tbody tr").forEach(fila => {
+        const cols = fila.children;
 
-            // Filtro por campo específico
-            const coincideCampo = campo
-                ? data[campo]?.includes(texto)
-                : Object.values(data).some(val => val.includes(texto));
+        // Extraemos el estado y lo comparamos en formato limpio
+        const estadoTexto = cols[5].querySelector("span") ?
+            cols[5].querySelector("span").textContent.trim().toLowerCase().replace(/\s+/g, '') : "";
 
-            // Filtro por estado
-            const coincideEstado = estado === "todos" || data.estado === estado;
+        const data = {
+            proyecto: cols[1].textContent.toLowerCase(),
+            etapa: cols[2].textContent.toLowerCase(),
+            unidad: cols[9].textContent.toLowerCase(),
+            estado: estadoTexto
+        };
 
-            fila.style.display = (coincideCampo && coincideEstado) ? "" : "none";
-        });
-    }
+        // Filtro por campo específico
+        const coincideCampo = campo
+            ? data[campo]?.includes(texto)
+            : Object.values(data).some(val => val.includes(texto));
 
-    inputBuscarTerreno.addEventListener("input", filtrarTerrenos);
-    filtroCampoTerreno.addEventListener("change", () => {
-        inputBuscarTerreno.value = "";
-        filtrarTerrenos();
+        // Filtro por estado
+        const coincideEstado = estado === "todos" || data.estado === estado;
+
+        fila.style.display = (coincideCampo && coincideEstado) ? "" : "none";
     });
-    filtroEstadoTerreno.addEventListener("change", filtrarTerrenos);
+}
+
+
+
+// Agregar los event listeners y depurar
+inputBuscarTerreno.addEventListener("input", function() {
+    console.log("Evento 'input' activado en búsqueda de terreno");
+    filtrarTerrenos();
+});
+
+filtroCampoTerreno.addEventListener("change", function() {
+    console.log("Evento 'change' activado en campo de filtro");
+    inputBuscarTerreno.value = ""; // Limpiar búsqueda
+    filtrarTerrenos();
+});
+
+filtroEstadoTerreno.addEventListener("change", function() {
+    console.log("Evento 'change' activado en filtro de estado");
+    filtrarTerrenos();
+});
 
     // Editar Terreno
     const modalEditar = document.getElementById("modalEditarTerreno");

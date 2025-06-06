@@ -283,9 +283,37 @@ window.initFinanciamientosModals = function () {
         .slice(0, 50); 
     });
 
+    // Función para formatear el campo 'Monto del Bono'
     document.getElementById('monto').addEventListener('input', function () {
-        let valor = this.value.replace(/\D/g, '').slice(0, 10); // Limita a 10 dígitos
-        this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Agrega separador de miles
+        let valor = this.value;
+
+        // Reemplazar las comas por espacios vacíos (eliminarlas)
+        valor = valor.replace(/,/g, '');
+
+        // Permitir solo números y un solo punto decimal
+        let partes = valor.split('.');
+
+        // Limitar la parte entera a 10 dígitos
+        partes[0] = partes[0].replace(/\D/g, '').slice(0, 10);
+
+        // Limitar la parte decimal a 2 dígitos, si existe
+        if (partes[1]) {
+            partes[1] = partes[1].slice(0, 2); // Limitar a dos decimales
+        }
+
+        // Reconstruir el valor con enteros y decimales
+        valor = partes.join('.');
+
+        // Formatear la parte entera con separadores de miles
+        let [entero, decimal] = valor.split('.');
+        entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+        // Si hay decimales, agregar el punto y los decimales
+        if (decimal) {
+            this.value = entero + '.' + decimal;
+        } else {
+            this.value = entero;
+        }
     });
 
     document.getElementById('interes').addEventListener('input', function () {
@@ -431,8 +459,8 @@ document.getElementById('nombreEditar').addEventListener('input', function () {
 });
 
 document.getElementById('montoEditar').addEventListener('input', function () {
-    let valor = this.value.replace(/\D/g, '').slice(0, 10);
-    this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    let valor = this.value.replace(/\D/g, '').slice(0, 10); // Limitar a 10 dígitos
+    this.value = valor.replace(/\B(?=(\d{3})+(?!\d))/g, ','); // Formatear con coma
 });
 
 document.getElementById('interesEditar').addEventListener('input', function () {

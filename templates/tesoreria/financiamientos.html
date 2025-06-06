@@ -93,19 +93,20 @@
                 <div class="form-group">
                     <label for="nombre">Nombre*</label>
                     <input id="nombre" name="nombre" type="text" required
-                           pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
-                           title="Solo letras y espacios, sin números ni símbolos"
-                           placeholder="Ej: Bono Reactiva"
-                           autocomplete="off" />
+                        pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$"
+                        title="Solo letras y espacios, sin números ni símbolos"
+                        placeholder="Ej: Bono Reactiva"
+                        autocomplete="off" />
                 </div>
                 <div class="form-group">
                     <label for="monto">Monto del Bono*</label>
                     <input id="monto" name="monto" type="text" required
-                           pattern="^\d{1,3}(,\d{3})*(\.\d{1,2})?$|^\d+(\.\d{1,2})?$"
-                           title="Número válido: 25,000 o 25000.00"
-                           placeholder="Ej: S/10000"
-                           autocomplete="off" />
+                        title="Número válido: 25,000 o 25000.00"
+                        placeholder="Ej: S/10000.00"
+                        autocomplete="off" />
                 </div>
+
+
                 <div class="form-group">
                     <label for="interes">Interés anualmente*</label>
                     <input id="interes" name="interes" type="text" required

@@ -61,10 +61,10 @@ def insertar_terreno():
                 'id_terreno': id_terreno,
                 'nombre_proyecto': nombre_proyecto,
                 'etapa': terreno['etapa'],
-                'area': terreno['area'],
-                'precio': terreno['precio'],
-                'tipo': terreno['tipoTerreno'],
+                'area': float (terreno['area']),
+                'precio': float (terreno['precio']),
                 'estado': terreno['estadoTerreno'],
+                'tipo': terreno['tipoTerreno'],
                 'manzana': terreno['manzana'],
                 'lote': terreno['lote'],
                 'codigo_unidad': terreno['codigo_unidad']

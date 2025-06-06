@@ -54,3 +54,4 @@
 2025-06-05 13:26:04,150 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-05 10:39:57,884 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-05 10:39:58,689 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-06 00:21:32,803 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (138)")

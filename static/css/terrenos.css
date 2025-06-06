@@ -558,3 +558,31 @@ textarea:focus {
 #modalAgregarTerreno button.btn-agregar:hover {
   background-color: #1976D2;
 }
+
+.acciones {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1px; /* Espacio entre botones */
+}
+
+
+.acciones button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.acciones button:hover i {
+    color: #007BFF; /* azul para editar */
+}
+
+.acciones button:nth-child(2):hover i {
+    color: #dc3545; /* rojo para eliminar */
+}
+
+.tabla-terrenos thead th {
+    text-align: center;
+}

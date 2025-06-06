@@ -7,40 +7,22 @@ function initTerrenosModals() {
     const btnCancelarAgregar1 = document.querySelector("#modalAgregarTerreno .close");
     const btnCancelarAgregar2 = document.querySelector("#modalAgregarTerreno .btn-secondary");
 
+    const selectProyecto = document.getElementById('proyecto');
+    const inputEtapa = document.getElementById('etapa');
+
+      // Leer etapas desde atributo data-etapas
+    let etapasPorProyecto = {};
+    try {
+        etapasPorProyecto = JSON.parse(selectProyecto.getAttribute('data-etapas'));
+    } catch (e) {
+        console.error("Error al leer etapasPorProyecto:", e);
+    }
+
+    //MOSTRAR MODAL AGREGAR
     btnAgregarTerreno?.addEventListener("click", () => {
         modalAgregar.classList.add("active");
         overlay.classList.add("active");
     });
-
-    document.addEventListener("DOMContentLoaded", () => {
-    const etapasPorProyecto = window.etapasPorProyecto || {};
-    const selectProyecto = document.getElementById("proyecto");
-    const inputEtapa = document.getElementById("etapa");
-
-    if (!selectProyecto || !inputEtapa) return;
-
-    selectProyecto.addEventListener("change", function () {
-        const proyectoId = this.value;
-        const numEtapas = etapasPorProyecto[proyectoId];
-
-        if (numEtapas === undefined) {
-            inputEtapa.value = "";
-            inputEtapa.setAttribute("disabled", true);
-            return;
-        }
-
-        if (numEtapas === 0) {
-            alert("Este proyecto no tiene etapas definidas. Por favor, cree las etapas en la sección de proyectos.");
-            inputEtapa.value = "";
-            inputEtapa.setAttribute("disabled", true);
-            return;
-        }
-
-        inputEtapa.setAttribute("max", numEtapas);
-        inputEtapa.setAttribute("min", 1);
-        inputEtapa.removeAttribute("disabled");
-    });
-});
 
 
     [btnCancelarAgregar1, btnCancelarAgregar2].forEach(el => {
@@ -49,6 +31,117 @@ function initTerrenosModals() {
             overlay.classList.remove("active");
         });
     });
+
+    // Validar etapa según proyecto
+    selectProyecto?.addEventListener('change', () => {
+        const idProyecto = selectProyecto.value;
+        const maxEtapas = etapasPorProyecto[idProyecto];
+
+        if (maxEtapas) {
+            inputEtapa.max = maxEtapas;
+            inputEtapa.placeholder = `Máximo: ${maxEtapas}`;
+
+            const etapaActual = parseInt(inputEtapa.value);
+            if (etapaActual && (etapaActual < 1 || etapaActual > maxEtapas)) {
+                alert(`El proyecto tiene solo ${maxEtapas} etapas. Ingrese un valor válido.`);
+                inputEtapa.value = "";
+            }
+        } else {
+            inputEtapa.removeAttribute('max');
+            inputEtapa.placeholder = 'Ingrese una etapa válida';
+            inputEtapa.value = "";
+        }
+    });
+
+    // Confirmar Guardar Terreno
+    const modalGuardar = document.getElementById("modalConfirmarGuardarTerreno");
+    const btnAbrirModalGuardar = document.getElementById("btn-guardar-terreno");
+    const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarTerreno .close");
+    const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarTerreno .btn-secondary");
+    const btnConfirmarGuardar = document.getElementById("btn-confirmar-guardar-terreno");
+
+    btnAbrirModalGuardar?.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        const idProyecto = selectProyecto.value;
+        const etapaIngresada = parseInt(inputEtapa.value);
+        const maxEtapas = etapasPorProyecto[idProyecto];
+
+        if (!idProyecto || !maxEtapas) {
+            alert("Seleccione un proyecto válido.");
+            return;
+        }
+
+        if (isNaN(etapaIngresada) || etapaIngresada < 1 || etapaIngresada > maxEtapas) {
+            alert(`Etapa inválida. Debe estar entre 1 y ${maxEtapas}`);
+            inputEtapa.focus();
+            return;
+        }
+
+        modalGuardar.classList.add("active");
+        overlay.classList.add("active");
+    });
+
+    [btnCancelarGuardar1, btnCancelarGuardar2].forEach(el => {
+        el?.addEventListener("click", () => {
+            modalGuardar.classList.remove("active");
+            overlay.classList.remove("active");
+        });
+    });
+
+    btnConfirmarGuardar?.addEventListener("click", async () => {
+        const form = document.getElementById("formAgregarTerreno");
+        const formData = new FormData(form);
+        formData.append('estadoTerreno', 'Disponible');
+
+        try {
+            const response = await fetch("/insertar_terreno", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                modalGuardar.classList.remove("active");
+                overlay.classList.remove("active");
+                modalAgregar.classList.remove("active");
+                const terreno = result.terreno;
+                const estado = (terreno.estado || 'Disponible').toLowerCase();
+                if (estado === "eliminado") return;
+                const nuevaFila = document.createElement('tr');
+                nuevaFila.setAttribute('data-id', terreno.id_terreno);
+                nuevaFila.setAttribute('data-estado', estado);
+                nuevaFila.innerHTML = `
+                  <td>${terreno.id_terreno}</td>
+                  <td>${terreno.nombre_proyecto}</td>
+                  <td>${terreno.etapa}</td>
+                  <td>${terreno.area}</td>
+                  <td>${parseFloat(terreno.precio).toFixed(2)}</td>
+                  <td>${estado}</td>
+                  <td>${terreno.tipo}</td>
+                  <td>${terreno.manzana}</td>
+                  <td>${terreno.lote}</td>
+                  <td>${terreno.codigo_unidad}</td>
+                  <td class="acciones">
+                    <button class="btn-editar-terreno" data-id="${terreno.id_terreno}"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}"><i class="fa-solid fa-trash"></i></button>
+                  </td>`;
+                document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
+                initTerrenosModals();
+                form.reset();
+                mostrarModalExitoAgregar();
+            } else {
+                alert("Error al guardar el terreno: " + (result.error || "desconocido"));
+            }
+        } catch (error) {
+            alert("Error en la solicitud: " + error.message);
+        }
+    });
+
 
     // === LÓGICA DE BÚSQUEDA Y FILTRO DE TERRENOS ===
     const inputBuscarTerreno = document.getElementById("buscarTerreno");
@@ -183,80 +276,6 @@ function initTerrenosModals() {
             modalEliminar.classList.remove("active");
             overlay.classList.remove("active");
         });
-    });
-
-    // Confirmar Guardar Terreno
-    const modalGuardar = document.getElementById("modalConfirmarGuardarTerreno");
-    const btnAbrirModalGuardar = document.getElementById("btn-guardar-terreno");
-    const btnCancelarGuardar1 = document.querySelector("#modalConfirmarGuardarTerreno .close");
-    const btnCancelarGuardar2 = document.querySelector("#modalConfirmarGuardarTerreno .btn-secondary");
-    const btnConfirmarGuardar = document.getElementById("btn-confirmar-guardar-terreno");
-
-    btnAbrirModalGuardar?.addEventListener("click", (e) => {
-        e.preventDefault();
-        modalGuardar.classList.add("active");
-        overlay.classList.add("active");
-    });
-
-    [btnCancelarGuardar1, btnCancelarGuardar2].forEach(el => {
-        el?.addEventListener("click", () => {
-            modalGuardar.classList.remove("active");
-            overlay.classList.remove("active");
-        });
-    });
-
-    btnConfirmarGuardar?.addEventListener("click", async () => {
-        const form = document.getElementById("formAgregarTerreno");
-        const formData = new FormData(form);
-        formData.append('estadoTerreno', 'Disponible');
-
-        try {
-            const response = await fetch("/insertar_terreno", {
-                method: "POST",
-                body: formData,
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest"
-                }
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                modalGuardar.classList.remove("active");
-                overlay.classList.remove("active");
-                modalAgregar.classList.remove("active");
-                const terreno = result.terreno;
-                const estado = (terreno.estado || 'Disponible').toLowerCase();
-                if (estado === "eliminado") return;
-                const nuevaFila = document.createElement('tr');
-                nuevaFila.setAttribute('data-id', terreno.id_terreno);
-                nuevaFila.setAttribute('data-estado', estado);
-                nuevaFila.innerHTML = `
-                  <td>${terreno.id_terreno}</td>
-                  <td>${terreno.nombre_proyecto}</td>
-                  <td>${terreno.etapa}</td>
-                  <td>${terreno.area}</td>
-                  <td>${terreno.precio}</td>
-                  <td>${estado}</td>
-                  <td>${terreno.tipo}</td>
-                  <td>${terreno.manzana}</td>
-                  <td>${terreno.lote}</td>
-                  <td>${terreno.codigo_unidad}</td>
-                  <td class="acciones">
-                    <button class="btn-editar-terreno" data-id="${terreno.id_terreno}">Editar</button>
-                    <button class="btn-eliminar-terreno" data-id="${terreno.id_terreno}">Eliminar</button>
-                  </td>
-                `;
-                document.getElementById('tabla_terrenos_body').appendChild(nuevaFila);
-                initTerrenosModals(); // re-vincula los eventos de los botones recién creados
-                form.reset();
-                mostrarModalExitoAgregar();
-            } else {
-                alert("Error al guardar el terreno: " + (result.error || "desconocido"));
-            }
-        } catch (error) {
-            alert("Error en la solicitud: " + error.message);
-        }
     });
 
     // Confirmar Editar Terreno

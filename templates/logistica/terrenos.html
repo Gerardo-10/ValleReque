@@ -68,7 +68,19 @@
                             <td>{{ terreno.nombre_proyecto }}</td>
                             <td>{{ terreno.etapa}}</td>
                             <td>{{ terreno.area }}</td>
-                            <td>{{ terreno.precio_terreno }}</td>
+                            <td>
+                                {% set clases_estado = {
+                                    'Disponible': 'disponible',
+                                    'Vendido': 'vendido',
+                                    'Reservado': 'reservado',
+                                    'EnProceso': 'enproceso',
+                                    'NoDisponible': 'nodisponible',
+                                    'Eliminado': 'eliminado'
+                                } %}
+                                <span class="estado-terreno {{ clases_estado.get(terreno.estado_terreno, 'disponible') }}">
+                                    {{ terreno.estado_terreno | replace('Disponible', 'Disponible') | replace('Vendido', 'Vendido') | replace('Reservado', 'Reservado') | replace('EnProceso', 'En Proceso') | replace('NoDisponible', 'No Disponible') | replace('Eliminado', 'Eliminado') }}
+                                </span>
+                            </td>
                             <td>{{ terreno.estado_terreno}}</td>
                             <td>{{ terreno.tipo_terreno}}</td>
                             <td>{{ terreno.manzana }}</td>

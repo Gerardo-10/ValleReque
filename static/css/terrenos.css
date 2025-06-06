@@ -1,41 +1,149 @@
-root {
+:root {
     --gradient-primary: linear-gradient(to right, var(--primary-green), var(--primary-blue));
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --danger-color: #9f2623;
+    --primary-blue: #2196F3;
+    --white: #ffffff;
+
 }
 
+
+/* Estilos base para todos los estados */
+.estado-terreno {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+  text-transform: capitalize;
+  transition: all 0.3s ease;
+}
+
+/* Estado Disponible - Verde */
+.estado-terreno.disponible {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Estado Vendido - Azul */
+.estado-terreno.vendido {
+  background-color: #cce7ff;
+  color: #0056b3;
+  border: 1px solid #99d6ff;
+}
+
+/* Estado Reservado - Naranja/Amarillo */
+.estado-terreno.reservado {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+/* Estado En Proceso - Rojo claro */
+.estado-terreno.enproceso {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Estado No Disponible - Gris */
+.estado-terreno.nodisponible {
+  background-color: #e2e3e5;
+  color: #383d41;
+  border: 1px solid #d6d8db;
+}
+
+/* Estado Eliminado - Rojo oscuro */
+.estado-terreno.eliminado {
+  background-color: #f5c6cb;
+  color: #721c24;
+  border: 1px solid #f1b0b7;
+}
+
+/* Efectos hover para mejor UX */
+.estado-terreno:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .estado-terreno {
+    font-size: 10px;
+    padding: 4px 8px;
+    min-width: 60px;
+  }
+}
+
+
+/* Animación para cambios de estado */
+.estado-cambio {
+    animation: estadoCambio 0.5s ease-in-out;
+}
+
+@keyframes estadoCambio {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Estilos para los botones de acciones */
+/* Botones de acción */
+.acciones {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Botón Editar */
 .btn-editar-terreno {
-    background-color: #2196F3;
-    color: white;
-    padding: 8px 16px;
+    background-color: #2196F3 !important;
+    color: white !important;
+    padding: 5px 8px;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-eliminar-terreno {
-    background-color: #f44336;
-    color: white;
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.btn-editar {
-    background: var(--color-gradiente);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: var(--radio-md);
+    border-radius: 6px;
     font-weight: 500;
     cursor: pointer;
-    transition: var(--transicion);
+    transition: background-color 0.3s ease, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
+.btn-editar-terreno:hover {
+    background-color: #1E88E5;
+    transform: translateY(-2px);
+}
+
+/* Botón Eliminar */
+.btn-eliminar-terreno {
+    background-color: #f44336 !important;
+    color: white !important;
+    padding: 5px 8px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-eliminar-terreno:hover {
+    background-color: #c62828;
+    transform: translateY(-2px);
+
+}
+
+
 
 .tabla-empleados {
     width: 100%;
     border-collapse: collapse;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
 }
 
 .tabla-empleados th,
@@ -559,12 +667,6 @@ textarea:focus {
   background-color: #1976D2;
 }
 
-.acciones {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1px; /* Espacio entre botones */
-}
 
 
 .acciones button {
@@ -576,11 +678,11 @@ textarea:focus {
 }
 
 .acciones button:hover i {
-    color: #007BFF; /* azul para editar */
+    color: #ffffff; /* azul para editar */
 }
 
 .acciones button:nth-child(2):hover i {
-    color: #dc3545; /* rojo para eliminar */
+    color: #ffffff; /* rojo para eliminar */
 }
 
 .tabla-terrenos thead th {

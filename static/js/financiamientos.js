@@ -283,38 +283,56 @@ window.initFinanciamientosModals = function () {
         .slice(0, 50); 
     });
 
-    // Función para formatear el campo 'Monto del Bono'
-    document.getElementById('monto').addEventListener('input', function () {
-        let valor = this.value;
+    document.getElementById('monto').addEventListener('input', function(e) {
+    // Obtener el valor actual
+    let value = this.value;
+    
+    // Eliminar cualquier caracter que no sea número o punto
+    value = value.replace(/[^0-9.]/g, '');
+    
+    // Eliminar puntos adicionales después del primero
+    const decimalSplit = value.split('.');
+    if (decimalSplit.length > 2) {
+        value = decimalSplit[0] + '.' + decimalSplit.slice(1).join('');
+    }
+    
+    // Limitar la parte entera a 10 dígitos
+    if (decimalSplit[0].length > 10) {
+        value = decimalSplit[0].substring(0, 10) + (decimalSplit[1] ? '.' + decimalSplit[1] : '');
+    }
+    
+    // Limitar decimales a 2 dígitos
+    if (decimalSplit.length > 1 && decimalSplit[1].length > 2) {
+        value = decimalSplit[0] + '.' + decimalSplit[1].substring(0, 2);
+    }
+    
+    // Actualizar el valor
+    this.value = value;
+});
 
-        // Reemplazar las comas por espacios vacíos (eliminarlas)
-        valor = valor.replace(/,/g, '');
-
-        // Permitir solo números y un solo punto decimal
-        let partes = valor.split('.');
-
-        // Limitar la parte entera a 10 dígitos
-        partes[0] = partes[0].replace(/\D/g, '').slice(0, 10);
-
-        // Limitar la parte decimal a 2 dígitos, si existe
-        if (partes[1]) {
-            partes[1] = partes[1].slice(0, 2); // Limitar a dos decimales
+    document.getElementById('monto').addEventListener('blur', function(e) {
+        // Formatear el valor al salir del campo
+        let value = this.value;
+        
+        if (value === '') return;
+        
+        // Si no tiene punto, agregar .00
+        if (value.indexOf('.') === -1) {
+            value += '.00';
+        } 
+        // Si tiene punto pero no decimales, agregar 00
+        else if (value.split('.')[1].length === 0) {
+            value += '00';
         }
-
-        // Reconstruir el valor con enteros y decimales
-        valor = partes.join('.');
-
-        // Formatear la parte entera con separadores de miles
-        let [entero, decimal] = valor.split('.');
-        entero = entero.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-
-        // Si hay decimales, agregar el punto y los decimales
-        if (decimal) {
-            this.value = entero + '.' + decimal;
-        } else {
-            this.value = entero;
+        // Si tiene solo 1 decimal, agregar 0
+        else if (value.split('.')[1].length === 1) {
+            value += '0';
         }
+        
+        // Actualizamos el valor del input
+        this.value = value;
     });
+
 
     document.getElementById('interes').addEventListener('input', function () {
         let valor = this.value;

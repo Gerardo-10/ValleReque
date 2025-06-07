@@ -322,7 +322,7 @@
 }
 
 .proy-modal-title h3 {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
 }
 
@@ -453,48 +453,6 @@
 
 .proy-btn-add-row {
     color: var(--proy-green);
-}
-
-/* Upload Container */
-.proy-upload-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.proy-upload-button {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100px;
-    height: 80px;
-    border: 1px dashed var(--proy-border-color);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.proy-upload-button:hover {
-    background-color: #f9fafb;
-}
-
-.proy-upload-button i {
-    font-size: 24px;
-    color: var(--proy-text-light);
-    margin-bottom: 5px;
-}
-
-.proy-upload-text {
-    font-size: 12px;
-    color: var(--proy-blue);
-}
-
-.proy-upload-info {
-    font-size: 12px;
-    color: var(--proy-text-light);
-    line-height: 1.4;
 }
 
 .proy-map-preview {

@@ -1,9 +1,7 @@
 window.initDetalleEmpleado = function () {
-    // Referencias a elementos del DOM
     const modalOverlay = document.getElementById('modalOverlay');
     const togglePasswordBtns = document.querySelectorAll('.toggle-password');
 
-    // Mapeo de modales por ID
     const modales = {
         agregarEmpleado: document.getElementById('modalAgregarEmpleado'),
         actualizarInfo: document.getElementById('modalActualizarInfo'),
@@ -12,7 +10,6 @@ window.initDetalleEmpleado = function () {
         exito: document.getElementById('modalExito')
     };
 
-    // Formularios
     const forms = {
         agregarEmpleado: document.getElementById('formAgregarEmpleado'),
         actualizarInfo: document.getElementById('formActualizarInfo'),
@@ -20,7 +17,6 @@ window.initDetalleEmpleado = function () {
         actualizarCuenta: document.getElementById('formActualizarCuenta')
     };
 
-    // Botones principales
     const botones = {
         agregarEmpleado: document.getElementById('btnAgregarEmpleado'),
         actualizarInfo: document.getElementById('btnActualizarInfo'),
@@ -28,7 +24,6 @@ window.initDetalleEmpleado = function () {
         actualizarCuenta: document.getElementById('btnActualizarCuenta')
     };
 
-    // Utilidades modales
     function abrirModal(modal) {
         if (modal) {
             modal.classList.add('activo');
@@ -46,23 +41,11 @@ window.initDetalleEmpleado = function () {
     }
 
     function cerrarTodosLosModales() {
-        Object.values(modales).forEach(modal => {
-            if (modal) modal.classList.remove('activo');
-        });
+        Object.values(modales).forEach(modal => modal?.classList.remove('activo'));
         modalOverlay.classList.remove('activo');
         document.body.style.overflow = '';
     }
 
-    // Mensajes de feedback
-    function mostrarExito(titulo, mensaje) {
-        alert(titulo + '\n' + mensaje);
-    }
-
-    function mostrarError(titulo, mensaje) {
-        alert(titulo + '\n' + mensaje);
-    }
-
-    // Eventos botones de abrir modal
     if (botones.agregarEmpleado) botones.agregarEmpleado.addEventListener('click', () => abrirModal(modales.agregarEmpleado));
     if (botones.actualizarInfo) botones.actualizarInfo.addEventListener('click', function () {
         document.getElementById('nombreActualizar').value = this.dataset.nombre;
@@ -74,15 +57,23 @@ window.initDetalleEmpleado = function () {
         abrirModal(modales.actualizarInfo);
     });
     if (botones.cambiarPassword) botones.cambiarPassword.addEventListener('click', () => abrirModal(modales.cambiarPassword));
-    if (botones.actualizarCuenta) botones.actualizarCuenta.addEventListener('click', function () {
-        document.getElementById('idActualizarCuenta').value = this.dataset.id;
-        document.getElementById('rolActualizar').value = this.dataset.rol;
-        document.getElementById('areaActualizar').value = this.dataset.area;
-        document.getElementById('estadoActualizar').value = this.dataset.estado;
-        abrirModal(modales.actualizarCuenta);
-    });
 
-    // Eventos cierre modales (con botones específicos y overlay)
+    if (botones.actualizarCuenta) {
+        botones.actualizarCuenta.addEventListener('click', function () {
+            const idEmpleado = this.dataset.id;
+            const rol = this.dataset.rol;
+            const area = this.dataset.area;
+            const estado = this.dataset.estado;
+
+            document.getElementById('idActualizarCuenta').value = idEmpleado;
+            document.getElementById('rolActualizar').value = rol || '';
+            document.getElementById('areaActualizar').value = area || '';
+            document.getElementById('estadoActualizar').value = estado || '';
+
+            abrirModal(modales.actualizarCuenta);
+        });
+    }
+
     document.querySelectorAll('[data-close-modal]').forEach(btn => {
         btn.addEventListener('click', function () {
             const targetModal = document.getElementById(this.dataset.closeModal);
@@ -90,20 +81,13 @@ window.initDetalleEmpleado = function () {
         });
     });
     if (modalOverlay) modalOverlay.addEventListener('click', cerrarTodosLosModales);
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') cerrarTodosLosModales();
-    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarTodosLosModales(); });
 
     document.getElementById('formActualizarCuenta').addEventListener('submit', function (event) {
         event.preventDefault();
-
-        const form = document.getElementById('formActualizarCuenta');
+        const form = this;
         const formData = new FormData(form);
-
         const data = Object.fromEntries(formData.entries());
-
-        console.log("Datos que enviaré:", data);
 
         fetch('/actualizar_cuenta_empleado', {
             method: 'POST',
@@ -113,87 +97,70 @@ window.initDetalleEmpleado = function () {
             },
             body: JSON.stringify(data)
         })
-            .then(response => {
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(text)
-                    });
-                }
-                return response.json();
-            })
+            .then(response => response.ok ? response.json() : response.text().then(text => { throw new Error(text) }))
             .then(result => {
                 if (result.success) {
-                    alert("Cuenta actualizada exitosamente.");
-
-                    // 👇 Actualizar visualmente la info en la página
                     document.getElementById('rolEmpleado').textContent = obtenerNombreRol(data.id_rol);
                     document.getElementById('areaEmpleado').textContent = obtenerNombreArea(data.id_area);
-
                     const estadoText = data.estado == "1" ? 'Activo' : 'Inactivo';
                     const estadoClass = data.estado == "1" ? 'estado-activo' : 'estado-inactivo';
-
                     const estadoEmpleado = document.getElementById('estadoEmpleado');
                     estadoEmpleado.textContent = estadoText;
                     estadoEmpleado.className = estadoClass;
 
-                    // 👇 Opcionalmente cierra el modal si quieres
-                    document.querySelector('[data-close-modal="modalActualizarCuenta"]').click();
+                    const btnActualizarCuenta = document.getElementById('btnActualizarCuenta');
+                    if (btnActualizarCuenta) {
+                        btnActualizarCuenta.setAttribute('data-id', data.id_empleado);
+                        btnActualizarCuenta.setAttribute('data-rol', data.id_rol);
+                        btnActualizarCuenta.setAttribute('data-area', data.id_area);
+                        btnActualizarCuenta.setAttribute('data-estado', data.estado);
+                    }
 
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Cuenta actualizada',
+                        text: 'Los datos de la cuenta se actualizaron correctamente.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    document.querySelector('[data-close-modal="modalActualizarCuenta"]').click();
                 } else {
-                    alert("Error al actualizar la cuenta: " + result.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error al actualizar',
+                        text: result.message || 'Ocurrió un error inesperado.'
+                    });
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("Hubo un error con la solicitud: " + error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de conexión',
+                    text: error.message || 'No se pudo completar la solicitud.'
+                });
             });
     });
 
-    // Funciones auxiliares para traducir ID a texto:
     function obtenerNombreRol(idRol) {
         switch (idRol) {
-            case '1':
-                return 'Administrador';
-            case '2':
-                return 'Usuario';
-            default:
-                return 'Desconocido';
+            case '1': return 'Administrador';
+            case '2': return 'Usuario';
+            default: return 'Desconocido';
         }
     }
 
     function obtenerNombreArea(idArea) {
         switch (idArea) {
-            case '1':
-                return 'Administración';
-            case '2':
-                return 'Ventas';
-            case '3':
-                return 'Legal';
-            case '4':
-                return 'Contabilidad';
-            default:
-                return 'Desconocida';
+            case '1': return 'Administración';
+            case '2': return 'Ventas';
+            case '3': return 'Legal';
+            case '4': return 'Contabilidad';
+            default: return 'Desconocida';
         }
     }
 
-
-    // Abrir modal y cargar datos en el formulario
-    document.getElementById('btnActualizarCuenta').addEventListener('click', function () {
-        const idEmpleado = this.dataset.id;
-        const rol = this.dataset.rol;
-        const area = this.dataset.area;
-        const estado = this.dataset.estado;
-
-        document.getElementById('idActualizarCuenta').value = idEmpleado;
-        document.getElementById('rolActualizar').value = rol;
-        document.getElementById('areaActualizar').value = area;
-        document.getElementById('estadoActualizar').value = estado;
-
-        abrirModal(modales.actualizarCuenta); // Suponiendo que tienes esta función definida para abrir el modal
-    });
-
-
-    // Formulario actualizar info personal
     if (forms.actualizarInfo) {
         forms.actualizarInfo.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -219,24 +186,37 @@ window.initDetalleEmpleado = function () {
                 .then(respuesta => {
                     if (respuesta.success) {
                         cerrarModal(modales.actualizarInfo);
-                        mostrarExito('Información Actualizada', 'Los datos del empleado han sido actualizados correctamente.');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Información Actualizada',
+                            text: 'Los datos del empleado han sido actualizados correctamente.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         document.getElementById('nombreEmpleado').textContent = data.nombre + ' ' + data.apellido;
                         document.getElementById('correoEmpleado').textContent = data.correo;
                         document.getElementById('telefonoEmpleado').textContent = data.telefono;
                         document.getElementById('fechaNacimientoEmpleado').textContent = data.fecha_nacimiento;
                         document.getElementById('direccionEmpleado').textContent = data.direccion;
                     } else {
-                        mostrarError('Error', respuesta.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: respuesta.message
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    mostrarError('Error', 'Ocurrió un error al actualizar.');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Ocurrió un error al actualizar.'
+                    });
                 });
         });
     }
 
-    // Formulario cambiar contraseña
     if (forms.cambiarPassword) {
         forms.cambiarPassword.addEventListener('submit', function (e) {
             e.preventDefault();
@@ -250,20 +230,33 @@ window.initDetalleEmpleado = function () {
                 .then(data => {
                     cerrarModal(modales.cambiarPassword);
                     if (data.success) {
-                        mostrarExito('Contraseña Actualizada', data.message);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Contraseña Actualizada',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                     } else {
-                        mostrarError('Error al cambiar contraseña', data.message);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al cambiar contraseña',
+                            text: data.message
+                        });
                     }
                 })
                 .catch(error => {
                     cerrarModal(modales.cambiarPassword);
-                    mostrarError('Error', 'No se pudo procesar la solicitud');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'No se pudo procesar la solicitud'
+                    });
                     console.error('Error:', error);
                 });
         });
     }
 
-    // Mostrar/ocultar contraseña
     togglePasswordBtns.forEach(btn => {
         btn.addEventListener('click', function () {
             const input = this.previousElementSibling;

@@ -118,7 +118,7 @@ window.initClientesModals = function () {
 
         const formData = new FormData(this);
 
-        fetch(this.action, {
+        fetch('/insertar_cliente', {
             method: 'POST',
             body: formData,
             headers: {

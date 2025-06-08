@@ -1,112 +1,112 @@
 {% block customCSS %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/terrenos.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clientes.css') }}">
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="contenedor-principal">
-            <header class="header">
-                <div class="header-content">
-                    <div class="header-icon">
-                        <i class="fa-solid fa-location-dot"></i>
-                    </div>
-                    <h1>Terrenos</h1><br>
+<div class="container">
+    <div class="contenedor-principal">
+        <header class="header">
+            <div class="header-content">
+                <div class="header-icon">
+                    <i class="fa-solid fa-location-dot"></i>
                 </div>
-            </header>
-            <br>
-            <!-- Barra de búsqueda y filtros -->
-            <div class="barra-herramientas">
-                <div class="busqueda-container">
-                    <input type="text" id="inputBuscarTerreno" placeholder="Buscar terreno">
-                    <button class="btn-buscar">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-                <div class="filtro-container">
-                    <select id="filtroTerrenos">
-                        <option value="">Filtrar por...</option>
-                        <option value="proyecto">Proyecto</option>
-                        <option value="etapa">Etapa</option>
-                        <option value="unidad">Codigo Unidad</option>
-                    </select>
-                </div>
-                <div class="filtro-container">
-                    <select id="filtroTerrenosEstado">
-                        <option value="todos">Todos</option>
-                        <option value="disponible">Disponible</option>
-                        <option value="enProceso">En Proceso</option>
-                        <option value="reservado">Reservado</option>
-                        <option value="noDisponible">No Disponible</option>
-                        <option value="vendido">Vendido</option>
-                    </select>
-                </div>
+                <h1>Terrenos</h1><br>
             </div>
-
-            <!-- Tabla de terrenos -->
-            <div class="tabla-container">
-                <table class="tabla-terrenos" id="tablaTerrenos">
-                    <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Proyecto</th>
-                        <th>Etapa</th>
-                        <th>Área</th>
-                        <th>Precio</th>
-                        <th>Estado</th>
-                        <th>Tipo / Terreno</th>
-                        <th>Manzana</th>
-                        <th>N° de Lote</th>
-                        <th>Codigo Unidad</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tablaTerrenosBody">
-                    {% for terreno in terrenos %}
-                        <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower| replace(' ', '') }}">
-                            <td>{{ terreno.id_terreno }}</td>
-                            <td>{{ terreno.nombre_proyecto }}</td>
-                            <td>{{ terreno.etapa}}</td>
-                            <td>{{ terreno.area }}</td>
-                            <td>{{ terreno.precio_terreno}}</td>
-                            <td>
-                                {% set clases_estado = {
-                                    'Disponible': 'disponible',
-                                    'Vendido': 'vendido',
-                                    'Reservado': 'reservado',
-                                    'EnProceso': 'enproceso',
-                                    'NoDisponible': 'nodisponible',
-                                    'Eliminado': 'eliminado'
-                                } %}
-                                <span class="estado-terreno {{ clases_estado.get(terreno.estado_terreno, 'disponible') }}">
-                                    {{ terreno.estado_terreno | replace('Disponible', 'Disponible') | replace('Vendido', 'Vendido') | replace('Reservado', 'Reservado') | replace('EnProceso', 'En Proceso') | replace('NoDisponible', 'No Disponible') | replace('Eliminado', 'Eliminado') }}
-                                </span>
-                            </td>
-                            <td>{{ terreno.tipo_terreno}}</td>
-                            <td>{{ terreno.manzana }}</td>
-                            <td>{{ terreno.numero_lote}}</td>
-                            <td>{{ terreno.codigo_unidad }}</td>
-                            <td class="acciones">
-                                <button class="btn-editar-terreno" data-id="{{ terreno.id_terreno }}" title="Editar">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                <button class="btn-eliminar-terreno" data-id="{{ terreno.id_terreno }}"
-                                        title="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+        </header>
+        <br>
+        <!-- Barra de búsqueda y filtros -->
+        <div class="barra-herramientas">
+            <div class="busqueda-container">
+                <input type="text" id="inputBuscarTerreno" placeholder="Buscar terreno">
+                <button class="btn-buscar">
+                    <i class="fas fa-search"></i>
+                </button>
             </div>
-
-            <!-- Botones de acción -->
-            <div class="acciones-container">
-                <button class="btn-agregar" id="btnAgregarTerreno">Agregar</button>
+            <div class="filtro-container">
+                <select id="filtroTerrenos">
+                    <option value="">Filtrar por...</option>
+                    <option value="proyecto">Proyecto</option>
+                    <option value="etapa">Etapa</option>
+                    <option value="unidad">Codigo Unidad</option>
+                </select>
+            </div>
+            <div class="filtro-container">
+                <select id="filtroTerrenosEstado">
+                    <option value="todos">Todos</option>
+                    <option value="disponible">Disponible</option>
+                    <option value="enProceso">En Proceso</option>
+                    <option value="reservado">Reservado</option>
+                    <option value="noDisponible">No Disponible</option>
+                    <option value="vendido">Vendido</option>
+                </select>
             </div>
         </div>
+
+        <!-- Tabla de terrenos -->
+        <div class="tabla-container">
+            <table class="tabla-terrenos" id="tablaTerrenos">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Proyecto</th>
+                    <th>Etapa</th>
+                    <th>Área</th>
+                    <th>Precio</th>
+                    <th>Estado</th>
+                    <th>Tipo / Terreno</th>
+                    <th>Manzana</th>
+                    <th>N° de Lote</th>
+                    <th>Codigo Unidad</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="tablaTerrenosBody">
+                {% for terreno in terrenos %}
+                <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower| replace(' ', '') }}">
+                    <td>{{ terreno.id_terreno }}</td>
+                    <td>{{ terreno.nombre_proyecto }}</td>
+                    <td>{{ terreno.etapa}}</td>
+                    <td>{{ terreno.area }}</td>
+                    <td>{{ terreno.precio_terreno}}</td>
+                    <td>
+                        {% set clases_estado = {
+                        'Disponible': 'disponible',
+                        'Vendido': 'vendido',
+                        'Reservado': 'reservado',
+                        'EnProceso': 'enproceso',
+                        'NoDisponible': 'nodisponible',
+                        'Eliminado': 'eliminado'
+                        } %}
+                        <span class="estado-terreno {{ clases_estado.get(terreno.estado_terreno, 'disponible') }}">
+                                    {{ terreno.estado_terreno | replace('Disponible', 'Disponible') | replace('Vendido', 'Vendido') | replace('Reservado', 'Reservado') | replace('EnProceso', 'En Proceso') | replace('NoDisponible', 'No Disponible') | replace('Eliminado', 'Eliminado') }}
+                                </span>
+                    </td>
+                    <td>{{ terreno.tipo_terreno}}</td>
+                    <td>{{ terreno.manzana }}</td>
+                    <td>{{ terreno.numero_lote}}</td>
+                    <td>{{ terreno.codigo_unidad }}</td>
+                    <td class="acciones">
+                        <button class="btn-editar-terreno" data-id="{{ terreno.id_terreno }}" title="Editar">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button class="btn-eliminar-terreno" data-id="{{ terreno.id_terreno }}"
+                                title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="acciones-container">
+            <button class="btn-agregar" id="btnAgregarTerreno">Agregar</button>
+        </div>
     </div>
+</div>
 <!-- Modal para agregar terreno -->
 <div class="modal-terreno" id="modalAgregarNuevoTerreno">
     <div class="modal-content">
@@ -117,7 +117,8 @@
                 </div>
                 <div>
                     <h2>Nuevo Terreno</h2>
-                    <p>Aquí puedes agregar un nuevo terreno con los detalles correspondientes. Asegúrate de completar todos los campos requeridos.</p>
+                    <p>Aquí puedes agregar un nuevo terreno con los detalles correspondientes. Asegúrate de completar
+                        todos los campos requeridos.</p>
                 </div>
             </div>
             <span class="close" id="btnCancelarNuevoTerreno">&times;</span> <!-- Botón de cancelar en la X-->
@@ -128,21 +129,23 @@
                 <input type="hidden" name="estadoTerreno" value="Disponible">
                 <div class="form-group">
                     <label for="selectProyecto">Selecciona el Proyecto*</label>
-                    <select id="selectProyecto" name="proyecto" data-etapas='{{ etapas_dict | tojson | safe }}' required>
+                    <select id="selectProyecto" name="proyecto" data-etapas='{{ etapas_dict | tojson | safe }}' data-precios='{{ precios_dict | tojson | safe }}'
+                            required>
                         <option value="">Seleccionar...</option>
                         {% for proyecto in proyectos %}
-                            <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                        <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="inputEtapa">Etapa*</label>
-                    <input type="number" id="inputEtapa" name="etapa" min="1"  required>
+                    <input type="number" id="inputEtapa" name="etapa" min="1" required>
                 </div>
                 <div class="form-group">
                     <label for="inputManzana">Manzana*</label>
                     <input type="text" id="inputManzana" name="manzana" pattern="[A-Za-z]{1,2}" maxlength="2" required
-                        oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();" placeholder="Ej: A" >
+                           oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();"
+                           placeholder="Ej: A">
                 </div>
                 <div class="form-group">
                     <label for="inputLote">N° de Lote*</label>
@@ -161,18 +164,23 @@
                 </div>
                 <div class="form-group">
                     <label for="inputArea">Área m²*</label>
-                    <input id="inputArea" name="area" type="text" placeholder="Ej: 80.00 m2" autocomplete="off" required>
+                    <input id="inputArea" name="area" type="text" placeholder="Ej: 80.00 m2" autocomplete="off"
+                           required>
                 </div>
                 <div class="form-group">
                     <label for="inputPrecio">Precio*</label>
-                    <input type="text" id="inputPrecio" name="precio" placeholder="Ej: S/10000.00" autocomplete="off" required>
+                    <input type="text" id="inputPrecio" name="precio" placeholder="Ej: S/10000.00" autocomplete="off"
+                         autocomplete="off"  required readonly  >
                 </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" id="btnCancelarTerreno">Cancelar</button> <!-- Botón de cancelar pasa salir del modal -->
-            <button class="btn-agregar" id="btnGuardarNuevoTerreno">Guardar</button> <!-- Debe de abrir el swweet alert de confirmación -->
+                <div class="modal-footer">
+                    <button class="btn-secondary" id="btnCancelarTerreno">Cancelar</button>
+                    <!-- Botón de cancelar pasa salir del modal -->
+                    <button class="btn-agregar" id="btnGuardarNuevoTerreno">Guardar</button>
+                    <!-- Debe de abrir el swweet alert de confirmación -->
+                </div>
+            </form>
         </div>
     </div>
-</div>
 
     <!-- Modal para editar terreno -->
     <div class="modal-terreno" id="modalEditarTerreno">
@@ -184,7 +192,8 @@
                     </div>
                     <div>
                         <h2>Editar Terreno</h2>
-                        <p>Bienvenido a la edición de terreno. Solo puedes modificar los campos visibles. Si el campo contiene un candado, no se puede modificar.</p>
+                        <p>Bienvenido a la edición de terreno. Solo puedes modificar los campos visibles. Si el campo
+                            contiene un candado, no se puede modificar.</p>
                     </div>
                 </div>
                 <span class="close" id="btnCancelarEditarTerreno">&times;</span>
@@ -249,4 +258,4 @@
     <div class="modal-overlay-terreno" id="modalOverlay"></div>
     <script src="{{ url_for('static', filename='js/terrenos.js') }}"></script>
 
-{% endblock %}
+    {% endblock %}

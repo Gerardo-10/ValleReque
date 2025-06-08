@@ -76,10 +76,11 @@ function initTerrenosModals() {
   const overlay = document.getElementById("modalOverlay");
   const selectProyecto = document.getElementById('selectProyecto');
   const inputEtapa = document.getElementById('inputEtapa');
-  const inputManzana = document.getElementById("inputManzana");
   const inputLote = document.getElementById("inputLote");
   const inputArea = document.getElementById("inputArea");
   const inputPrecio = document.getElementById("inputPrecio");
+  const preciosDict = JSON.parse(selectProyecto.getAttribute('data-precios'));
+  const selectTipoTerreno = document.getElementById('selectTipoTerreno');
   let etapasPorProyecto = {};
   // Mostrar el modal de agregar terreno cuando se haga clic en "Agregar"
   btnAgregarTerreno.addEventListener("click", () => {
@@ -243,6 +244,37 @@ selectProyecto.addEventListener('change', function() {
     this.value = value;
   });
 
+// Función para realizar el cálculo del precio
+    function calcularPrecio() {
+        const tipoTerreno = selectTipoTerreno.value;  // Obtener el tipo de terreno seleccionado
+        const area = parseFloat(inputArea.value);  // Obtener el área ingresada
+
+        if (!tipoTerreno || isNaN(area) || area <= 0) {
+            // Si el tipo de terreno no está seleccionado o el área no es válida, no hacer nada
+            inputPrecio.value = '';
+            return;
+        }
+
+        const proyectoId = selectProyecto.value;  // Obtener el proyecto seleccionado
+        if (!proyectoId || !preciosDict[proyectoId]) {
+            inputPrecio.value = '';
+            return;
+        }
+
+        // Obtener el precio base según el tipo de terreno
+        const precioBase = preciosDict[proyectoId][tipoTerreno.toLowerCase()] || 0;
+
+        // Calcular el precio total
+        const precioTotal = precioBase * area;
+
+        // Mostrar el precio calculado en el input de precio
+        inputPrecio.value = `${precioTotal.toFixed(2)}`;
+    }
+
+// Eventos de cambio
+    selectProyecto.addEventListener('change', calcularPrecio);
+    selectTipoTerreno.addEventListener('change', calcularPrecio);
+    inputArea.addEventListener('input', calcularPrecio);
 //FUNCIONALIDAD FILTROS
     const inputBuscarTerreno = document.getElementById("inputBuscarTerreno");
     const filtroCampoTerreno = document.getElementById("filtroTerrenos");

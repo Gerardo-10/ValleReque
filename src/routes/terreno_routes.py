@@ -17,13 +17,23 @@ def terrenos():
     # Crear diccionario: id_proyecto -> nombre_proyecto
     proyectos_dict = {proy.id_proyecto: proy.nombre_proyecto for proy in proyectos}
     etapas_dict = {p.id_proyecto: p.cantidad_etapas for p in proyectos}
+    proyectos_dict = {proy.id_proyecto: proy.nombre_proyecto for proy in proyectos}
+    # Crear diccionario de precios por proyecto
+    precios_dict = {proy.id_proyecto: {
+        'calle': proy.precio_calle,
+        'avenida': proy.precio_avenida,
+        'esquina': proy.precio_esquina,
+        'parque': proy.precio_parque,
+        'esquina_parque': proy.precio_esquina_parque
+    } for proy in proyectos}
+
     print("ETAPAS_DICT:", etapas_dict)
 
     # Enlazar el nombre del proyecto a cada terreno
     for t in terrenos:
         t.nombre_proyecto = proyectos_dict.get(t.id_proyecto, 'Sin Proyecto')
 
-    return render_template('logistica/terrenos.html', terrenos=terrenos,proyectos=proyectos,etapas_dict=etapas_dict)
+    return render_template('logistica/terrenos.html', terrenos=terrenos,proyectos=proyectos,etapas_dict=etapas_dict, precios_dict=precios_dict)
 
 @terreno_routes.route('/insertar_terreno', methods=['POST'])
 @login_required

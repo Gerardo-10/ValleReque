@@ -120,106 +120,169 @@ window.initSecurityModals = function () {
                 'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
             }
         })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message);
-                return data;
-            })
-            .then(data => {
-                Swal.close();
-                btnConfirmar.disabled = false;
-                btnConfirmar.textContent = 'Confirmar';
+        .then(async res => {
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message);
+            return data;
+        })
+        .then(data => {
+            Swal.close();
+            btnConfirmar.disabled = false;
+            btnConfirmar.textContent = 'Confirmar';
 
-                if (data.success) {
-                    const empleado = data.empleado;
-                    const estadoTexto = empleado.estado === 1 ? 'Activo' : 'Inactivo';
-                    const estadoClase = empleado.estado === 1 ? 'activo' : 'inactivo';
-                    const estadoData = empleado.estado === 1 ? 'activos' : 'inactivos';
+            if (data.success) {
+                const empleado = data.empleado;
+                const estadoTexto = empleado.estado === 1 ? 'Activo' : 'Inactivo';
+                const estadoClase = empleado.estado === 1 ? 'activo' : 'inactivo';
+                const estadoData = empleado.estado === 1 ? 'activos' : 'inactivos';
 
-                    const nuevaFila = document.createElement('tr');
-                    nuevaFila.setAttribute('data-estado', estadoData);
-                    nuevaFila.innerHTML = `
-                        <td><input type="checkbox" class="checkbox-empleado" data-id="${empleado.id_empleado}"></td>
-                        <td>${empleado.id_empleado}</td>
-                        <td data-filtro="nombre">${empleado.nombre}</td>
-                        <td data-filtro="apellido">${empleado.apellido}</td>
-                        <td data-filtro="dni">${empleado.dni}</td>
-                        <td data-filtro="area">${empleado.area}</td>
-                        <td><span class="estado-badge ${estadoClase}">${estadoTexto}</span></td>
-                        <td style="text-align: center;"><button class="btn-detalles" data-id="${empleado.id_empleado}"><i class="fas fa-eye"></i></button></td>`;
+                const nuevaFila = document.createElement('tr');
+                nuevaFila.setAttribute('data-estado', estadoData);
+                nuevaFila.innerHTML = `
+                    <td><input type="checkbox" class="checkbox-empleado" data-id="${empleado.id_empleado}"></td>
+                    <td>${empleado.id_empleado}</td>
+                    <td data-filtro="nombre">${empleado.nombre}</td>
+                    <td data-filtro="apellido">${empleado.apellido}</td>
+                    <td data-filtro="dni">${empleado.dni}</td>
+                    <td data-filtro="area">${empleado.area}</td>
+                    <td><span class="estado-badge ${estadoClase}">${estadoTexto}</span></td>
+                    <td style="text-align: center;"><button class="btn-detalles" data-id="${empleado.id_empleado}"><i class="fas fa-eye"></i></button></td>`;
 
-                    document.getElementById('tabla_empleados_body').appendChild(nuevaFila);
-                    cerrarModal(modalAgregarEmpleado);
-                    mostrarExito('Empleado agregado', data.message);
-                    this.reset();
-                    paginarTabla();
-                }
-            })
-            .catch(error => {
-                Swal.close();
-                btnConfirmar.disabled = false;
-                btnConfirmar.textContent = 'Confirmar';
+                document.getElementById('tabla_empleados_body').appendChild(nuevaFila);
+                cerrarModal(modalAgregarEmpleado);
 
-                const mensaje = error.message.toLowerCase();
-                let mensajeUsuario;
-                if (mensaje.includes("dni") && mensaje.includes("registrado")) mensajeUsuario = "El DNI ingresado ya está registrado.";
-                else if (mensaje.includes("teléfono") && mensaje.includes("registrado")) mensajeUsuario = "El número de teléfono ya está registrado.";
-                else if (mensaje.includes("correo") && mensaje.includes("registrado")) mensajeUsuario = "El correo electrónico ya se encuentra en uso.";
-                else if (mensaje.includes("correo") && mensaje.includes("no parece ser válido")) mensajeUsuario = "El correo electrónico ingresado no existe o no es válido.";
-                else if (mensaje.includes("nombre_usuario") && mensaje.includes("duplicate")) mensajeUsuario = "Ya existe un nombre de usuario generado con este nombre y apellido.";
-                else mensajeUsuario = error.message;
+                // Mostrar SweetAlert2 con el mensaje de éxito al agregar el empleado
+                Swal.fire({
+                    title: 'Empleado agregado',
+                    text: 'Empleado creado con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                    confirmButtonColor: '#3085d6'
+                });
 
-                Swal.fire({ icon: 'error', title: 'Error al registrar empleado', text: mensajeUsuario, confirmButtonText: 'Entendido', confirmButtonColor: '#d33' });
-            });
+                this.reset();
+                paginarTabla();
+            }
+        })
+        .catch(error => {
+            Swal.close();
+            btnConfirmar.disabled = false;
+            btnConfirmar.textContent = 'Confirmar';
+
+            const mensaje = error.message.toLowerCase();
+            let mensajeUsuario;
+            if (mensaje.includes("dni") && mensaje.includes("registrado")) mensajeUsuario = "El DNI ingresado ya está registrado.";
+            else if (mensaje.includes("teléfono") && mensaje.includes("registrado")) mensajeUsuario = "El número de teléfono ya está registrado.";
+            else if (mensaje.includes("correo") && mensaje.includes("registrado")) mensajeUsuario = "El correo electrónico ya se encuentra en uso.";
+            else if (mensaje.includes("correo") && mensaje.includes("no parece ser válido")) mensajeUsuario = "El correo electrónico ingresado no existe o no es válido.";
+            else if (mensaje.includes("nombre_usuario") && mensaje.includes("duplicate")) mensajeUsuario = "Ya existe un nombre de usuario generado con este nombre y apellido.";
+            else mensajeUsuario = error.message;
+
+            Swal.fire({ icon: 'error', title: 'Error al registrar empleado', text: mensajeUsuario, confirmButtonText: 'Entendido', confirmButtonColor: '#d33' });
+        });
     });
+
+
 
     // === CAMBIAR ESTADO EMPLEADOS ===
     btnConfirmarEstado.addEventListener('click', function () {
-    if (!estadoSeleccionado || empleadosSeleccionados.length === 0) {
-        alert('Seleccione al menos un empleado y un estado.');
-        return;
-    }
-
-    fetch('/cambiar_estado_empleados', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
-        },
-        body: JSON.stringify({ ids: empleadosSeleccionados, estado: estadoSeleccionado })
-    })
-    .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
-    .then(data => {
-        if (data.success) {
-            empleadosSeleccionados.forEach(id => {
-                const fila = document.querySelector(`.checkbox-empleado[data-id="${id}"]`)?.closest('tr');
-                if (fila) {
-                    const nuevoEstado = estadoSeleccionado === 'activo' ? 'Activo' : 'Inactivo';
-                    const estadoClase = estadoSeleccionado === 'activo'? 'activo' : 'inactivo';
-                    fila.querySelector('.estado-badge').textContent = nuevoEstado;
-                    fila.querySelector('.estado-badge').className = `estado-badge ${estadoClase}`;
-                    fila.setAttribute('data-estado', estadoClase === 'activo' ? 'activos' : 'inactivos');
-                }
+        if (!estadoSeleccionado || empleadosSeleccionados.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Selección incompleta',
+                text: 'Por favor selecciona al menos un empleado y un estado.',
             });
-
-            const cantidad = empleadosSeleccionados.length;  // 👈 Capturamos el número ANTES de vaciar el arreglo
-
-            opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
-            estadoSeleccionado = null;
-            document.querySelectorAll('.checkbox-empleado').forEach(cb => cb.checked = false);
-            empleadosSeleccionados = [];
-
-            cerrarModal(modalCambiarEstado);
-            mostrarExito('Estado Actualizado', `Se actualizó el estado de ${cantidad} empleado(s).`);
-            actualizarEmpleadosSeleccionados();
-        } else {
-            alert(data.message || 'Error al actualizar estado.');
+            return;
         }
-    })
-    .catch(error => {
-        alert('Error inesperado: ' + error);
+
+        // Confirma con SweetAlert2
+        Swal.fire({
+            title: '¿Estás seguro de cambiar el estado?',
+            text: `Se cambiará el estado de ${empleadosSeleccionados.length} empleado(s).`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cambiar estado',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Enviar la solicitud al backend
+                fetch('/cambiar_estado_empleados', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+                    },
+                    body: JSON.stringify({ ids: empleadosSeleccionados, estado: estadoSeleccionado })
+                })
+                .then(res => res.ok ? res.json() : Promise.reject(res.statusText))
+                .then(data => {
+                    if (data.success) {
+                        // Si la actualización es exitosa, actualiza la tabla
+                        empleadosSeleccionados.forEach(id => {
+                            const fila = document.querySelector(`.checkbox-empleado[data-id="${id}"]`)?.closest('tr');
+                            if (fila) {
+                                const nuevoEstado = estadoSeleccionado === 'activo' ? 'Activo' : 'Inactivo';
+                                const estadoClase = estadoSeleccionado === 'activo' ? 'activo' : 'inactivo';
+                                fila.querySelector('.estado-badge').textContent = nuevoEstado;
+                                fila.querySelector('.estado-badge').className = `estado-badge ${estadoClase}`;
+                                fila.setAttribute('data-estado', estadoClase === 'activo' ? 'activos' : 'inactivos');
+                            }
+                        });
+
+                        const cantidad = empleadosSeleccionados.length;
+
+                        // Limpia la selección de empleados
+                        opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+                        estadoSeleccionado = null;
+                        document.querySelectorAll('.checkbox-empleado').forEach(cb => cb.checked = false);
+                        empleadosSeleccionados = [];
+
+                        cerrarModal(modalCambiarEstado);
+                        
+                        // Mostrar la alerta de éxito con SweetAlert2
+                        Swal.fire({
+                            title: 'Estado actualizado',
+                            text: `Se actualizó el estado de ${cantidad} empleado(s).`,
+                            icon: 'success',
+                            confirmButtonText: 'Aceptar',
+                            confirmButtonColor: '#3085d6'
+                        });
+
+                        actualizarEmpleadosSeleccionados();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error al actualizar estado',
+                            text: data.message || 'Hubo un error inesperado.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error inesperado',
+                        text: error,
+                    });
+                });
+            }
+        });
     });
-});
+
+
+    // === ABRIR MODAL CAMBIO DE ESTADO ===
+    btnCambiarEstado.addEventListener('click', () => {
+        if (empleadosSeleccionados.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Selecciona empleados',
+                text: 'Por favor, selecciona al menos un empleado para cambiar su estado.',
+            });
+        } else {
+            abrirModal(modalCambiarEstado);
+        }
+    });
+
 
     // === EVENTOS GENERALES ===
     btnCambiarEstado.addEventListener('click', () => {

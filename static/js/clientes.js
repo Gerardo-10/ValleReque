@@ -265,66 +265,85 @@ window.initClientesModals = function () {
             return;
         }
 
-        // Crear el formulario con los datos
-        const formData = new FormData();
-        formData.append('clientes', JSON.stringify(clientesSeleccionados));  // Convertir lista de clientes a JSON
-        formData.append('estado', estadoSeleccionado);  // Agregar el estado seleccionado
+        // Confirmación antes de realizar el cambio
+        Swal.fire({
+            title: '¿Estás seguro de cambiar el estado?',
+            text: `Se cambiará el estado de ${clientesSeleccionados.length} cliente(s).`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cambiar estado',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Crear el formulario con los datos
+                const formData = new FormData();
+                formData.append('clientes', JSON.stringify(clientesSeleccionados));  // Convertir lista de clientes a JSON
+                formData.append('estado', estadoSeleccionado);  // Agregar el estado seleccionado
 
-        // Enviar la solicitud al backend
-        fetch('/actualizar_estado_clientes', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value  // CSRF token
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // Actualizar el estado visualmente en la interfaz de usuario
-                    clientesSeleccionados.forEach(id => {
-                        const fila = document.querySelector(`tr[data-id="${id}"]`);
-                        if (fila) {
-                            const spanEstado = fila.querySelector('.estado-badge');
-                            const clasesEstado = {
-                                'activo': 'activo',
-                                'evaluado': 'evaluado',
-                                'no-disponible': 'no-disponible',
-                                'sin-evaluar': 'sin-evaluar'
-                            };
+                // Enviar la solicitud al backend
+                fetch('/actualizar_estado_clientes', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('input[name=csrf_token]').value  // Token CSRF
+                    }
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar el estado visualmente en la interfaz de usuario
+                            clientesSeleccionados.forEach(id => {
+                                const fila = document.querySelector(`tr[data-id="${id}"]`);
+                                if (fila) {
+                                    const spanEstado = fila.querySelector('.estado-badge');
+                                    const clasesEstado = {
+                                        'activo': 'activo',
+                                        'evaluado': 'evaluado',
+                                        'no-disponible': 'no-disponible',
+                                        'sin-evaluar': 'sin-evaluar'
+                                    };
 
-                            // Actualizar el estado visualmente
-                            spanEstado.className = 'estado-badge ' + (clasesEstado[estadoSeleccionado] || 'sin-evaluar');
-                            spanEstado.textContent = estadoSeleccionado.charAt(0).toUpperCase() + estadoSeleccionado.slice(1).replace('-', ' ');
+                                    // Actualizar el estado visualmente
+                                    spanEstado.className = 'estado-badge ' + (clasesEstado[estadoSeleccionado] || 'sin-evaluar');
+                                    spanEstado.textContent = estadoSeleccionado.charAt(0).toUpperCase() + estadoSeleccionado.slice(1).replace('-', ' ');
 
-                            // Actualizar el atributo de estado de la fila
-                            fila.setAttribute('data-estado', estadoSeleccionado);
+                                    // Actualizar el atributo de estado de la fila
+                                    fila.setAttribute('data-estado', estadoSeleccionado);
+                                }
+                            });
+
+                            // Cerrar el modal de cambiar estado
+                            cerrarModal(modalCambiarEstado);
+
+                            // Mostrar mensaje de éxito con el número de clientes afectados
+                            Swal.fire({
+                                title: 'Estado Actualizado',
+                                text: `Se actualizó el estado de ${clientesSeleccionados.length} cliente(s).`,
+                                icon: 'success',
+                                confirmButtonText: 'Cerrar'
+                            });
+
+                            // Resetear el estado seleccionado
+                            estadoSeleccionado = null;
+                            opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+                        } else {
+                            alert('Error: ' + data.message);
                         }
+                    })
+                    .catch(error => {
+                        // Manejo de errores inesperados
+                        console.error('Error al actualizar estado:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error inesperado',
+                            text: 'Ocurrió un problema al actualizar el estado'
+                        });
                     });
-
-                    // Cerrar el modal y mostrar mensaje de éxito
-                    cerrarModal(modalCambiarEstado);
-                    mostrarExito('Estado Actualizado', `Se ha actualizado el estado de ${clientesSeleccionados.length} cliente(s).`);
-
-                    // Resetear el estado seleccionado
-                    estadoSeleccionado = null;
-                    opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
-                } else {
-                    alert('Error: ' + data.message);
-                }
-            })
-            .catch(error => {
-                // Manejo de errores inesperados
-                console.error('Error al actualizar estado:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error inesperado',
-                    text: 'Ocurrió un problema al actualizar el estado'
-                });
-            });
+            }
+        });
     });
-
 
     btnCambiarEstado.addEventListener('click', () => {
         if (obtenerClientesSeleccionados().length === 0) {

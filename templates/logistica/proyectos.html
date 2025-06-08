@@ -137,6 +137,172 @@
     </div>
 </div>
 
+<!-- Modal Configuración Precios por Tipo de Terreno -->
+<div id="proy-modalConfigurarPrecios" class="proy-modal">
+    <div class="proy-modal-content">
+        <div class="proy-modal-header">
+            <div class="proy-modal-title">
+                <i class="fas fa-dollar-sign"></i>
+                <h3 class="m-0 p-0">Configuración de Precios por Tipo de Terreno</h3>
+            </div>
+            <span class="proy-close" data-modal="proy-modalConfigurarPrecios">&times;</span>
+        </div>
+        <div class="proy-modal-subtitle">
+            Configura los precios base para cada tipo de terreno. Estos precios se aplicarán como referencia para todos
+            los terrenos del proyecto.
+        </div>
+        <div class="proy-modal-body">
+            <div class="proy-alert proy-alert-info">
+                <i class="fas fa-info-circle"></i>
+                <span>Los precios se actualizarán para todos los terrenos del tipo seleccionado.</span>
+            </div>
+            <form id="proy-formActualizarPrecios">
+                <div class="proy-precios-grid">
+                    <!-- Precio Parque -->
+                    <div class="proy-precio-card proy-precio-parque">
+                        <div class="proy-precio-header">
+                            <div class="proy-precio-icon">
+                                <i class="fas fa-tree"></i>
+                            </div>
+                            <h4>Parque</h4>
+                        </div>
+                        <div class="proy-form-group">
+                            <label for="proy-precioParque">Precio por m²*</label>
+                            <div class="proy-input-currency">
+                                <span class="proy-currency-symbol">S/</span>
+                                <input type="number" id="proy-precioParque" name="precioParque" step="0.01" min="0"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="proy-precio-description">
+                            Terrenos con vista o acceso directo a parques y áreas verdes
+                        </div>
+                    </div>
+
+                    <!-- Precio Esquina-Parque -->
+                    <div class="proy-precio-card proy-precio-esquina-parque">
+                        <div class="proy-precio-header">
+                            <div class="proy-precio-icon">
+                                <i class="fas fa-seedling"></i>
+                            </div>
+                            <h4>Esquina - Parque</h4>
+                        </div>
+                        <div class="proy-form-group">
+                            <label for="proy-precioEsquinaParque">Precio por m²*</label>
+                            <div class="proy-input-currency">
+                                <span class="proy-currency-symbol">S/</span>
+                                <input type="number" id="proy-precioEsquinaParque" name="precioEsquinaParque"
+                                       step="0.01"
+                                       min="0" required>
+                            </div>
+                        </div>
+                        <div class="proy-precio-description">
+                            Terrenos ubicados en esquinas con vista directa a parques (ubicación premium)
+                        </div>
+                    </div>
+
+                    <!-- Precio Esquina -->
+                    <div class="proy-precio-card proy-precio-esquina">
+                        <div class="proy-precio-header">
+                            <div class="proy-precio-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <h4>Esquina</h4>
+                        </div>
+                        <div class="proy-form-group">
+                            <label for="proy-precioEsquina">Precio por m²*</label>
+                            <div class="proy-input-currency">
+                                <span class="proy-currency-symbol">S/</span>
+                                <input type="number" id="proy-precioEsquina" name="precioEsquina" step="0.01" min="0"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="proy-precio-description">
+                            Terrenos ubicados en esquinas con doble frente
+                        </div>
+                    </div>
+
+                    <!-- Precio Avenida -->
+                    <div class="proy-precio-card proy-precio-avenida">
+                        <div class="proy-precio-header">
+                            <div class="proy-precio-icon">
+                                <i class="fas fa-road"></i>
+                            </div>
+                            <h4>Avenida</h4>
+                        </div>
+                        <div class="proy-form-group">
+                            <label for="proy-precioAvenida">Precio por m²*</label>
+                            <div class="proy-input-currency">
+                                <span class="proy-currency-symbol">S/</span>
+                                <input type="number" id="proy-precioAvenida" name="precioAvenida" step="0.01" min="0"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="proy-precio-description">
+                            Terrenos con frente a avenidas principales
+                        </div>
+                    </div>
+
+                    <!-- Precio Calle -->
+                    <div class="proy-precio-card proy-precio-calle">
+                        <div class="proy-precio-header">
+                            <div class="proy-precio-icon">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            <h4>Calle</h4>
+                        </div>
+                        <div class="proy-form-group">
+                            <label for="proy-precioCalle">Precio por m²*</label>
+                            <div class="proy-input-currency">
+                                <span class="proy-currency-symbol">S/</span>
+                                <input type="number" id="proy-precioCalle" name="precioCalle" step="0.01" min="0"
+                                       required>
+                            </div>
+                        </div>
+                        <div class="proy-precio-description">
+                            Terrenos estándar con frente a calles internas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen de precios -->
+                <div class="proy-precio-resumen">
+                    <h4><i class="fas fa-calculator"></i> Resumen de Precios</h4>
+                    <div class="proy-resumen-grid">
+                        <div class="proy-resumen-item">
+                            <span class="proy-resumen-label">Parque:</span>
+                            <span class="proy-resumen-value" id="proy-resumenParque">S/ 0.00</span>
+                        </div>
+                        <div class="proy-resumen-item">
+                            <span class="proy-resumen-label">Esquina-Parque:</span>
+                            <span class="proy-resumen-value" id="proy-resumenEsquinaParque">S/ 0.00</span>
+                        </div>
+                        <div class="proy-resumen-item">
+                            <span class="proy-resumen-label">Esquina:</span>
+                            <span class="proy-resumen-value" id="proy-resumenEsquina">S/ 0.00</span>
+                        </div>
+                        <div class="proy-resumen-item">
+                            <span class="proy-resumen-label">Avenida:</span>
+                            <span class="proy-resumen-value" id="proy-resumenAvenida">S/ 0.00</span>
+                        </div>
+                        <div class="proy-resumen-item">
+                            <span class="proy-resumen-label">Calle:</span>
+                            <span class="proy-resumen-value" id="proy-resumenCalle">S/ 0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="proy-modal-footer">
+            <button type="button" class="proy-btn-secondary" data-modal="proy-modalConfigurarPrecios">Atrás</button>
+            <button type="button" class="proy-btn-primary" id="proy-btnGuardarPrecios">
+                <i class="fas fa-save"></i>
+                Guardar y Continuar
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- Plantilla para Modal Etapa (se clonará dinámicamente) -->
 <div id="proy-modalEtapaTemplate" class="proy-modal proy-template">
     <div class="proy-modal-content">
@@ -148,8 +314,8 @@
             <span class="proy-close">&times;</span>
         </div>
         <div class="proy-modal-subtitle">
-            Es hora de configurar esta primera parte del proyecto :D. Recuerda que los terrenos por defecto el
-            estado será <strong>Libre</strong> y el tipo de terreno <strong>Calle</strong>.
+            Es hora de configurar esta primera parte del proyecto. Recuerda que los terrenos por defecto el
+            estado será <strong>Disponible</strong> y el tipo de terreno <strong>Calle</strong>.
         </div>
         <div class="proy-modal-body">
             <div class="proy-alert proy-alert-info">
@@ -157,7 +323,8 @@
                 <span>El total de terrenos por etapas y manzanas debe coincidir con el número total de terrenos del proyecto. Distribúyelos de forma equilibrada.</span>
             </div>
 
-            <form class="proy-form-etapa">
+            <form class="proy-form-etapa" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="proy-manzanas-container">
                     <div class="proy-manzana-row">
                         <div class="proy-form-group">
@@ -188,7 +355,7 @@
 
                 <div class="proy-form-group">
                     <label>Resumen*</label>
-                    <textarea class="proy-resumen-etapa" readonly>Manzana: A - N° de Lotes: 1 | Manzana: B - N° de Lotes: 2</textarea>
+                    <textarea class="proy-resumen-etapa" readonly></textarea>
                 </div>
             </form>
         </div>
@@ -251,171 +418,6 @@
         <div class="proy-modal-footer">
             <button type="button" class="proy-btn-secondary" data-modal="proy-modalEditarProyecto">Cancelar</button>
             <button type="button" class="proy-btn-primary" id="proy-btnGuardarEdicion">Guardar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Configuración Precios por Tipo de Terreno -->
-<div id="proy-modalConfigurarPrecios" class="proy-modal">
-    <div class="proy-modal-content">
-        <div class="proy-modal-header">
-            <div class="proy-modal-title">
-                <i class="fas fa-dollar-sign"></i>
-                <h3 class="m-0 p-0">Configuración de Precios por Tipo de Terreno</h3>
-            </div>
-            <span class="proy-close" data-modal="proy-modalConfigurarPrecios">&times;</span>
-        </div>
-        <div class="proy-modal-subtitle">
-            Configura los precios base para cada tipo de terreno. Estos precios se aplicarán como referencia para todos
-            los terrenos del proyecto.
-        </div>
-        <div class="proy-modal-body">
-            <div class="proy-alert proy-alert-info">
-                <i class="fas fa-info-circle"></i>
-                <span>Los precios se actualizarán para todos los terrenos del tipo seleccionado.</span>
-            </div>
-            <form id="proy-formActualizarPrecios">
-                <div class="proy-precios-grid">
-                    <!-- Precio Parque -->
-                    <div class="proy-precio-card proy-precio-parque">
-                        <div class="proy-precio-header">
-                            <div class="proy-precio-icon">
-                                <i class="fas fa-tree"></i>
-                            </div>
-                            <h4>Parque</h4>
-                        </div>
-                        <div class="proy-form-group">
-                            <label for="proy-precioParque">Precio por m²*</label>
-                            <div class="proy-input-currency">
-                                <span class="proy-currency-symbol">S/</span>
-                                <input type="number" id="proy-precioParque" step="0.01" min="0"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="proy-precio-description">
-                            Terrenos con vista o acceso directo a parques y áreas verdes
-                        </div>
-                    </div>
-
-                    <!-- Precio Esquina-Parque -->
-                    <div class="proy-precio-card proy-precio-esquina-parque">
-                        <div class="proy-precio-header">
-                            <div class="proy-precio-icon">
-                                <i class="fas fa-seedling"></i>
-                            </div>
-                            <h4>Esquina - Parque</h4>
-                        </div>
-                        <div class="proy-form-group">
-                            <label for="proy-precioEsquinaParque">Precio por m²*</label>
-                            <div class="proy-input-currency">
-                                <span class="proy-currency-symbol">S/</span>
-                                <input type="number" id="proy-precioEsquinaParque" step="0.01"
-                                       min="0" required>
-                            </div>
-                        </div>
-                        <div class="proy-precio-description">
-                            Terrenos ubicados en esquinas con vista directa a parques (ubicación premium)
-                        </div>
-                    </div>
-
-                    <!-- Precio Esquina -->
-                    <div class="proy-precio-card proy-precio-esquina">
-                        <div class="proy-precio-header">
-                            <div class="proy-precio-icon">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <h4>Esquina</h4>
-                        </div>
-                        <div class="proy-form-group">
-                            <label for="proy-precioEsquina">Precio por m²*</label>
-                            <div class="proy-input-currency">
-                                <span class="proy-currency-symbol">S/</span>
-                                <input type="number" id="proy-precioEsquina" step="0.01" min="0"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="proy-precio-description">
-                            Terrenos ubicados en esquinas con doble frente
-                        </div>
-                    </div>
-
-                    <!-- Precio Avenida -->
-                    <div class="proy-precio-card proy-precio-avenida">
-                        <div class="proy-precio-header">
-                            <div class="proy-precio-icon">
-                                <i class="fas fa-road"></i>
-                            </div>
-                            <h4>Avenida</h4>
-                        </div>
-                        <div class="proy-form-group">
-                            <label for="proy-precioAvenida">Precio por m²*</label>
-                            <div class="proy-input-currency">
-                                <span class="proy-currency-symbol">S/</span>
-                                <input type="number" id="proy-precioAvenida" step="0.01" min="0"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="proy-precio-description">
-                            Terrenos con frente a avenidas principales
-                        </div>
-                    </div>
-
-                    <!-- Precio Calle -->
-                    <div class="proy-precio-card proy-precio-calle">
-                        <div class="proy-precio-header">
-                            <div class="proy-precio-icon">
-                                <i class="fas fa-home"></i>
-                            </div>
-                            <h4>Calle</h4>
-                        </div>
-                        <div class="proy-form-group">
-                            <label for="proy-precioCalle">Precio por m²*</label>
-                            <div class="proy-input-currency">
-                                <span class="proy-currency-symbol">S/</span>
-                                <input type="number" id="proy-precioCalle" step="0.01" min="0"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="proy-precio-description">
-                            Terrenos estándar con frente a calles internas
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Resumen de precios -->
-                <div class="proy-precio-resumen">
-                    <h4><i class="fas fa-calculator"></i> Resumen de Precios</h4>
-                    <div class="proy-resumen-grid">
-                        <div class="proy-resumen-item">
-                            <span class="proy-resumen-label">Parque:</span>
-                            <span class="proy-resumen-value" id="proy-resumenParque">S/ 0.00</span>
-                        </div>
-                        <div class="proy-resumen-item">
-                            <span class="proy-resumen-label">Esquina-Parque:</span>
-                            <span class="proy-resumen-value" id="proy-resumenEsquinaParque">S/ 0.00</span>
-                        </div>
-                        <div class="proy-resumen-item">
-                            <span class="proy-resumen-label">Esquina:</span>
-                            <span class="proy-resumen-value" id="proy-resumenEsquina">S/ 0.00</span>
-                        </div>
-                        <div class="proy-resumen-item">
-                            <span class="proy-resumen-label">Avenida:</span>
-                            <span class="proy-resumen-value" id="proy-resumenAvenida">S/ 0.00</span>
-                        </div>
-                        <div class="proy-resumen-item">
-                            <span class="proy-resumen-label">Calle:</span>
-                            <span class="proy-resumen-value" id="proy-resumenCalle">S/ 0.00</span>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="proy-modal-footer">
-            <button type="button" class="proy-btn-secondary" data-modal="proy-modalConfigurarPrecios">Atrás</button>
-            <button type="button" class="proy-btn-primary" id="proy-btnGuardarPrecios">
-                <i class="fas fa-save"></i>
-                Guardar y Continuar
-            </button>
         </div>
     </div>
 </div>

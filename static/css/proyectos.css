@@ -425,17 +425,85 @@
     margin-bottom: 20px;
 }
 
-.proy-manzana-row {
-    display: flex;
-    gap: 15px;
-    align-items: flex-end;
-    margin-bottom: 15px;
+/* Estilos para los inputs de manzana */
+.proy-input-manzana {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
+/* Estilos para los select de tipo de terreno */
+.proy-tipo-terreno {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Espaciado entre grupos de campos - modificado */
+.proy-manzana-row .proy-form-group {
+    margin: 0; /* Eliminamos el margin auto */
+    flex: 1 1 45%; /* Flex grow, shrink, basis */
+    min-width: 120px; /* Ancho mínimo para los campos */
+}
+
+/* Contenedor flexible para las filas - modificado */
+.proy-manzana-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between; /* Distribuye el espacio */
+    margin-bottom: 15px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    gap: 10px; /* Espacio entre elementos */
+}
+
+/* Contenedor de acciones - modificado */
 .proy-row-actions {
     display: flex;
+    flex-direction: column; /* Apila los botones verticalmente */
     gap: 5px;
-    margin-bottom: 10px;
+    justify-content: center; /* Centra verticalmente */
+    margin-left: auto; /* Empuja los botones a la derecha */
+    padding-left: 10px; /* Espacio entre campos y botones */
+}
+
+/* Estilos para los botones de acción */
+.proy-btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid #ddd;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.proy-btn-icon:hover {
+    background-color: #f0f0f0;
+    border-color: #ccc;
+}
+
+/* Media query para responsividad */
+@media (max-width: 600px) {
+    .proy-manzana-row .proy-form-group {
+        flex: 1 1 100%; /* En móviles, ocupa todo el ancho */
+    }
+
+    .proy-row-actions {
+        flex-direction: row; /* En móviles, botones en horizontal */
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 10px;
+        padding-left: 0;
+    }
 }
 
 .proy-btn-delete-row,
@@ -584,8 +652,12 @@
 }
 
 @keyframes proy-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .proy-error-container {

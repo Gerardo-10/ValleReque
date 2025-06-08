@@ -69,14 +69,14 @@ def insertar_proyecto():
         if ModelProyecto.insert(current_app.db, proyecto):
             return jsonify({
                 'success': True,
-                'message': 'Proyecto creado exitosamente'
+                'message': 'Proyecto creado exitosamente',
+                'proyectoId': proyecto.id_proyecto
             })
         else:
             return jsonify({
                 'success': False,
                 'message': 'Error al insertar en la base de datos'
             }), 500
-
     except Exception as e:
         return jsonify({
             'success': False,

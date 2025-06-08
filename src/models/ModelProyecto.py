@@ -61,8 +61,10 @@ class ModelProyecto:
             )
             db.connection.commit()
 
-            # Obtener el ID del proyecto insertado si es necesario
-            proyecto.id_proyecto = cursor.lastrowid
+            # Obtener el ID del proyecto insertado (modificado para mayor confiabilidad)
+            cursor.execute("SELECT LAST_INSERT_ID()")
+            proyecto.id_proyecto = cursor.fetchone()[0]
+            cursor.close()
 
             return True
         except Exception as e:

@@ -5,6 +5,7 @@ from flask import current_app
 from src.models.entities.Cliente import Cliente
 
 
+
 class ModelCliente:
     @classmethod
     def get_by_id(cls, db, id_cliente):

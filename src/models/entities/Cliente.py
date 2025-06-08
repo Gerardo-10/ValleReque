@@ -12,3 +12,4 @@ class Cliente:
         self.ingreso_neto = ingreso_neto
         self.estado = estado_cliente
         self.carga_familiar = carga_familiar
+        

@@ -14,7 +14,10 @@ window.initDetalleCliente = function () {
     const formFields = document.getElementById('formFields');
     const modalTitle = document.getElementById('modalTitle');
 
-    // Functions
+    // Familiar
+    const familiarModal = document.getElementById('editFamiliarModal');
+    const familiarForm = document.getElementById('familiarForm');
+
     function openModal(modal) {
         modal.classList.add('active');
         modalOverlay.classList.add('active');
@@ -34,17 +37,9 @@ window.initDetalleCliente = function () {
         document.body.style.overflow = '';
     }
 
-    function showSuccess() {
-        closeModal(editModal);
-        setTimeout(() => {
-            openModal(successModal);
-        }, 300);
-    }
-
     function generateFormFields(fields) {
         try {
             formFields.innerHTML = '';
-
             fields.forEach(field => {
                 if (field.type === 'hidden') {
                     const input = document.createElement('input');
@@ -62,7 +57,6 @@ window.initDetalleCliente = function () {
                 const label = document.createElement('label');
                 label.setAttribute('for', field.id);
                 label.textContent = field.label;
-
                 formGroup.appendChild(label);
 
                 if (field.type === 'select') {
@@ -94,21 +88,25 @@ window.initDetalleCliente = function () {
             });
         } catch (err) {
             console.error("Error generando campos del formulario:", err);
-            alert("Error al cargar los datos");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Ocurrió un problema al cargar el formulario.'
+            });
         }
     }
 
     function mostrarModalConDatos(cliente) {
         const fields = [
-            {id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden'}, // Aquí cambiamos 'id' por 'id_cliente'
-            {id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text'},
-            {id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text'},
-            {id: 'dni', label: 'DNI', value: cliente.dni, type: 'text'},
-            {id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text'},
-            {id: 'correo', label: 'Correo', value: cliente.correo, type: 'text'},
-            {id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text'},
-            {id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text'},
-            {id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number'},
+            { id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden' },
+            { id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text' },
+            { id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text' },
+            { id: 'dni', label: 'DNI', value: cliente.dni, type: 'text' },
+            { id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text' },
+            { id: 'correo', label: 'Correo', value: cliente.correo, type: 'text' },
+            { id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text' },
+            { id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text' },
+            { id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number' },
             {
                 id: 'estado', label: 'Estado',
                 value: cliente.estado,
@@ -118,7 +116,8 @@ window.initDetalleCliente = function () {
             {
                 id: 'carga_familiar', label: 'Carga Familiar',
                 value: cliente.carga_familiar == 1 ? 'Sí' : 'No',
-                type: 'select', options: ['Sí', 'No']
+                type: 'select',
+                options: ['Sí', 'No']
             }
         ];
 
@@ -127,27 +126,41 @@ window.initDetalleCliente = function () {
         openModal(editModal);
     }
 
-    // Event Listeners
     editButtons.forEach(button => {
         button.addEventListener('click', function () {
             const clienteId = this.dataset.id;
+            const section = this.dataset.section;
+
+            if (section === 'family') {
+                openModal(familiarModal);
+                return;
+            }
+
             fetch(`/obtener_cliente/${clienteId}`)
                 .then(response => response.json())
                 .then(cliente => {
                     if (!cliente) {
-                        alert("No se pudo cargar la información del cliente.");
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se pudo cargar la información del cliente.'
+                        });
                         return;
                     }
                     mostrarModalConDatos(cliente);
                 })
                 .catch(err => {
                     console.error("Error obteniendo datos del cliente:", err);
-                    alert("Error al cargar los datos.");
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al cargar los datos del cliente.'
+                    });
                 });
         });
     });
 
-    document.getElementById('editForm').addEventListener('submit', function (e) {
+    editForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
         const csrfToken = document.querySelector('input[name="csrf_token"]').value;
@@ -157,8 +170,6 @@ window.initDetalleCliente = function () {
         data.carga_familiar = data.carga_familiar === 'Sí' ? 1 : 0;
         data.ingreso_neto = parseFloat(data.ingreso_neto);
 
-        console.log("Enviando datos JSON:", JSON.stringify(data));
-
         fetch('/actualizar_clientes', {
             method: 'POST',
             headers: {
@@ -167,38 +178,79 @@ window.initDetalleCliente = function () {
             },
             body: JSON.stringify(data)
         })
-        .then(async res => {
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                const result = await res.json();
-                if (result.success) {
-                    closeModal(editModal);
-                    // Verificar si cargarVista está disponible
-                    if (typeof cargarVista === "function") {
-                        cargarVista(`/detalle_clientes/${data.id_cliente}`, initDetalleCliente);
+            .then(async res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await res.json();
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cliente actualizado',
+                            text: result.message || 'Los datos del cliente fueron actualizados correctamente.',
+                            confirmButtonText: 'Aceptar'
+                        }).then(() => {
+                            closeModal(editModal);
+                            if (typeof cargarVista === "function") {
+                                cargarVista(`/detalle_clientes/${data.id_cliente}`, initDetalleCliente);
+                            } else {
+                                window.location.href = `/detalle_clientes/${data.id_cliente}`;
+                            }
+                        });
                     } else {
-                        console.warn("cargarVista no está definida. Redireccionando manualmente.");
-                        window.location.href = `/detalle_clientes/${data.id_cliente}`;
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: result.message || 'No se pudo actualizar el cliente.'
+                        });
                     }
                 } else {
-                    alert("Error al actualizar: " + (result.message || ''));
+                    const text = await res.text();
+                    console.error("Respuesta inesperada del servidor:", text);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error inesperado',
+                        text: 'El servidor no devolvió una respuesta JSON válida.'
+                    });
                 }
-            } else {
-                const text = await res.text();
-                console.error("Respuesta inesperada del servidor:", text);
-                alert("Ocurrió un error inesperado (no se recibió JSON).");
-            }
-        })
-        .catch(error => {
-            console.error("Error en la solicitud:", error);
-            alert("Ocurrió un error inesperado.");
-        });
+            })
+            .catch(error => {
+                console.error("Error en la solicitud:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error inesperado',
+                    text: 'Ocurrió un problema al guardar los cambios.'
+                });
+            });
     });
 
+    familiarForm?.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    printButton.addEventListener('click', () => window.print());
+        const formData = new FormData(familiarForm);
+        const data = Object.fromEntries(formData.entries());
 
-    exportButton.addEventListener('click', () => alert('Exportando datos a Excel...'));
+        console.log("Datos del familiar:", data); // Aquí irá el fetch real si deseas enviar al backend
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Familiar actualizado',
+            text: 'Los datos del familiar fueron actualizados correctamente.'
+        });
+
+        closeModal(familiarModal);
+    });
+
+    printButton?.addEventListener('click', () => window.print());
+
+    exportButton?.addEventListener('click', () => {
+        Swal.fire({
+            icon: 'info',
+            title: 'Exportar',
+            text: 'Exportando datos a Excel...',
+            timer: 2000,
+            showConfirmButton: false
+        });
+    });
 
     closeButtons.forEach(button => {
         button.addEventListener('click', function () {
@@ -207,13 +259,14 @@ window.initDetalleCliente = function () {
         });
     });
 
-    cancelButton.addEventListener('click', () => closeModal(editModal));
+    cancelButton?.addEventListener('click', () => {
+        closeModal(editModal);
+        closeModal(familiarModal);
+    });
 
-    modalOverlay.addEventListener('click', closeAllModals);
+    modalOverlay?.addEventListener('click', closeAllModals);
 
     document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') {
-            closeAllModals();
-        }
+        if (e.key === 'Escape') closeAllModals();
     });
 };

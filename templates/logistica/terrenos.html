@@ -63,7 +63,7 @@
                     </thead>
                     <tbody id="tablaTerrenosBody">
                     {% for terreno in terrenos %}
-                        <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower }}">
+                        <tr data-id="{{ terreno.id_terreno }}" data-estado="{{ terreno.estado | lower| replace(' ', '') }}">
                             <td>{{ terreno.id_terreno }}</td>
                             <td>{{ terreno.nombre_proyecto }}</td>
                             <td>{{ terreno.etapa}}</td>
@@ -142,11 +142,11 @@
                 <div class="form-group">
                     <label for="inputManzana">Manzana*</label>
                     <input type="text" id="inputManzana" name="manzana" pattern="[A-Za-z]{1,2}" maxlength="2" required
-                        oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();">
+                        oninput="this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();" placeholder="Ej: A" >
                 </div>
                 <div class="form-group">
                     <label for="inputLote">N° de Lote*</label>
-                    <input id="inputLote" name="lote" type="number" min="0" max="99999" required>
+                    <input id="inputLote" name="lote" type="number" min="0" max="99999" placeholder="Ej: 5" required>
                 </div>
                 <div class="form-group">
                     <label for="selectTipoTerreno">Tipo de terreno*</label>
@@ -161,11 +161,11 @@
                 </div>
                 <div class="form-group">
                     <label for="inputArea">Área m²*</label>
-                    <input id="inputArea" name="area" type="number" step="0.01" required>
+                    <input id="inputArea" name="area" type="text" placeholder="Ej: 80.00 m2" autocomplete="off" required>
                 </div>
                 <div class="form-group">
                     <label for="inputPrecio">Precio*</label>
-                    <input type="number" id="inputPrecio" name="precio" step="0.01" required>
+                    <input type="text" id="inputPrecio" name="precio" placeholder="Ej: S/10000.00" autocomplete="off" required>
                 </div>
         <div class="modal-footer">
             <button class="btn-secondary" id="btnCancelarAgregarTerreno">Cancelar</button> <!-- Botón de cancelar -->

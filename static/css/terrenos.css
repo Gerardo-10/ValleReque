@@ -361,3 +361,22 @@ button:hover {
         font-size: 1.4rem;
     }
 }
+
+.selectProyecto {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+/* Estilo para las opciones del select (scroll) */
+.selectProyecto option {
+    padding: 8px;
+}
+
+/* Esto no funcionará para el dropdown en algunos navegadores */
+.selectProyecto {
+    max-height: 200px;
+    overflow-y: auto;
+}

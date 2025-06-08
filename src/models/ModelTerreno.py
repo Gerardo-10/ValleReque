@@ -1,6 +1,5 @@
 from src.models.entities.Terreno import Terreno
 
-
 class ModelTerreno:
     @classmethod
     def get_by_id(cls, db, id_terreno):
@@ -102,3 +101,35 @@ class ModelTerreno:
             print(f"[ERROR delete terreno {id_terreno}]: {e}")
             db.connection.rollback()
             return False
+
+    @classmethod
+    def validar_terreno(cls, db, id_proyecto, etapa, manzana, lote, estado_terreno):
+        try:
+            cursor = db.connection.cursor()
+
+            # Ejecutar el procedimiento almacenado sp_validar_terreno con las variables de salida
+            cursor.execute('''
+                CALL sp_validar_terreno(%s, %s, %s, %s, %s, @codigo_unidad_existe, @etapa_valida)
+            ''', (id_proyecto, etapa, manzana, lote, estado_terreno))
+
+            # Ejecutar la consulta para obtener las variables de salida
+            cursor.execute("SELECT @codigo_unidad_existe, @etapa_valida")
+            result = cursor.fetchone()  # Recuperar las variables de salida
+            
+            if result is None:
+                raise Exception("Las variables de salida no fueron recuperadas correctamente.")
+            
+            # Asignar los valores de salida a las variables locales y convertirlos a booleanos
+            codigo_unidad_existe = bool(result[0])  # Convertir a booleano (0 -> False, 1 -> True)
+            etapa_valida = bool(result[1])  # Convertir a booleano (0 -> False, 1 -> True)
+            
+            # Retornar los resultados como booleanos
+            return codigo_unidad_existe, etapa_valida
+
+        except Exception as e:
+            print(f"[ERROR validar terreno]: {e}")
+            db.connection.rollback()
+            return None, None  # Retorna None si hubo un error
+
+        finally:
+            cursor.close() # Asegurarse de cerrar el cursor

@@ -25,62 +25,75 @@ def terrenos():
 
     return render_template('logistica/terrenos.html', terrenos=terrenos,proyectos=proyectos,etapas_dict=etapas_dict)
 
-
 @terreno_routes.route('/insertar_terreno', methods=['POST'])
 @login_required
 def insertar_terreno():
     try:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            form = request.form
+        form = request.form
+        id_proyecto = int(form['proyecto'])
+        manzana = form['manzana'].strip()
+        lote = int(form['lote'].strip())
+        estado_terreno = form['estadoTerreno']
+        etapa = int(form['etapa'])
 
-            id_proyecto = int(form['proyecto'])
+        # Llamar a la validación del terreno
+        codigo_unidad_existe, etapa_valida = ModelTerreno.validar_terreno(current_app.db,id_proyecto, etapa, manzana, lote,estado_terreno)
 
-            manzana = form['manzana'].strip()
-            lote = form['lote'].strip()
-            codigo_unidad = f"{manzana} - {lote}"  # Concatenación de manzana y lote
+        print(f"Código de unidad existe: {codigo_unidad_existe}, Etapa válida: {etapa_valida}")
 
-            terreno = {
-                'id_proyecto': form['proyecto'],
-                'etapa': form['etapa'],
-                'tipoTerreno': form['tipoTerreno'],
-                'area': form['area'],
-                'precio': form['precio'],
-                'estadoTerreno': form['estadoTerreno'],
-                'manzana': manzana,
-                'lote': lote,
-                'codigo_unidad': codigo_unidad
-            }
+        # Verificar si el código de unidad ya existe o si la etapa es válida
+        if codigo_unidad_existe:
+            print(f"Código de unidad ya existe para el terreno {manzana} - {lote}")
+            return jsonify({'success': False, 'message': 'El código de unidad ya existe en esta etapa.'}), 400
 
-            # Insertar en la base de datos y recuperar ID
-            id_terreno = ModelTerreno.insert(current_app.db, terreno, id_proyecto)
+        if not etapa_valida:
+            print(f"Etapa no válida para el terreno {manzana} - {lote}")
+            return jsonify({'success': False, 'message': 'La etapa no es válida para este proyecto.'}), 400
 
-            proyecto = ModelProyecto.get_by_id(current_app.db, id_proyecto)
-            nombre_proyecto = proyecto.nombre_proyecto
+        # Si pasa las validaciones, crear el terreno
+        codigo_unidad = f"{manzana} - {lote}"
+        terreno = {
+            'id_proyecto': id_proyecto,
+            'etapa': etapa,
+            'tipoTerreno': form['tipoTerreno'],
+            'area': form['area'],
+            'precio': form['precio'],
+            'estadoTerreno': estado_terreno,
+            'manzana': manzana,
+            'lote': lote,
+            'codigo_unidad': codigo_unidad
+        }
 
-            terreno_json = {
-                'id_terreno': id_terreno,
-                'nombre_proyecto': nombre_proyecto,
-                'etapa': terreno['etapa'],
-                'area': float (terreno['area']),
-                'precio': float (terreno['precio']),
-                'estado': terreno['estadoTerreno'],
-                'tipo': terreno['tipoTerreno'],
-                'manzana': terreno['manzana'],
-                'lote': terreno['lote'],
-                'codigo_unidad': terreno['codigo_unidad']
-            }
+        # Insertar el terreno en la base de datos
+        id_terreno = ModelTerreno.insert(current_app.db, terreno, id_proyecto)
 
-            return jsonify({
-                'success': True,
-                'message': 'Terreno agregado correctamente',
-                'terreno': terreno_json
-            })
+        # Obtener el nombre del proyecto
+        proyecto = ModelProyecto.get_by_id(current_app.db, id_proyecto)
+        nombre_proyecto = proyecto.nombre_proyecto
+
+        # Devolver la respuesta con el terreno agregado
+        terreno_json = {
+            'id_terreno': id_terreno,
+            'nombre_proyecto': nombre_proyecto,
+            'etapa': terreno['etapa'],
+            'area': float(terreno['area']),
+            'precio': float(terreno['precio']),
+            'estado': terreno['estadoTerreno'],
+            'tipo': terreno['tipoTerreno'],
+            'manzana': terreno['manzana'],
+            'lote': terreno['lote'],
+            'codigo_unidad': terreno['codigo_unidad']
+        }
+
+        return jsonify({
+            'success': True,
+            'message': 'Terreno agregado correctamente',
+            'terreno': terreno_json
+        })
 
     except Exception as e:
-        return jsonify({'success': False, 'error': str(e)})
-
-    return jsonify({'success': False, 'error': 'No se pudo insertar el terreno'})
-
+        print(f"Error al insertar terreno: {e}")  # Agregar más detalle en los errores
+        return jsonify({'success': False, 'error': str(e)}), 500
 
 @terreno_routes.route('/actualizar_terreno', methods=['POST'])
 @login_required

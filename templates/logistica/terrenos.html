@@ -120,7 +120,7 @@
                     <p>Aquí puedes agregar un nuevo terreno con los detalles correspondientes. Asegúrate de completar todos los campos requeridos.</p>
                 </div>
             </div>
-            <span class="close" id="btnCancelarNuevoTerreno">&times;</span> <!-- Botón de cancelar -->
+            <span class="close" id="btnCancelarNuevoTerreno">&times;</span> <!-- Botón de cancelar en la X-->
         </div>
         <div class="modal-body">
             <form id="formAgregarTerrenoNuevo">
@@ -128,7 +128,7 @@
                 <input type="hidden" name="estadoTerreno" value="Disponible">
                 <div class="form-group">
                     <label for="selectProyecto">Selecciona el Proyecto*</label>
-                    <select class = "selectProyecto"id="selectProyecto" name="proyecto" required>
+                    <select id="selectProyecto" name="proyecto" data-etapas='{{ etapas_dict | tojson | safe }}' required>
                         <option value="">Seleccionar...</option>
                         {% for proyecto in proyectos %}
                             <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
@@ -137,7 +137,7 @@
                 </div>
                 <div class="form-group">
                     <label for="inputEtapa">Etapa*</label>
-                     <input type="number" id="inputEtapa" name="etapa" min="1" max="99" maxlength="2" required>
+                    <input type="number" id="inputEtapa" name="etapa" min="1"  required>
                 </div>
                 <div class="form-group">
                     <label for="inputManzana">Manzana*</label>
@@ -168,8 +168,8 @@
                     <input type="text" id="inputPrecio" name="precio" placeholder="Ej: S/10000.00" autocomplete="off" required>
                 </div>
         <div class="modal-footer">
-            <button class="btn-secondary" id="btnCancelarAgregarTerreno">Cancelar</button> <!-- Botón de cancelar -->
-            <button class="btn-agregar" id="btnGuardarNuevoTerreno">Guardar</button>
+            <button class="btn-secondary" id="btnCancelarTerreno">Cancelar</button> <!-- Botón de cancelar pasa salir del modal -->
+            <button class="btn-agregar" id="btnGuardarNuevoTerreno">Guardar</button> <!-- Debe de abrir el swweet alert de confirmación -->
         </div>
     </div>
 </div>

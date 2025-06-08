@@ -332,7 +332,8 @@ selectProyecto.addEventListener('change', function() {
         console.log("Evento 'change' activado en filtro de estado");
         filtrarTerrenos();
     });
-  
+
+  // === GUARDAR NUEVO TERRENO ===  
   btnGuardarNuevoTerreno.addEventListener("click", function (e) {
     e.preventDefault(); // Prevenir el envío del formulario automáticamente
     // Mostrar SweetAlert de confirmación
@@ -379,7 +380,11 @@ selectProyecto.addEventListener('change', function() {
                     const precioFormateado = parseFloat(result.terreno.precio).toFixed(2);
 
                     // Agregar el nuevo terreno dinámicamente en la tabla
+                    const tbody = document.querySelector("#tablaTerrenos tbody");
                     const newRow = document.createElement("tr");
+                    newRow.setAttribute("data-id", result.terreno.id_terreno);
+                    newRow.setAttribute("data-estado", result.terreno.estado.toLowerCase().replace(/\s/g, ''));
+
                     newRow.innerHTML = `
                         <td>${result.terreno.id_terreno}</td>
                         <td>${result.terreno.nombre_proyecto}</td>
@@ -404,7 +409,9 @@ selectProyecto.addEventListener('change', function() {
                             </button>
                         </td>
                     `;
-                    document.querySelector("#tablaTerrenos tbody").appendChild(newRow);
+
+                    tbody.appendChild(newRow);
+                    activarBotonesEditar(); // <-- necesario para que los nuevos botones funcionen
                     Swal.fire("Agregado!", "El terreno ha sido agregado correctamente.", "success");
                     form.reset();
                     closeModal(); // Cerrar el modal después de agregar
@@ -419,5 +426,113 @@ selectProyecto.addEventListener('change', function() {
         }
     });
   });
+
+  
+    // === MODAL DE EDICIÓN ===
+    const modalEditar = document.getElementById("modalEditarTerreno");
+
+    function cerrarModalEditar() {
+      modalEditar.classList.remove("active");
+      overlay.classList.remove("active");
+    }
+
+    document.getElementById("btnCancelarEditarTerreno").addEventListener("click", cerrarModalEditar);
+    document.getElementById("btnCancelarEditarTerrenoFooter").addEventListener("click", cerrarModalEditar);
+
+    function handleEditarTerreno(e) {
+      const btn = e.currentTarget;
+      const fila = btn.closest("tr");
+      const id = fila.dataset.id;
+
+      document.getElementById("idTerreno").value = id;
+      document.getElementById("etapaEditar").value = fila.children[2].textContent.trim();
+      document.getElementById("area").value = parseFloat(fila.children[3].textContent.trim());
+      document.getElementById("precio").value = parseFloat(fila.children[4].textContent.trim());
+
+      const estadoTexto = fila.children[5].innerText.trim().replace(/\s+/g, '');
+      document.getElementById("estadoTerreno").value = estadoTexto;
+
+      document.getElementById("tipoTerreno").value = fila.children[6].textContent.trim();
+      document.getElementById("manzana").value = fila.children[7].textContent.trim();
+      document.getElementById("lote").value = fila.children[8].textContent.trim();
+      document.getElementById("codigo_unidad").value = fila.children[9].textContent.trim();
+      document.getElementById("nombre_proyecto").value = fila.children[1].textContent.trim();
+
+      modalEditar.classList.add("active");
+      overlay.classList.add("active");
+    }
+
+    function activarBotonesEditar() {
+      document.querySelectorAll(".btn-editar-terreno").forEach((btn) => {
+        btn.removeEventListener("click", handleEditarTerreno);
+        btn.addEventListener("click", handleEditarTerreno);
+      });
+    }
+
+    // Llamada inicial
+    activarBotonesEditar();
+
+    // === GUARDAR CAMBIOS DE EDICIÓN ===
+    document.getElementById("btnEditarTerreno").addEventListener("click", async function (e) {
+      e.preventDefault();
+
+      Swal.fire({
+        title: "¿Guardar cambios?",
+        text: "Se actualizará la información del terreno.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, guardar",
+        cancelButtonText: "Cancelar",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const formEditar = document.getElementById("formEditarTerreno");
+          const formData = new FormData(formEditar);
+
+          try {
+            const response = await fetch("/actualizar_terreno", {
+              method: "POST",
+              body: formData,
+              headers: {
+                "X-Requested-With": "XMLHttpRequest",
+              },
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              const t = result.terreno;
+              const fila = document.querySelector(`tr[data-id="${t.id_terreno}"]`);
+              if (fila) {
+                const estadoClase = {
+                  'Disponible': 'disponible',
+                  'Vendido': 'vendido',
+                  'Reservado': 'reservado',
+                  'EnProceso': 'enproceso',
+                  'NoDisponible': 'nodisponible',
+                  'Eliminado': 'eliminado'
+                }[t.estadoTerreno] || 'disponible';
+
+                fila.children[1].textContent = t.nombre_proyecto;
+                fila.children[2].textContent = t.etapa;
+                fila.children[3].textContent = parseFloat(t.area).toFixed(2);
+                fila.children[4].textContent = parseFloat(t.precio).toFixed(2);
+                fila.children[5].innerHTML = `<span class="estado-terreno ${estadoClase}">${t.estadoTerreno}</span>`;
+                fila.children[6].textContent = t.tipoTerreno;
+                fila.children[7].textContent = t.manzana;
+                fila.children[8].textContent = t.lote;
+                fila.children[9].textContent = t.codigo_unidad;
+              }
+
+              Swal.fire("Actualizado", "El terreno ha sido editado correctamente.", "success");
+              cerrarModalEditar();
+            } else {
+              Swal.fire("Error", result.message, "error");
+            }
+          } catch (error) {
+            Swal.fire("Error", "Error en la conexión: " + error.message, "error");
+          }
+        }
+      });
+    });
+
   overlay.addEventListener("click", closeModal);
 }

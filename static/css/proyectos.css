@@ -523,6 +523,36 @@
     color: var(--proy-green);
 }
 
+.proy-btn-add-row-manzana {
+    color: white;
+    font-size: 14px; /* Más pequeño */
+    background-color: var(--proy-green); /* Fondo verde */
+    border: none;
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 6px 12px; /* Espaciado cómodo */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.proy-btn-add-row-manzana:hover {
+    background-color: #2e7d32; /* Verde más oscuro en hover */
+}
+
+.proy-btn-delete-row-manzana {
+    color: white;
+    font-size: 14px;
+    background-color: var(--proy-red); /* Fondo rojo */
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.proy-btn-delete-row-manzana:hover {
+    background-color: #c62828; /* Rojo más oscuro en hover */
+}
+
 .proy-map-preview {
     margin-top: 10px;
     border: 1px solid var(--proy-border-color);

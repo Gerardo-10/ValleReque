@@ -326,7 +326,7 @@
             <form class="proy-form-etapa" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="proy-manzanas-container">
-                    <div class="d-flex justify-content-end">
+                    <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="proy-btn-delete-row-manzana">Eliminar Manzana</button>
                         <button type="button" class="proy-btn-add-row-manzana">Agregar Manzana</button>
                     </div>
@@ -341,7 +341,7 @@
                             <label>N° de lotes*</label>
                             <input type="number" placeholder="123" min="1">
                         </div>
-                        <div class="proy-row-actions">
+                        <div class="proy-row-actions d-flex flex-row gap-2">
                             <button type="button" class="proy-btn-icon proy-btn-delete-row"><i
                                     class="fas fa-minus-circle"></i></button>
                             <button type="button" class="proy-btn-icon proy-btn-add-row"><i

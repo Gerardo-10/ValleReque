@@ -393,17 +393,24 @@ function initProyectosModals() {
     // Función para crear modales de etapas dinámicamente
     function crearModalesEtapas() {
         const numEtapasInput = document.getElementById('proy-numEtapas');
-        if (!numEtapasInput) return;
+        if (!numEtapasInput) {
+            console.error('No se encontró el input de número de etapas');
+            return;
+        }
 
         totalEtapas = parseInt(numEtapasInput.value) || 0;
         modalEtapas = [];
 
+        console.log('Buscando template...');
         const modalTemplate = document.getElementById('proy-modalEtapaTemplate');
-        if (!modalTemplate) return;
+        if (!modalTemplate) {
+            console.error('No se encontró el template del modal de etapas');
+            return;
+        }
+        console.log('Template encontrado:', modalTemplate);
 
         for (let i = 1; i <= totalEtapas; i++) {
-            const modalTemplate = document.getElementById('proy-modalEtapaTemplate');
-            const newModal = modalTemplate.cloneNode(true);
+            let newModal = modalTemplate.cloneNode(true);
             newModal.id = `proy-modalEtapa${i}`;
             newModal.classList.remove('proy-template');
 
@@ -423,27 +430,45 @@ function initProyectosModals() {
             // Limpiar resumen inicial
             newModal.querySelector('.proy-resumen-etapa').value = '';
 
+            // Configurar botones de agregar/eliminar manzana
+            configurarBotonesManzanas(newModal);
+
             document.body.appendChild(newModal);
             modalEtapas.push(newModal);
         }
     }
 
-    // Función para configurar la primera fila
-    function configurarPrimeraFila(fila, modal) {
-        // Agregar campos de tipo de terreno
-        agregarCampoTipoTerreno(fila, modal);
+    // Función para configurar los botones de manzanas
+    function configurarBotonesManzanas(modal) {
+        const btnAddManzana = modal.querySelector('.proy-btn-add-row-manzana');
+        const btnDeleteManzana = modal.querySelector('.proy-btn-delete-row-manzana');
 
-        // Configurar botón +
-        const btnAdd = fila.querySelector('.proy-btn-add-row');
-        btnAdd.addEventListener('click', () => {
+        // Configurar botón Agregar Manzana
+        btnAddManzana.addEventListener('click', () => {
             agregarNuevaFila(modal);
+            // Mostrar botón Eliminar en las filas adicionales
+            const filas = modal.querySelectorAll('.proy-manzana-row');
+            if (filas.length > 1) {
+                btnDeleteManzana.style.display = 'block';
+            }
         });
 
-        // Ocultar botón - en primera fila
-        fila.querySelector('.proy-btn-delete-row').style.display = 'none';
+        // Configurar botón Eliminar Manzana
+        btnDeleteManzana.addEventListener('click', function () {
+            const filas = modal.querySelectorAll('.proy-manzana-row');
+            if (filas.length > 1) {
+                filas[filas.length - 1].remove();
+                // Ocultar botón Eliminar si solo queda una fila
+                if (modal.querySelectorAll('.proy-manzana-row').length === 1) {
+                    btnDeleteManzana.style.display = 'none';
+                }
+                actualizarResumenEtapa(modal);
+            }
+        });
 
-        // Configurar eventos de los inputs
-        configurarEventosInputs(fila, modal);
+        // Por defecto, mostrar ambos botones pero Eliminar oculto
+        btnAddManzana.style.display = 'block';
+        btnDeleteManzana.style.display = 'none';
     }
 
     // Función para agregar una nueva fila
@@ -455,29 +480,180 @@ function initProyectosModals() {
         // Limpiar campos
         nuevaFila.querySelector('.proy-input-manzana').value = '';
         nuevaFila.querySelector('input[type="number"]').value = '';
-        nuevaFila.querySelector('.proy-tipo-terreno').selectedIndex = 0;
-        nuevaFila.querySelector('.proy-cantidad-terreno').value = '';
 
-        // Configurar botones
+        // Eliminar campos de terreno si existen
+        eliminarCamposTerreno(nuevaFila, modal);
+
+        // Configurar botones de acciones
         const btnAdd = nuevaFila.querySelector('.proy-btn-add-row');
         const btnDelete = nuevaFila.querySelector('.proy-btn-delete-row');
 
-        btnAdd.style.display = 'none'; // Ocultar botón + en nuevas filas
-        btnDelete.style.display = 'block'; // Mostrar botón -
+        btnAdd.style.display = 'block'; // Mostrar botón +
+        btnDelete.style.display = 'none'; // Ocultar botón - inicialmente
 
-        btnDelete.addEventListener('click', function () {
-            if (modal.querySelectorAll('.proy-manzana-row').length > 1) {
-                this.closest('.proy-manzana-row').remove();
-                actualizarResumenEtapa(modal);
+        // Configurar botón + para agregar tipo de terreno y cantidad
+        btnAdd.addEventListener('click', function () {
+            // Verificar si ya tiene campos de terreno
+            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
+                agregarCamposTerreno(nuevaFila, modal);
+                btnDelete.style.display = 'block'; // Mostrar botón -
+            } else {
+                // Si ya tiene campos, agregar otro conjunto
+                agregarConjuntoTerreno(nuevaFila, modal);
             }
         });
 
-        // Configurar eventos de inputs
+        // Configurar botón - para eliminar los campos de terreno
+        btnDelete.addEventListener('click', function () {
+            eliminarUltimoConjuntoTerreno(nuevaFila, modal);
+            // Ocultar botón - si no hay más conjuntos de terreno
+            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
+                btnDelete.style.display = 'none';
+            }
+        });
+
+        // Configurar eventos de los inputs básicos
         configurarEventosInputs(nuevaFila, modal);
 
         // Agregar al contenedor
         contenedor.appendChild(nuevaFila);
         actualizarResumenEtapa(modal);
+    }
+
+    // Función para agregar campos de terreno a una fila existente
+    function agregarCamposTerreno(fila, modal) {
+        // Crear contenedor para tipo de terreno
+        const tipoTerrenoDiv = document.createElement('div');
+        tipoTerrenoDiv.className = 'proy-form-group terreno-group';
+
+        const tipoTerrenoLabel = document.createElement('label');
+        tipoTerrenoLabel.textContent = 'Tipo de Terreno*';
+
+        const tipoTerrenoSelectContainer = document.createElement('div');
+        tipoTerrenoSelectContainer.className = 'proy-select-container';
+
+        const tipoTerrenoSelect = document.createElement('select');
+        tipoTerrenoSelect.className = 'proy-tipo-terreno';
+        tipoTerrenoSelect.innerHTML = `
+            <option value="Calle">Calle</option>
+            <option value="Avenida">Avenida</option>
+            <option value="Esquina">Esquina</option>
+            <option value="Parque">Parque</option>
+            <option value="Esquina-Parque">Esquina-Parque</option>
+        `;
+
+        tipoTerrenoSelectContainer.appendChild(tipoTerrenoSelect);
+        tipoTerrenoDiv.appendChild(tipoTerrenoLabel);
+        tipoTerrenoDiv.appendChild(tipoTerrenoSelectContainer);
+
+        // Crear contenedor para cantidad
+        const cantidadDiv = document.createElement('div');
+        cantidadDiv.className = 'proy-form-group terreno-group';
+
+        const cantidadLabel = document.createElement('label');
+        cantidadLabel.textContent = 'Cantidad*';
+
+        const cantidadInput = document.createElement('input');
+        cantidadInput.type = 'number';
+        cantidadInput.className = 'proy-cantidad-terreno';
+        cantidadInput.placeholder = '123';
+        cantidadInput.min = '1';
+
+        cantidadDiv.appendChild(cantidadLabel);
+        cantidadDiv.appendChild(cantidadInput);
+
+        // Insertar antes de los botones de acción
+        const actionsDiv = fila.querySelector('.proy-row-actions');
+        fila.insertBefore(tipoTerrenoDiv, actionsDiv);
+        fila.insertBefore(cantidadDiv, actionsDiv);
+
+        // Configurar eventos para los nuevos campos
+        tipoTerrenoSelect.addEventListener('change', () => actualizarResumenEtapa(modal));
+        cantidadInput.addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value < 1) this.value = '';
+            actualizarResumenEtapa(modal);
+        });
+    }
+
+    // Función para agregar otro conjunto de campos de terreno
+    function agregarConjuntoTerreno(fila, modal) {
+        // Clonar los últimos campos de terreno
+        const gruposTerreno = fila.querySelectorAll('.terreno-group');
+        const ultimoTipo = gruposTerreno[gruposTerreno.length - 2];
+        const ultimaCantidad = gruposTerreno[gruposTerreno.length - 1];
+
+        const nuevoTipo = ultimoTipo.cloneNode(true);
+        const nuevaCantidad = ultimaCantidad.cloneNode(true);
+
+        // Limpiar valores
+        nuevoTipo.querySelector('select').selectedIndex = 0;
+        nuevaCantidad.querySelector('input').value = '';
+
+        // Insertar antes de los botones de acción
+        const actionsDiv = fila.querySelector('.proy-row-actions');
+        fila.insertBefore(nuevoTipo, actionsDiv);
+        fila.insertBefore(nuevaCantidad, actionsDiv);
+
+        // Configurar eventos
+        nuevoTipo.querySelector('select').addEventListener('change', () => actualizarResumenEtapa(modal));
+        nuevaCantidad.querySelector('input').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value < 1) this.value = '';
+            actualizarResumenEtapa(modal);
+        });
+    }
+
+    // Función para eliminar campos de terreno de una fila
+    function eliminarCamposTerreno(fila, modal) {
+        const gruposTerreno = fila.querySelectorAll('.terreno-group');
+        gruposTerreno.forEach(grupo => grupo.remove());
+        actualizarResumenEtapa(modal);
+    }
+
+    function eliminarUltimoConjuntoTerreno(fila, modal) {
+        const gruposTerreno = fila.querySelectorAll('.terreno-group');
+        if (gruposTerreno.length >= 2) {
+            gruposTerreno[gruposTerreno.length - 1].remove(); // Cantidad
+            gruposTerreno[gruposTerreno.length - 2].remove(); // Tipo
+            actualizarResumenEtapa(modal);
+        }
+    }
+
+    // Modificar la función configurarPrimeraFila para la primera fila
+    function configurarPrimeraFila(fila, modal) {
+        // No agregar campos de terreno inicialmente
+
+        // Configurar botones de acciones
+        const btnAdd = fila.querySelector('.proy-btn-add-row');
+        const btnDelete = fila.querySelector('.proy-btn-delete-row');
+
+        btnAdd.style.display = 'block'; // Mostrar botón +
+        btnDelete.style.display = 'none'; // Ocultar botón -
+
+        // Configurar botón + para agregar tipo de terreno y cantidad
+        btnAdd.addEventListener('click', function () {
+            // Verificar si ya tiene campos de terreno
+            if (!fila.querySelector('.proy-tipo-terreno')) {
+                agregarCamposTerreno(fila, modal);
+                btnDelete.style.display = 'block'; // Mostrar botón -
+            } else {
+                // Si ya tiene campos, agregar otro conjunto
+                agregarConjuntoTerreno(fila, modal);
+            }
+        });
+
+        // Configurar botón - para eliminar los campos de terreno
+        btnDelete.addEventListener('click', function () {
+            eliminarUltimoConjuntoTerreno(fila, modal);
+            // Ocultar botón - si no hay más conjuntos de terreno
+            if (!fila.querySelector('.proy-tipo-terreno')) {
+                btnDelete.style.display = 'none';
+            }
+        });
+
+        // Configurar eventos de los inputs básicos
+        configurarEventosInputs(fila, modal);
     }
 
     // Función para configurar eventos de inputs
@@ -514,6 +690,43 @@ function initProyectosModals() {
         }
     }
 
+    function actualizarResumenEtapa(modal) {
+        const filas = modal.querySelectorAll('.proy-manzana-row');
+        let resumen = [];
+
+        filas.forEach(fila => {
+            const manzana = fila.querySelector('.proy-input-manzana').value || 'A';
+            const lotes = fila.querySelector('input[type="number"]').value || '0';
+
+            // Obtener todos los tipos de terreno y cantidades
+            const tiposTerreno = fila.querySelectorAll('.proy-tipo-terreno');
+            const cantidades = fila.querySelectorAll('.proy-cantidad-terreno');
+
+            let detallesTerrenos = [];
+
+            // Recorrer todos los conjuntos de terreno (puede haber varios)
+            for (let i = 0; i < tiposTerreno.length; i++) {
+                const tipo = tiposTerreno[i]?.value || 'Calle';
+                const cantidad = cantidades[i]?.value || '0';
+
+                if (tipo && cantidad) {
+                    detallesTerrenos.push(`${tipo}: ${cantidad}`);
+                }
+            }
+
+            // Construir línea de resumen para esta fila
+            let lineaResumen = `Manzana ${manzana}: ${lotes} lotes`;
+
+            if (detallesTerrenos.length > 0) {
+                lineaResumen += ` | ${detallesTerrenos.join(', ')}`;
+            }
+
+            resumen.push(lineaResumen);
+        });
+
+        modal.querySelector('.proy-resumen-etapa').value = resumen.join('\n');
+    }
+
     // Función para configurar los botones de navegación
     function configurarBotonesNavegacion(modal, index) {
         const btnAnterior = modal.querySelector('.proy-btn-anterior');
@@ -546,7 +759,7 @@ function initProyectosModals() {
 
     // Función para reemplazar select de manzana por input text
     function reemplazarSelectManzana(modal) {
-        const selects = modal.querySelectorAll('.proy-select-container select');
+        const selects = modal.querySelectorAll('.proy-select-container');
         selects.forEach(select => {
             const input = document.createElement('input');
             input.type = 'text';
@@ -554,93 +767,6 @@ function initProyectosModals() {
             input.placeholder = 'A';
             select.replaceWith(input);
         });
-    }
-
-    // Función para configurar una fila completa
-    function configurarFilaManzana(fila, modal, esPrimeraFila) {
-        // Configurar input de manzana
-        const inputManzana = fila.querySelector('.proy-input-manzana');
-        inputManzana.addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
-            actualizarResumenEtapa(modal);
-        });
-
-        // Configurar input de cantidad de lotes
-        const inputLotes = fila.querySelector('input[type="number"]');
-        inputLotes.addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value < 1) this.value = '';
-            actualizarResumenEtapa(modal);
-        });
-
-        // Agregar campos de tipo de terreno (solo si no existen)
-        if (!fila.querySelector('.proy-tipo-terreno')) {
-            agregarCampoTipoTerreno(fila, modal);
-        }
-    }
-
-    // Función mejorada para agregar campo de tipo de terreno
-    function agregarCampoTipoTerreno(fila, modal) {
-        // Verificar si ya existen los campos
-        if (fila.querySelector('.proy-tipo-terreno')) return;
-
-        // Crear contenedores
-        const tipoDiv = document.createElement('div');
-        tipoDiv.className = 'proy-form-group';
-        tipoDiv.innerHTML = `
-        <label>Tipo de Terreno*</label>
-        <div class="proy-select-container">
-            <select class="proy-tipo-terreno">
-                <option value="Calle">Calle</option>
-                <option value="Avenida">Avenida</option>
-                <option value="Esquina">Esquina</option>
-                <option value="Parque">Parque</option>
-                <option value="Esquina-Parque">Esquina-Parque</option>
-            </select>
-        </div>
-    `;
-
-        const cantidadDiv = document.createElement('div');
-        cantidadDiv.className = 'proy-form-group';
-        cantidadDiv.innerHTML = `
-        <label>Cantidad*</label>
-        <input type="number" class="proy-cantidad-terreno" placeholder="123" min="1">
-    `;
-
-        // Insertar antes de los botones de acción
-        const actionsDiv = fila.querySelector('.proy-row-actions');
-        fila.insertBefore(tipoDiv, actionsDiv);
-        fila.insertBefore(cantidadDiv, actionsDiv);
-    }
-
-
-    // Función para limpiar campos de una fila
-    function limpiarCamposFila(fila) {
-        fila.querySelector('.proy-input-manzana').value = '';
-        fila.querySelector('input[type="number"]').value = '';
-        const selectTipo = fila.querySelector('.proy-tipo-terreno');
-        if (selectTipo) selectTipo.selectedIndex = 0;
-        const inputCantidad = fila.querySelector('.proy-cantidad-terreno');
-        if (inputCantidad) inputCantidad.value = '';
-    }
-
-    // Función mejorada para actualizar el resumen de la etapa
-    function actualizarResumenEtapa(modal) {
-        const filas = modal.querySelectorAll('.proy-manzana-row');
-        let resumen = [];
-
-        filas.forEach(fila => {
-            const manzana = fila.querySelector('.proy-input-manzana').value;
-            const lotes = fila.querySelector('input[type="number"]').value;
-            const tipoTerreno = fila.querySelector('.proy-tipo-terreno')?.value || 'Calle';
-            const cantidad = fila.querySelector('.proy-cantidad-terreno')?.value || '';
-
-            if (manzana || lotes || cantidad) {
-                resumen.push(`Manzana ${manzana || 'A'}: ${lotes || '0'} lotes | ${tipoTerreno}: ${cantidad || '0'}`);
-            }
-        });
-
-        modal.querySelector('.proy-resumen-etapa').value = resumen.join('\n');
     }
 
     // Función para convertir número a romano

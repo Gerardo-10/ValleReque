@@ -326,18 +326,15 @@
             <form class="proy-form-etapa" method="POST">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="proy-manzanas-container">
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="proy-btn-delete-row-manzana">Eliminar Manzana</button>
+                        <button type="button" class="proy-btn-add-row-manzana">Agregar Manzana</button>
+                    </div>
                     <div class="proy-manzana-row">
                         <div class="proy-form-group">
                             <label>Manzana*</label>
                             <div class="proy-select-container">
-                                <select>
-                                    <option value="A">A</option>
-                                    <option value="B">B</option>
-                                    <option value="C">C</option>
-                                    <option value="D">D</option>
-                                    <option value="E">E</option>
-                                    <option value="F">F</option>
-                                </select>
+                                <input type="text" class="proy-input-manzana" placeholder="A" required>
                             </div>
                         </div>
                         <div class="proy-form-group">

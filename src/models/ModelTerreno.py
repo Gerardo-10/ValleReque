@@ -71,7 +71,7 @@ class ModelTerreno:
         try:
             cursor = db.connection.cursor()
             cursor.execute(
-                "CALL sp_actualizar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+                "CALL sp_actualizar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s)", (
                     id_terreno,
                     data['etapa'],
                     data['tipoTerreno'],
@@ -133,3 +133,20 @@ class ModelTerreno:
 
         finally:
             cursor.close() # Asegurarse de cerrar el cursor
+    
+    @classmethod
+    def get_by_codigo_unidad(cls, db, codigo_unidad, id_proyecto, etapa):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("""
+                SELECT * FROM terreno
+                WHERE codigo_unidad = %s AND id_proyecto = %s AND etapa = %s AND estado_terreno != 'Eliminado'
+            """, (codigo_unidad, id_proyecto, etapa))
+
+            row = cursor.fetchone()
+            if row:
+                return Terreno(*row)  # Usa el constructor que ya tienes en tu entidad Terreno
+            return None
+        except Exception as e:
+            print(f"[ERROR get_by_codigo_unidad]: {e}")
+            return None

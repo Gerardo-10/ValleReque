@@ -39,6 +39,7 @@ function initTerrenosModals() {
             if (result.success) {
               const fila = document.querySelector(`tr[data-id="${terrenoId}"]`);
               fila?.remove();
+              paginarTablaTerrenos();
               Swal.fire(
                 "Eliminado!",
                 "El terreno ha sido eliminado.",
@@ -296,6 +297,7 @@ selectProyecto.addEventListener('change', function() {
             // Mostrar u ocultar la fila según los filtros
             fila.style.display = (coincideCampo && coincideEstado) ? "" : "none";
         });
+      paginarTablaTerrenos();
     }
 
     // Evento 'input' para búsqueda
@@ -395,7 +397,8 @@ selectProyecto.addEventListener('change', function() {
                     `;
 
                     tbody.appendChild(newRow);
-                    activarBotonesEditar(); // <-- necesario para que los nuevos botones funcionen
+                    activarBotonesEditar();
+                    paginarTablaTerrenos();  // <-- necesario para que los nuevos botones funcionen
                     Swal.fire("Agregado!", "El terreno ha sido agregado correctamente.", "success");
                     form.reset();
                     closeModal(); // Cerrar el modal después de agregar
@@ -619,11 +622,137 @@ selectProyecto.addEventListener('change', function() {
 
   areaEditar.addEventListener("input", calcularPrecioEditar);
   document.getElementById("tipoTerrenoEditar").addEventListener("change", calcularPrecioEditar);
+
   calcularPrecioEditar();  
   activarBotonesEditar();
 
     // === GUARDAR CAMBIOS DE EDICIÓN ===
-    
+  const btnEditarTerreno = document.getElementById("btnEditarTerreno");
+  btnEditarTerreno?.addEventListener("click", async function (e) {
+    e.preventDefault();
 
+    const form = document.getElementById("formEditarTerreno");
+    const formData = new FormData(form);
+
+    const idTerreno = formData.get("id_terreno");
+    const manzana = formData.get("manzana").trim();
+    const lote = formData.get("lote").trim();
+    const codigoUnidad = `${manzana} - ${lote}`;
+
+    const confirm = await Swal.fire({
+      title: "¿Confirmar edición?",
+      text: "Se actualizarán los datos del terreno.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirmar",
+      cancelButtonText: "Cancelar",
+      reverseButtons: true,
+    });
+
+    if (!confirm.isConfirmed) return;
+
+    try {
+      const response = await fetch("/actualizar_terreno", {
+        method: "POST",
+        body: formData,
+        headers: {
+          "X-Requested-With": "XMLHttpRequest"
+        }
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        Swal.fire("Actualizado", "El terreno se actualizó correctamente.", "success");
+
+        const fila = document.querySelector(`#tablaTerrenos tr[data-id='${idTerreno}']`);
+        if (fila) {
+          const celdas = fila.querySelectorAll("td");
+
+          // Actualizar columnas por posición según tu tabla
+          celdas[2].textContent = formData.get("etapa");
+          celdas[3].textContent = formData.get("area");
+          celdas[4].textContent = formatearMoneda(formData.get("precio"));
+
+          const estado = formData.get("estadoTerreno");
+          const claseEstado = estado.toLowerCase().replace(/\s+/g, '');
+
+          celdas[5].innerHTML = `<span class="estado-terreno ${claseEstado}">${formatearEstado(estado)}</span>`;
+
+          celdas[6].textContent = formData.get("tipoTerreno");
+          celdas[7].textContent = manzana;
+          celdas[8].textContent = lote;
+          celdas[9].textContent = codigoUnidad;
+        }
+
+        // Cierra el modal
+        document.getElementById("modalEditarTerreno")?.classList.remove("active");
+        document.getElementById("modalOverlay")?.classList.remove("activo");
+
+      } else {
+        Swal.fire("Error", result.message || "No se pudo actualizar el terreno.", "error");
+      }
+
+    } catch (error) {
+      Swal.fire("Error de conexión", "Fallo en la solicitud: " + error.message, "error");
+    }
+  });
+
+  // Funciones auxiliares
+  function formatearMoneda(valor) {
+    const numero = parseFloat(valor);
+    return isNaN(numero) ? valor : numero.toFixed(2);
+  }
+
+  function formatearEstado(estado) {
+    switch (estado) {
+      case "Disponible": return "Disponible";
+      case "Vendido": return "Vendido";
+      case "Reservado": return "Reservado";
+      case "EnProceso": return "En Proceso";
+      case "NoDisponible": return "No Disponible";
+      case "Eliminado": return "Eliminado";
+      default: return estado;
+    }
+  }
+  let filasPorPagina = 10;
+  let paginaActual = 1;
+  function paginarTablaTerrenos() {
+    const filas = Array.from(document.querySelectorAll('#tablaTerrenos tbody tr'))
+      .filter(fila => fila.style.display !== 'none');
+    const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+    const paginacion = document.getElementById('paginacion');
+
+    function mostrarPagina(pagina) {
+      paginaActual = pagina;
+      const inicio = (pagina - 1) * filasPorPagina;
+      const fin = inicio + filasPorPagina;
+
+      // Ocultar todas las filas primero
+      document.querySelectorAll('#tablaTerrenos tbody tr').forEach(fila => fila.style.display = 'none');
+
+      // Mostrar solo las filas correspondientes a la página actual
+      filas.forEach((fila, i) => {
+        if (i >= inicio && i < fin) fila.style.display = '';
+      });
+
+      // Redibujar la paginación
+      paginacion.innerHTML = '';
+      for (let i = 1; i <= totalPaginas; i++) {
+        const boton = document.createElement('button');
+        boton.textContent = i;
+        if (i === pagina) boton.classList.add('activo');
+        boton.addEventListener('click', () => mostrarPagina(i));
+        paginacion.appendChild(boton);
+      }
+    }
+
+    if (totalPaginas > 0) {
+      mostrarPagina(paginaActual);
+    } else {
+      paginacion.innerHTML = '';
+    }
+  }
+  paginarTablaTerrenos();
   overlay.addEventListener("click", closeModal);
 }

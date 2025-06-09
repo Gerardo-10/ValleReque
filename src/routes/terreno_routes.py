@@ -109,51 +109,58 @@ def insertar_terreno():
 @login_required
 def actualizar_terreno():
     try:
-        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            form = request.form
+        form = request.form
+        id_terreno = int(form['id_terreno'])  # ← esto debe coincidir con el input hidden
+        id_proyecto = int(form['id_proyecto'])  # también viene oculto desde el modal
 
-            id_terreno = int(form['id_terreno'])
+        manzana = form['manzana'].strip()
+        lote = int(form['lote'].strip())
+        estado_terreno = form['estadoTerreno']
+        etapa = int(form['etapa'])
 
-            manzana = form['manzana'].strip()
-            lote = form['lote'].strip()
-            codigo_unidad = f"{manzana} - {lote}"
+        codigo_unidad = f"{manzana} - {lote}"
 
-            terreno = {
-                'etapa': form['etapa'],
-                'tipoTerreno': form['tipoTerreno'],
-                'area': form['area'],
-                'precio': form['precio'],
-                'estadoTerreno': form['estadoTerreno'],
-                'manzana': manzana,
-                'lote': lote,
-                'codigo_unidad': codigo_unidad
-            }
+        # Validar duplicado con el mismo SP que insertar
+        codigo_unidad_existe, etapa_valida = ModelTerreno.validar_terreno(
+            current_app.db,
+            id_proyecto,
+            etapa,
+            manzana,
+            lote,
+            estado_terreno
+        )
 
-            # Actualizar en la base de datos
-            ModelTerreno.update(current_app.db, id_terreno, terreno)
+        # ⚠️ Validar si el código existe pero pertenece a otro terreno (distinto al actual)
+        terreno_existente = ModelTerreno.get_by_codigo_unidad(current_app.db, codigo_unidad, id_proyecto, etapa)
 
-            nombre_proyecto = form.get('nombre_proyecto')
+        if terreno_existente and terreno_existente.id_terreno != id_terreno:
+            print(f"Código unidad en uso por otro terreno ID={terreno_existente.id_terreno}")
+            return jsonify({'success': False, 'message': 'El código de unidad ya existe en esta etapa.'}), 400
 
-            terreno_response = {
-                'id_terreno': id_terreno,
-                'nombre_proyecto': nombre_proyecto,
-                'etapa': terreno['etapa'],
-                'codigo_unidad': terreno['codigo_unidad'],
-                'manzana': terreno['manzana'],
-                'lote': terreno['lote'],
-                'area': terreno['area'],
-                'precio': terreno['precio'],
-                'tipoTerreno': terreno['tipoTerreno'],  # usa el mismo nombre que usas en JS
-                'estadoTerreno': terreno['estadoTerreno']
-            }
+        if not etapa_valida:
+            return jsonify({'success': False, 'message': 'La etapa no es válida para este proyecto.'}), 400
 
-            return jsonify({'success': True, 'terreno': terreno_response})
+        # Estructura de actualización
+        data = {
+            'etapa': etapa,
+            'tipoTerreno': form['tipoTerreno'],
+            'area': float(form['area']),
+            'precio': float(form['precio']),
+            'estadoTerreno': estado_terreno,
+            'manzana': manzana,
+            'lote': lote,
+            'codigo_unidad': codigo_unidad
+        }
+
+        actualizado = ModelTerreno.update(current_app.db, id_terreno, data)
+        if actualizado:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'message': 'No se pudo actualizar el terreno.'}), 500
 
     except Exception as e:
-        print("Error en actualizar_terreno:", str(e))  # Agrega este print para ver el error en consola
-        return jsonify({'success': False, 'error': str(e)})
-
-    return jsonify({'success': False, 'error': 'No se pudo actualizar el terreno'})
+        print(f"[ERROR actualizar_terreno]: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
 
 @terreno_routes.route('/eliminar_terreno', methods=['POST'])

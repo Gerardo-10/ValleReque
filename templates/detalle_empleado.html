@@ -85,13 +85,14 @@
                         </div>
                     </div>
                     <button class="btn-accion mb-2" id="btnActualizarCuenta"
-                            data-id="{{ empleado.id_empleado }}"
-                            data-nombre-usuario="{{ empleado.nombre_usuario }}"
-                            data-rol="{{ empleado.rol }}"
-                            data-area="{{ empleado.area }}"
-                            data-estado="{{ empleado.estado }}">
-                        <i class="fas fa-edit"></i> Actualizar Cuenta
-                    </button>
+                        data-id="{{ empleado.id_empleado }}"
+                        data-nombre-usuario="{{ empleado.nombre_usuario }}"
+                        data-rol="{{ empleado.id_rol }}" 
+                        data-area="{{ empleado.id_area }}"  
+                        data-estado="{{ empleado.estado }}">
+                    <i class="fas fa-edit"></i> Actualizar Cuenta
+                </button>
+
                     <button class="btn-accion" id="btnCambiarPassword">
                         <i class="fas fa-key"></i> Actualizar Contraseña
                     </button>

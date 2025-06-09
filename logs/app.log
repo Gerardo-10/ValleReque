@@ -152,6 +152,7 @@
 2025-06-08 03:03:44,327 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 03:37:08,624 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 03:37:09,231 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+<<<<<<< HEAD
 2025-06-08 17:07:26,924 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 17:07:27,257 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 17:09:55,145 - INFO - appLogger - Aplicación iniciada en modo desarrollo
@@ -194,3 +195,9 @@
 2025-06-08 19:02:30,422 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 19:09:50,835 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-08 19:09:51,127 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+=======
+2025-06-08 11:31:20,443 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-08 11:31:21,134 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-08 11:34:30,989 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-08 11:34:31,568 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+>>>>>>> 8c76494842dd569cdde8155fc416474c19d6665c

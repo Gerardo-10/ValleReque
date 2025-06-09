@@ -644,3 +644,75 @@ tbody tr:hover {
         width: 100%;
     }
 }
+
+/* Ajustes generales del contenido del modal */
+.modal-contenido {
+    max-height: 90vh;         /* Altura máxima visible */
+    overflow-y: auto;         /* Scroll si hay mucho contenido */
+    padding-right: 15px;      /* Espacio para evitar que el scroll tape contenido */
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+}
+
+/* Centrado del modal */
+.modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Asegura que la ventana modal esté centrada y adaptada */
+.modal-overlay.activo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+}
+
+/* Responsividad para pantallas bajas */
+@media screen and (max-height: 700px) {
+    .modal-contenido {
+        max-height: 85vh;
+        overflow-y: auto;
+    }
+}
+
+.form-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.form-grupo {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+#datosFamiliarContainer {
+    margin-top: 10px;
+}
+
+#datosFamiliarContainer .form-fila {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#datosFamiliarContainer .form-grupo {
+    flex: 1;
+    min-width: 250px;
+}

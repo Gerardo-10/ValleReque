@@ -32,15 +32,16 @@
                         </div>
                         <div>
                             <p class="summary-label">Estado:</p>
-                            <p class="summary-value">{{ cliente.estado }}</p>
+                            <p class="summary-value" data-field="estado">{{ cliente.estado }}</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="client-info">
-                    <h2>{{ cliente.nombre }}</h2>
-                    <p>{{ cliente.correo }}</p>
+                    <h2 data-field="nombre">{{ cliente.nombre }}</h2>
+                    <p data-field="correo">{{ cliente.correo }}</p>
                 </div>
+
 
                 <div class="client-photo">
                     <img src="{{ url_for('static', filename='img/perfil.png') }}" alt="Foto del cliente">
@@ -59,50 +60,47 @@
                 <div class="data-grid">
                     <div class="data-item">
                         <p class="data-label">Nombre</p>
-                        <p class="data-value">{{ cliente.nombre }}</p>
+                        <p class="data-value" data-field="nombre">{{ cliente.nombre }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Apellido</p>
-                        <p class="data-value">{{ cliente.apellido }}</p>
+                        <p class="data-value" data-field="apellido">{{ cliente.apellido }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Dirección</p>
-                        <p class="data-value">{{ cliente.direccion }}</p>
+                        <p class="data-value" data-field="direccion">{{ cliente.direccion }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Ingreso Neto</p>
-                        <p class="data-value">{{ cliente.ingreso_neto }}</p>
+                        <p class="data-value" data-field="ingreso_neto">{{ cliente.ingreso_neto }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">DNI</p>
-                        <p class="data-value">{{ cliente.dni }}</p>
+                        <p class="data-value" data-field="dni">{{ cliente.dni }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Teléfono</p>
-                        <p class="data-value">{{ cliente.telefono }}</p>
+                        <p class="data-value" data-field="telefono">{{ cliente.telefono }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Ocupación</p>
-                        <p class="data-value">{{ cliente.ocupacion }}</p>
+                        <p class="data-value" data-field="ocupacion">{{ cliente.ocupacion }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Carga Familiar</p>
-                        <p class="data-value">
-                            {% if cliente.carga_familiar == 1 %}
-                                Sí
-                            {% else %}
-                                No
-                            {% endif %}
+                        <p class="data-value" data-field="carga_familiar">
+                            {% if cliente.carga_familiar == 1 %}Sí{% else %}No{% endif %}
                         </p>
                     </div>
                 </div>
             </div>
 
             <!-- Family Data -->
-            <div class="section">
+                <div class="section" data-section="family">
+
                 <div class="section-header">
                     <h3>Familiar o Cónyuge</h3>
-                    <button class="edit-button" data-section="family">
+                    <button class="edit-button" data-id="{{ cliente.id_cliente }}" data-section="family">
                         <i class="fas fa-edit"></i> Editar
                     </button>
                 </div>
@@ -110,15 +108,15 @@
                 <div class="data-grid data-grid-3">
                     <div class="data-item">
                         <p class="data-label">Nombre</p>
-                        <p class="data-value">Juan Carlos</p>
+                        <p class="data-value" data-field="familiar_nombre">{{ familiar.nombre }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">Apellido</p>
-                        <p class="data-value">Bodoque</p>
+                        <p class="data-value" data-field="familiar_apellido">{{ familiar.apellido }}</p>
                     </div>
                     <div class="data-item">
                         <p class="data-label">DNI</p>
-                        <p class="data-value">7548512</p>
+                        <p class="data-value" data-field="familiar_documento">{{ familiar.documento }}</p>
                     </div>
                 </div>
             </div>
@@ -192,6 +190,43 @@
         </div>
     </div>
 
+    <!-- Modal para editar Familiar o Cónyuge -->
+    <div class="modal" id="editFamiliarModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Familiar o Cónyuge</h2>
+                <button class="close-button">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="familiarForm" action="/actualizar_familiar" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <input type="hidden" name="id_cliente" id="id_cliente_familiar" value="{{ cliente.id_cliente }}">
+
+                    <div class="form-group">
+                        <label for="nombre_familiar">Nombre</label>
+                        <input type="text" id="nombre_familiar" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido_familiar">Apellido</label>
+                        <input type="text" id="apellido_familiar" name="apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dni_familiar">DNI</label>
+                        <input type="text" id="dni_familiar" name="documento" required pattern="\d{8}">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="cancel-button">Cancelar</button>
+                        <button type="submit" class="save-button">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <!-- Success Modal -->
     <div class="modal" id="successModal">
         <div class="modal-content success-modal">
@@ -211,6 +246,7 @@
     </div>
 
     <div class="modal-overlay"></div>
+    <script src="{{ url_for('static', filename='js/detalle_clientes.js') }}"></script>
 
-    <script src="../../static/js/detalle_clientes.js"></script>
+
 {% endblock %}

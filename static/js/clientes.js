@@ -1,278 +1,494 @@
-window.initDetalleEmpleado = function () {
+window.initClientesModals = function () {
+    // Referencias a elementos del DOM
+    const btnCambiarEstado = document.getElementById('btnCambiarEstado');
+    const btnAgregar = document.getElementById('btnAgregar');
+    const modalCambiarEstado = document.getElementById('modalCambiarEstado');
+    const modalAgregarCliente = document.getElementById('modalAgregarCliente');
+    const modalExito = document.getElementById('modalExito');
     const modalOverlay = document.getElementById('modalOverlay');
-    const togglePasswordBtns = document.querySelectorAll('.toggle-password');
+    const cerrarModalEstado = document.getElementById('cerrarModalEstado');
+    const cerrarModalAgregar = document.getElementById('cerrarModalAgregar');
+    const cerrarModalExito = document.getElementById('cerrarModalExito');
+    const btnCancelarAgregar = document.getElementById('btnCancelarAgregar');
+    const btnConfirmarEstado = document.getElementById('btnConfirmarEstado');
+    const formAgregarCliente = document.getElementById('formAgregarCliente');
+    const opcionesEstado = document.querySelectorAll('.opcion-estado');
+    const checkboxSeleccionarTodos = document.getElementById('seleccionarTodos');
+    const btnEliminar = document.getElementById('btnEliminar');
+    const modalEliminarCliente = document.getElementById('modalConfirmarEliminacion');
+    const btnCancelarEliminar = document.getElementById('btnCancelarEliminar');
+    const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
+    const cargaFamiliarSelect = document.getElementById('cargaFamiliarCliente');
+    const datosFamiliarContainer = document.getElementById('datosFamiliarContainer');
 
-    const modales = {
-        agregarEmpleado: document.getElementById('modalAgregarEmpleado'),
-        actualizarInfo: document.getElementById('modalActualizarInfo'),
-        cambiarPassword: document.getElementById('modalCambiarPassword'),
-        actualizarCuenta: document.getElementById('modalActualizarCuenta'),
-        exito: document.getElementById('modalExito')
-    };
-
-    const forms = {
-        agregarEmpleado: document.getElementById('formAgregarEmpleado'),
-        actualizarInfo: document.getElementById('formActualizarInfo'),
-        cambiarPassword: document.getElementById('formCambiarPassword'),
-        actualizarCuenta: document.getElementById('formActualizarCuenta')
-    };
-
-    const botones = {
-        agregarEmpleado: document.getElementById('btnAgregarEmpleado'),
-        actualizarInfo: document.getElementById('btnActualizarInfo'),
-        cambiarPassword: document.getElementById('btnCambiarPassword'),
-        actualizarCuenta: document.getElementById('btnActualizarCuenta')
-    };
-
-     // Botón Cancelar dentro del modal Cambiar Contraseña
-    const btnCancelarPassword = document.getElementById('btnCancelarPassword');
-    if (btnCancelarPassword) {
-        btnCancelarPassword.addEventListener('click', function () {
-            cerrarModal(modales.cambiarPassword);
-        });
-    }
-
+    let estadoSeleccionado = null;
 
     function abrirModal(modal) {
-        if (modal) {
-            modal.classList.add('activo');
-            modalOverlay.classList.add('activo');
-            document.body.style.overflow = 'hidden';
-        }
+        modal.classList.add('activo');
+        modalOverlay.classList.add('activo');
+        document.body.style.overflow = 'hidden';
     }
 
     function cerrarModal(modal) {
-        if (modal) {
-            modal.classList.remove('activo');
-            modalOverlay.classList.remove('activo');
-            document.body.style.overflow = '';
-        }
-    }
-
-    function cerrarTodosLosModales() {
-        Object.values(modales).forEach(modal => modal?.classList.remove('activo'));
+        modal.classList.remove('activo');
         modalOverlay.classList.remove('activo');
         document.body.style.overflow = '';
     }
 
-    if (botones.agregarEmpleado) botones.agregarEmpleado.addEventListener('click', () => abrirModal(modales.agregarEmpleado));
-    if (botones.actualizarInfo) botones.actualizarInfo.addEventListener('click', function () {
-        document.getElementById('nombreActualizar').value = this.dataset.nombre;
-        document.getElementById('apellidoActualizar').value = this.dataset.apellido;
-        document.getElementById('emailActualizar').value = this.dataset.correo;
-        document.getElementById('telefonoActualizar').value = this.dataset.telefono;
-        document.getElementById('fechaNacActualizar').value = this.dataset.fechaNacimiento;
-        document.getElementById('direccionActualizar').value = this.dataset.direccion;
-        abrirModal(modales.actualizarInfo);
-    });
-    if (botones.cambiarPassword) botones.cambiarPassword.addEventListener('click', () => abrirModal(modales.cambiarPassword));
-
-    if (botones.actualizarCuenta) {
-        botones.actualizarCuenta.addEventListener('click', function () {
-            const idEmpleado = this.dataset.id;
-            const rol = this.dataset.rol;
-            const area = this.dataset.area;
-            const estado = this.dataset.estado;
-
-            document.getElementById('idActualizarCuenta').value = idEmpleado;
-            document.getElementById('rolActualizar').value = rol || '';
-            document.getElementById('areaActualizar').value = area || '';
-            document.getElementById('estadoActualizar').value = estado || '';
-
-            abrirModal(modales.actualizarCuenta);
-        });
+    function cerrarTodosLosModales() {
+        document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('activo'));
+        modalOverlay.classList.remove('activo');
+        document.body.style.overflow = '';
     }
 
-    document.querySelectorAll('[data-close-modal]').forEach(btn => {
-        btn.addEventListener('click', function () {
-            const targetModal = document.getElementById(this.dataset.closeModal);
-            cerrarModal(targetModal);
+    function mostrarExito(titulo, mensaje) {
+        document.getElementById('tituloExito').textContent = titulo;
+        document.getElementById('mensajeExito').textContent = mensaje;
+        abrirModal(modalExito);
+    }
+
+    function obtenerClientesSeleccionados() {
+        return [...document.querySelectorAll('.checkbox-cliente:checked')].map(cb => cb.dataset.id);
+    }
+
+    function actualizarClientesSeleccionados() {
+        const seleccionados = obtenerClientesSeleccionados();
+        btnCambiarEstado.disabled = seleccionados.length === 0;
+        btnCambiarEstado.style.opacity = seleccionados.length === 0 ? '0.6' : '1';
+    }
+
+    document.addEventListener('change', function (e) {
+        if (e.target.classList.contains('checkbox-cliente')) {
+            actualizarClientesSeleccionados();
+        }
+    });
+
+    opcionesEstado.forEach(opcion => {
+        opcion.addEventListener('click', function () {
+            opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+            this.classList.add('seleccionado');
+            estadoSeleccionado = this.dataset.estado;
         });
     });
-    if (modalOverlay) modalOverlay.addEventListener('click', cerrarTodosLosModales);
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarTodosLosModales(); });
 
-    document.getElementById('formActualizarCuenta').addEventListener('submit', function (event) {
-        event.preventDefault();
-        const form = this;
-        const formData = new FormData(form);
-        const data = Object.fromEntries(formData.entries());
+    formAgregarCliente.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-        fetch('/actualizar_cuenta_empleado', {
+        // Obtener valores
+        const nombre = document.getElementById('nombreCliente').value.trim();
+        const apellido = document.getElementById('apellidoCliente').value.trim();
+        const ocupacion = document.getElementById('ocupacionCliente').value.trim();
+        const direccion = document.getElementById('direccionCliente').value.trim();
+        const dni = document.getElementById('dniCliente').value.trim();
+        const telefono = document.getElementById('telefonoCliente').value.trim();
+        const correo = document.getElementById('correoElectronicoCliente').value.trim();
+        const ingreso = document.getElementById('ingresoCliente').value.trim();
+        const cargaFamiliar = document.getElementById('cargaFamiliarCliente').value;
+        const nombreFamiliar = document.getElementById('nombreFamiliar').value.trim();
+        const apellidoFamiliar = document.getElementById('apellidoFamiliar').value.trim();
+        const dniFamiliar = document.getElementById('dniFamiliar').value.trim();
+
+        // Regex
+        const letrasRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$/;
+        const direccionRegex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#]{1,50}$/;
+        const dniRegex = /^\d{8}$/;
+        const telefonoRegex = /^9\d{8}$/;
+        const correoRegex = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$/;
+        const ingresoRegex = /^[0-9]+(\.[0-9]{1,2})?$/;
+
+        if (!letrasRegex.test(nombre)) {
+            Swal.fire('Nombre inválido', 'Solo letras y espacios, máximo 50 caracteres.', 'warning');
+            return;
+        }
+
+        if (!letrasRegex.test(apellido)) {
+            Swal.fire('Apellido inválido', 'Solo letras y espacios, máximo 50 caracteres.', 'warning');
+            return;
+        }
+
+        if (!letrasRegex.test(ocupacion)) {
+            Swal.fire('Ocupación inválida', 'Solo letras y espacios, máximo 50 caracteres.', 'warning');
+            return;
+        }
+
+        if (!direccionRegex.test(direccion)) {
+            Swal.fire('Dirección inválida', 'Solo letras, números y el carácter #, máximo 50 caracteres.', 'warning');
+            return;
+        }
+
+        if (!dniRegex.test(dni)) {
+            Swal.fire('DNI inválido', 'Debe contener exactamente 8 dígitos numéricos.', 'warning');
+            return;
+        }
+
+        if (!telefonoRegex.test(telefono)) {
+            Swal.fire('Teléfono inválido', 'Debe comenzar con 9 y contener 9 dígitos.', 'warning');
+            return;
+        }
+
+        if (!correoRegex.test(correo)) {
+            Swal.fire('Correo inválido', 'Debe ser @gmail.com o @hotmail.com.', 'warning');
+            return;
+        }
+
+        if (!ingresoRegex.test(ingreso)) {
+            Swal.fire('Ingreso inválido', 'Ingrese un monto válido (número positivo).', 'warning');
+            return;
+        }
+
+        if (cargaFamiliar === "1") {
+            if (!letrasRegex.test(nombreFamiliar)) {
+                Swal.fire('Nombre del familiar inválido', 'Solo letras y espacios, máximo 50 caracteres.', 'warning');
+                return;
+            }
+
+            if (!letrasRegex.test(apellidoFamiliar)) {
+                Swal.fire('Apellido del familiar inválido', 'Solo letras y espacios, máximo 50 caracteres.', 'warning');
+                return;
+            }
+
+            if (!dniRegex.test(dniFamiliar)) {
+                Swal.fire('DNI del familiar inválido', 'Debe contener exactamente 8 dígitos numéricos.', 'warning');
+                return;
+            }
+        }
+
+        // Desactivar campos de familiar si es "No"
+        if (cargaFamiliar !== "1") {
+            document.getElementById('nombreFamiliar').setAttribute('disabled', 'disabled');
+            document.getElementById('apellidoFamiliar').setAttribute('disabled', 'disabled');
+            document.getElementById('dniFamiliar').setAttribute('disabled', 'disabled');
+        }
+
+        const formData = new FormData(this);
+
+        if (cargaFamiliar !== "1") {
+            document.getElementById('nombreFamiliar').removeAttribute('disabled');
+            document.getElementById('apellidoFamiliar').removeAttribute('disabled');
+            document.getElementById('dniFamiliar').removeAttribute('disabled');
+        }
+
+        fetch('/insertar_cliente', {
             method: 'POST',
+            body: formData,
             headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': form.querySelector('input[name="csrf_token"]').value
-            },
-            body: JSON.stringify(data)
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+            }
         })
-            .then(response => response.ok ? response.json() : response.text().then(text => { throw new Error(text) }))
-            .then(result => {
-                if (result.success) {
-                    document.getElementById('rolEmpleado').textContent = obtenerNombreRol(data.id_rol);
-                    document.getElementById('areaEmpleado').textContent = obtenerNombreArea(data.id_area);
-                    const estadoText = data.estado == "1" ? 'Activo' : 'Inactivo';
-                    const estadoClass = data.estado == "1" ? 'estado-activo' : 'estado-inactivo';
-                    const estadoEmpleado = document.getElementById('estadoEmpleado');
-                    estadoEmpleado.textContent = estadoText;
-                    estadoEmpleado.className = estadoClass;
+        .then(async res => {
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || `Error HTTP ${res.status}`);
+            return data;
+        })
+        .then(data => {
+            if (data.success) {
+                const cliente = data.cliente;
+                const nuevaFila = document.createElement('tr');
+                const clasesEstado = {
+                    'Activo': 'activo',
+                    'Evaluado': 'evaluado',
+                    'NoDisponible': 'no-disponible',
+                    'SinEvaluar': 'sin-evaluar'
+                };
+                const claseEstado = clasesEstado[cliente.estado] || 'sin-evaluar';
+                nuevaFila.setAttribute('data-id', cliente.id_cliente);
+                nuevaFila.setAttribute('data-estado', cliente.estado.toLowerCase());
+                nuevaFila.innerHTML = `
+                    <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
+                    <td>${cliente.id_cliente}</td>
+                    <td data-filtro="nombreCompleto">${cliente.nombre} ${cliente.apellido}</td>
+                    <td data-filtro="dni">${cliente.dni}</td>
+                    <td>${cliente.direccion}</td>
+                    <td>${cliente.telefono}</td>
+                    <td>${cliente.ingreso_neto}</td>
+                    <td><span class="estado-badge ${claseEstado}">${cliente.estado}</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn-detalles" data-id="${cliente.id_cliente}"><i class="fas fa-eye"></i></button>
+                    </td>
+                `;
+                document.getElementById('tabla_clientes_body').appendChild(nuevaFila);
+                cerrarModal(modalAgregarCliente);
+                mostrarExito('Cliente agregado', data.message);
+                this.reset();
+                actualizarClientesSeleccionados();
+            } else {
+                Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+            }
+        })
+        .catch(error => {
+            console.error('Error al enviar formulario:', error);
+            Swal.fire({ icon: 'error', title: 'Error inesperado', text: error.message });
+        });
+    });
 
-                    const btnActualizarCuenta = document.getElementById('btnActualizarCuenta');
-                    if (btnActualizarCuenta) {
-                        btnActualizarCuenta.setAttribute('data-id', data.id_empleado);
-                        btnActualizarCuenta.setAttribute('data-rol', data.id_rol);
-                        btnActualizarCuenta.setAttribute('data-area', data.id_area);
-                        btnActualizarCuenta.setAttribute('data-estado', data.estado);
-                    }
+    btnEliminar.addEventListener('click', () => {
+        if (obtenerClientesSeleccionados().length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione al menos un cliente'
+            });
+            return;
+        }
+        abrirModal(modalEliminarCliente);
+    });
 
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cuenta actualizada',
-                        text: 'Los datos de la cuenta se actualizaron correctamente.',
-                        timer: 2000,
-                        showConfirmButton: false
+    btnCancelarEliminar.addEventListener('click', () => cerrarModal(modalEliminarCliente));
+
+    btnConfirmarEliminar.addEventListener('click', () => {
+        const clientesSeleccionados = obtenerClientesSeleccionados();
+        if (clientesSeleccionados.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'No hay clientes seleccionados'
+            });
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('clientes', JSON.stringify(clientesSeleccionados));
+
+        fetch('/eliminar_clientes', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    clientesSeleccionados.forEach(id => {
+                        const fila = document.querySelector(`tr[data-id="${id}"]`);
+                        if (fila) fila.remove();
                     });
-
-                    document.querySelector('[data-close-modal="modalActualizarCuenta"]').click();
+                    cerrarModal(modalEliminarCliente);
+                    mostrarExito('Clientes eliminados', data.message);
+                    actualizarClientesSeleccionados();
                 } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error al actualizar',
-                        text: result.message || 'Ocurrió un error inesperado.'
-                    });
+                    alert('Error: ' + data.message);
                 }
             })
             .catch(error => {
-                console.error("Error:", error);
+                console.error('Error al eliminar clientes:', error);
                 Swal.fire({
                     icon: 'error',
-                    title: 'Error de conexión',
-                    text: error.message || 'No se pudo completar la solicitud.'
+                    title: 'Error inesperado',
+                    text: 'Ocurrió un problema al eliminar los clientes'
                 });
             });
     });
 
-    function obtenerNombreRol(idRol) {
-        switch (idRol) {
-            case '1': return 'Administrador';
-            case '2': return 'Usuario';
-            default: return 'Desconocido';
+    btnConfirmarEstado.addEventListener('click', function () {
+        const clientesSeleccionados = obtenerClientesSeleccionados();
+
+        // Verificar que se ha seleccionado un estado
+        if (!estadoSeleccionado) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione un estado'
+            });
+            return;
         }
-    }
 
-    function obtenerNombreArea(idArea) {
-        switch (idArea) {
-            case '1': return 'Administración';
-            case '2': return 'Ventas';
-            case '3': return 'Legal';
-            case '4': return 'Contabilidad';
-            default: return 'Desconocida';
+        // Verificar que se ha seleccionado al menos un cliente
+        if (clientesSeleccionados.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Atención',
+                text: 'Por favor, seleccione al menos un cliente'
+            });
+            return;
         }
-    }
 
-    if (forms.actualizarInfo) {
-        forms.actualizarInfo.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const data = {
-                id_empleado: document.getElementById('idActualizar').value,
-                nombre: document.getElementById('nombreActualizar').value,
-                apellido: document.getElementById('apellidoActualizar').value,
-                correo: document.getElementById('emailActualizar').value,
-                fecha_nacimiento: document.getElementById('fechaNacActualizar').value,
-                telefono: document.getElementById('telefonoActualizar').value,
-                direccion: document.getElementById('direccionActualizar').value
-            };
+        // Confirmación antes de realizar el cambio
+        Swal.fire({
+            title: '¿Estás seguro de cambiar el estado?',
+            text: `Se cambiará el estado de ${clientesSeleccionados.length} cliente(s).`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, cambiar estado',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Crear el formulario con los datos
+                const formData = new FormData();
+                formData.append('clientes', JSON.stringify(clientesSeleccionados));  // Convertir lista de clientes a JSON
+                formData.append('estado', estadoSeleccionado);  // Agregar el estado seleccionado
 
-            fetch('/actualizar_empleado', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.querySelector('input[name="csrf_token"]').value
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => response.json())
-                .then(respuesta => {
-                    if (respuesta.success) {
-                        cerrarModal(modales.actualizarInfo);
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Información Actualizada',
-                            text: 'Los datos del empleado han sido actualizados correctamente.',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        document.getElementById('nombreEmpleado').textContent = data.nombre + ' ' + data.apellido;
-                        document.getElementById('correoEmpleado').textContent = data.correo;
-                        document.getElementById('telefonoEmpleado').textContent = data.telefono;
-                        document.getElementById('fechaNacimientoEmpleado').textContent = data.fecha_nacimiento;
-                        document.getElementById('direccionEmpleado').textContent = data.direccion;
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: respuesta.message
-                        });
+                // Enviar la solicitud al backend
+                fetch('/actualizar_estado_clientes', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': document.querySelector('input[name=csrf_token]').value  // Token CSRF
                     }
                 })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Ocurrió un error al actualizar.'
-                    });
-                });
-        });
-    }
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar el estado visualmente en la interfaz de usuario
+                            clientesSeleccionados.forEach(id => {
+                                const fila = document.querySelector(`tr[data-id="${id}"]`);
+                                if (fila) {
+                                    const spanEstado = fila.querySelector('.estado-badge');
+                                    const clasesEstado = {
+                                        'activo': 'activo',
+                                        'evaluado': 'evaluado',
+                                        'no-disponible': 'no-disponible',
+                                        'sin-evaluar': 'sin-evaluar'
+                                    };
 
-    if (forms.cambiarPassword) {
-        forms.cambiarPassword.addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(this);
+                                    // Actualizar el estado visualmente
+                                    spanEstado.className = 'estado-badge ' + (clasesEstado[estadoSeleccionado] || 'sin-evaluar');
+                                    spanEstado.textContent = estadoSeleccionado.charAt(0).toUpperCase() + estadoSeleccionado.slice(1).replace('-', ' ');
 
-            fetch('/actualizar_contrasena', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.json())
-                .then(data => {
-                    cerrarModal(modales.cambiarPassword);
-                    if (data.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Contraseña actualizada',
-                            text: 'Contraseña actualizada correctamente.',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    } else {
+                                    // Actualizar el atributo de estado de la fila
+                                    fila.setAttribute('data-estado', estadoSeleccionado);
+                                }
+                            });
+
+                            // Cerrar el modal de cambiar estado
+                            cerrarModal(modalCambiarEstado);
+
+                            // Mostrar mensaje de éxito con el número de clientes afectados
+                            Swal.fire({
+                                title: 'Estado Actualizado',
+                                text: `Se actualizó el estado de ${clientesSeleccionados.length} cliente(s).`,
+                                icon: 'success',
+                                confirmButtonText: 'Cerrar'
+                            });
+
+                            // Resetear el estado seleccionado
+                            estadoSeleccionado = null;
+                            opcionesEstado.forEach(op => op.classList.remove('seleccionado'));
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        // Manejo de errores inesperados
+                        console.error('Error al actualizar estado:', error);
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error al cambiar contraseña',
-                            text: data.message || 'Ocurrió un problema al cambiar la contraseña.',
+                            title: 'Error inesperado',
+                            text: 'Ocurrió un problema al actualizar el estado'
                         });
-                    }
-                })
-                .catch(error => {
-                    cerrarModal(modales.cambiarPassword);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'No se pudo procesar la solicitud.',
                     });
-                    console.error('Error:', error);
-                });
-        });
-    }
-
-
-    togglePasswordBtns.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const input = this.previousElementSibling;
-            const tipo = input.getAttribute('type');
-            input.setAttribute('type', tipo === 'password' ? 'text' : 'password');
-            this.innerHTML = tipo === 'password' ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+            }
         });
     });
+
+    btnCambiarEstado.addEventListener('click', () => {
+        if (obtenerClientesSeleccionados().length === 0) {
+            alert('Por favor, seleccione al menos un cliente');
+            return;
+        }
+        abrirModal(modalCambiarEstado);
+    });
+
+    btnAgregar.addEventListener('click', () => abrirModal(modalAgregarCliente));
+    cerrarModalEstado.addEventListener('click', () => cerrarModal(modalCambiarEstado));
+    cerrarModalAgregar.addEventListener('click', () => cerrarModal(modalAgregarCliente));
+    cerrarModalExito.addEventListener('click', () => cerrarModal(modalExito));
+    btnCancelarAgregar.addEventListener('click', () => cerrarModal(modalAgregarCliente));
+    modalOverlay.addEventListener('click', cerrarTodosLosModales);
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') cerrarTodosLosModales();
+    });
+
+    cargaFamiliarSelect.addEventListener('change', () => {
+        if (cargaFamiliarSelect.value === '1') {
+            datosFamiliarContainer.style.display = 'block';
+        } else {
+            datosFamiliarContainer.style.display = 'none';
+            document.getElementById('nombreFamiliar').value = '';
+            document.getElementById('apellidoFamiliar').value = '';
+            document.getElementById('dniFamiliar').value = '';
+        }
+    });
+
+    // Inicializar selección
+    actualizarClientesSeleccionados();
+
+    // Buscador de clientes
+    document.getElementById('buscarCliente').addEventListener('input', filtrarClientes);
+    document.getElementById('filtroClientes').addEventListener('change', filtrarClientes);
+    document.getElementById('filtroClientesEstado').addEventListener('change', filtrarClientes);
+
+    function filtrarClientes() {
+        const textoBusqueda = document.getElementById('buscarCliente').value.toLowerCase();
+        const filtro = document.getElementById('filtroClientes').value;
+        const filtroEstado = document.getElementById('filtroClientesEstado').value.toLowerCase();
+        document.querySelectorAll('.tabla-clientes tbody tr').forEach(fila => {
+            const estadoCliente = fila.getAttribute('data-estado').toLowerCase();
+            const coincideEstado = (filtroEstado === 'todos') || (estadoCliente === filtroEstado);
+            if (!coincideEstado) {
+                fila.style.display = 'none';
+                return;
+            }
+            let mostrar = false;
+            if (!filtro) {
+                mostrar = fila.textContent.toLowerCase().includes(textoBusqueda);
+            } else {
+                const celda = fila.querySelector(`td[data-filtro="${filtro}"]`);
+                if (celda) {
+                    mostrar = celda.textContent.toLowerCase().includes(textoBusqueda);
+                }
+            }
+            fila.style.display = mostrar ? '' : 'none';
+        });
+        paginarTabla();
+    }
+
+    // Paginación en la tabla de clientes
+    let filasPorPagina = 10;
+    let paginaActual = 1;
+
+    function paginarTabla() {
+        const filas = Array.from(document.querySelectorAll('#tabla_clientes_body tr'))
+            .filter(fila => fila.style.display !== 'none');
+        const totalPaginas = Math.ceil(filas.length / filasPorPagina);
+        const paginacion = document.getElementById('paginacion');
+
+        function mostrarPagina(pagina) {
+            paginaActual = pagina;
+            const inicio = (pagina - 1) * filasPorPagina;
+            const fin = inicio + filasPorPagina;
+
+            // Primero ocultamos todas las filas
+            document.querySelectorAll('#tabla_clientes_body tr').forEach(fila => fila.style.display = 'none');
+
+            // Mostramos sólo las filas visibles en el filtro correspondientes a la página
+            filas.forEach((fila, i) => {
+                if (i >= inicio && i < fin) {
+                    fila.style.display = '';
+                }
+            });
+
+            paginacion.innerHTML = '';
+            for (let i = 1; i <= totalPaginas; i++) {
+                const boton = document.createElement('button');
+                boton.textContent = i;
+                if (i === pagina) boton.classList.add('activo');
+                boton.addEventListener('click', () => mostrarPagina(i));
+                paginacion.appendChild(boton);
+            }
+        }
+
+        if (totalPaginas > 0) {
+            mostrarPagina(paginaActual);
+        } else {
+            paginacion.innerHTML = ''; // No mostrar paginación si no hay filas
+        }
+    }
+
+    paginarTabla();
 };

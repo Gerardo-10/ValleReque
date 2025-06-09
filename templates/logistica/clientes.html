@@ -190,12 +190,15 @@
                         </div>
                     </div>
                     <div class="form-fila">
-                        <div class="form-grupo">
+                        <!-- Ocupación -->
+                        <div class="form-grupo" style="flex: 1;">
                             <label for="ocupacionCliente">Ocupación*</label>
                             <input type="text" id="ocupacionCliente" name="ocupacion" placeholder="Ingrese Ocupación"
-                                   required minlength="2" maxlength="100">
+                                required minlength="2" maxlength="100">
                         </div>
-                        <div class="form-grupo">
+
+                        <!-- Carga Familiar -->
+                        <div class="form-grupo" style="flex: 1;">
                             <label for="cargaFamiliarCliente">Carga Familiar*</label>
                             <select id="cargaFamiliarCliente" name="carga_familiar" required>
                                 <option value="" disabled selected>Seleccione una opción</option>
@@ -204,6 +207,28 @@
                             </select>
                         </div>
                     </div>
+
+                    <!-- Campos adicionales solo si es "Sí" -->
+                    <div id="datosFamiliarContainer" style="display: none; width: 100%;">
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label for="nombreFamiliar">Nombre del Familiar</label>
+                                <input type="text" id="nombreFamiliar" name="nombre_familiar" placeholder="Ingrese nombre" maxlength="100">
+                            </div>
+                            <div class="form-grupo">
+                                <label for="apellidoFamiliar">Apellido del Familiar</label>
+                                <input type="text" id="apellidoFamiliar" name="apellido_familiar" placeholder="Ingrese apellido" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="form-fila">
+                            <div class="form-grupo">
+                                <label for="dniFamiliar">DNI del Familiar</label>
+                                <input type="text" id="dniFamiliar" name="dni_familiar" placeholder="Ingrese DNI" pattern="^\d{8}$">
+                            </div>
+                        </div>
+                    </div>
+
+
                     <div class="form-grupo">
                         <label for="correoElectronicoCliente">Correo Electronico*</label>
                         <input type="email" id="correoElectronicoCliente" name="correo"

@@ -44,9 +44,8 @@ window.initDetalleCliente = function () {
     }
 
     function validarFamiliarApellido(apellido) {
-        const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#]{1,50}$/;
-        return regex.test(apellido);
-    }
+    return validarTextoAlfabetico(apellido);
+}
 
     function validarFamiliarDNI(dni) {
         return /^\d{8}$/.test(dni);
@@ -181,7 +180,7 @@ window.initDetalleCliente = function () {
     });
 
     document.getElementById('apellido_familiar')?.addEventListener('input', function () {
-        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ0-9\s#]/g, '').slice(0, 50);
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '').slice(0, 50);
     });
 
     document.getElementById('dni_familiar')?.addEventListener('input', function () {
@@ -211,6 +210,7 @@ window.initDetalleCliente = function () {
             el.textContent = value;
         });
     }
+
 
     function mostrarModalConDatos(cliente) {
         const fields = [

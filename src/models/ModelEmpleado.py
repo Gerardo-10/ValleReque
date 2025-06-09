@@ -7,6 +7,29 @@ from email_validator import validate_email, EmailNotValidError
 
 
 class ModelEmpleado:
+    
+    @classmethod
+    def actualizar_info(cls, db, id_empleado, nombre, apellido, correo, telefono, fecha_nacimiento, direccion):
+        try:
+            cursor = db.connection.cursor()
+
+            # Actualizar la información personal del empleado
+            cursor.execute("""
+                           UPDATE empleado
+                           SET nombre_empleado = %s, apellido_empleado = %s, correo_electronico = %s,
+                               telefono = %s, fecha_nacimiento = %s, direccion = %s
+                           WHERE id_empleado = %s
+                           """, (nombre, apellido, correo, telefono, fecha_nacimiento, direccion, id_empleado))
+
+            db.connection.commit()
+            cursor.close()
+            return True, "Información actualizada correctamente"
+
+        except Exception as ex:
+            db.connection.rollback()
+            print(f"Error en actualizar_info: {ex}")
+            return False, str(ex)
+        
     @classmethod
     def get_by_empleado_id(cls, db, id_empleado):
         cursor = db.connection.cursor()

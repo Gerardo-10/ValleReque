@@ -146,18 +146,31 @@ def actualizar_empleado():
         data = request.get_json()
         id_empleado = data.get('id_empleado')
         print(f"Datos recibidos: {data}")
+
+        # Verificar que el ID del empleado esté presente
         if not id_empleado:
             return jsonify({'success': False, 'message': 'Falta el ID del empleado'}), 400
 
-        success = ModelEmpleado.update(current_app.db, id_empleado, data)
+        # Usar el método 'actualizar_info' para actualizar los datos del empleado
+        success, message = ModelEmpleado.actualizar_info(
+            current_app.db, 
+            id_empleado,
+            data.get('nombre'),
+            data.get('apellido'),
+            data.get('correo'),
+            data.get('telefono'),
+            data.get('fecha_nacimiento'),
+            data.get('direccion')
+        )
 
         if success:
-            return jsonify({'success': True})
+            return jsonify({'success': True, 'message': message})
         else:
-            return jsonify({'success': False, 'message': 'Fallo al actualizar en la base de datos'}), 500
+            return jsonify({'success': False, 'message': message}), 500
 
     except Exception as e:
-        return jsonify({'success': False, 'message': str(e)})
+        return jsonify({'success': False, 'message': str(e)}), 500
+
 
 
 @empleado_routes.route('/actualizar_contrasena', methods=['POST'])

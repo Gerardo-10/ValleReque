@@ -380,3 +380,34 @@ button:hover {
     max-height: 200px;
     overflow-y: auto;
 }
+
+.badge-estado {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: white;
+  display: inline-block;
+}
+
+.badge-disponible {
+  background-color: #28a745;
+}
+
+.badge-reservado {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.badge-vendido {
+  background-color: #007bff;
+}
+
+.badge-enproceso {
+  background-color: #17a2b8;
+}
+
+.badge-nodisponible {
+  background-color: #6c757d;
+}

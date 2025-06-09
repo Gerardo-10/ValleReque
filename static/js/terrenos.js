@@ -79,9 +79,18 @@ function initTerrenosModals() {
   const inputLote = document.getElementById("inputLote");
   const inputArea = document.getElementById("inputArea");
   const inputPrecio = document.getElementById("inputPrecio");
-  const preciosDict = JSON.parse(selectProyecto.getAttribute('data-precios'));
   const selectTipoTerreno = document.getElementById('selectTipoTerreno');
   let etapasPorProyecto = {};
+
+    const preciosDict = (() => {
+    try {
+      return JSON.parse(document.getElementById("selectProyecto").getAttribute("data-precios"));
+    } catch (e) {
+      console.error("No se pudo cargar preciosDict:", e);
+      return {};
+    }
+  })();
+
   // Mostrar el modal de agregar terreno cuando se haga clic en "Agregar"
   btnAgregarTerreno.addEventListener("click", () => {
     modalAgregar.classList.add("active"); // Mostrar modal
@@ -196,31 +205,6 @@ selectProyecto.addEventListener('change', function() {
       value += "0";
     }
     // Actualizamos el valor del input
-    this.value = value;
-  });
-
-  inputPrecio.addEventListener("input", function (e) {
-    // Obtener el valor actual
-    let value = this.value;
-    // Eliminar cualquier caracter que no sea número o punto
-    value = value.replace(/[^0-9.]/g, "");
-
-    // Eliminar puntos adicionales después del primero
-    const decimalSplit = value.split(".");
-    if (decimalSplit.length > 2) {
-      value = decimalSplit[0] + "." + decimalSplit.slice(1).join("");
-    }
-    // Limitar la parte entera a 10 dígitos
-    if (decimalSplit[0].length > 10) {
-      value =
-        decimalSplit[0].substring(0, 10) +
-        (decimalSplit[1] ? "." + decimalSplit[1] : "");
-    }
-    // Limitar decimales a 2 dígitos
-    if (decimalSplit.length > 1 && decimalSplit[1].length > 2) {
-      value = decimalSplit[0] + "." + decimalSplit[1].substring(0, 2);
-    }
-    // Actualizar el valor
     this.value = value;
   });
 
@@ -429,9 +413,8 @@ selectProyecto.addEventListener('change', function() {
 
   
     // === MODAL DE EDICIÓN ===
-    const modalEditar = document.getElementById("modalEditarTerreno");
-
-    function cerrarModalEditar() {
+  const modalEditar = document.getElementById("modalEditarTerreno");
+  function cerrarModalEditar() {
       modalEditar.classList.remove("active");
       overlay.classList.remove("active");
     }
@@ -439,100 +422,208 @@ selectProyecto.addEventListener('change', function() {
     document.getElementById("btnCancelarEditarTerreno").addEventListener("click", cerrarModalEditar);
     document.getElementById("btnCancelarEditarTerrenoFooter").addEventListener("click", cerrarModalEditar);
 
-    function handleEditarTerreno(e) {
-      const btn = e.currentTarget;
-      const fila = btn.closest("tr");
-      const id = fila.dataset.id;
+  function handleEditarTerreno(e) {
+    const btn = e.currentTarget;
+    const fila = btn.closest("tr");
+    const id = fila.dataset.id;
 
-      document.getElementById("idTerreno").value = id;
-      document.getElementById("etapaEditar").value = fila.children[2].textContent.trim();
-      document.getElementById("area").value = parseFloat(fila.children[3].textContent.trim());
-      document.getElementById("precio").value = parseFloat(fila.children[4].textContent.trim());
+    document.getElementById("idTerreno").value = id;
+    document.getElementById("areaEditar").value = parseFloat(fila.children[3].textContent.trim());
+    document.getElementById("precioEditar").value = parseFloat(fila.children[4].textContent.trim());
 
-      const estadoTexto = fila.children[5].innerText.trim().replace(/\s+/g, '');
-      document.getElementById("estadoTerreno").value = estadoTexto;
+    const estadoTexto = fila.children[5].innerText.trim().replace(/\s+/g, '');
+    document.getElementById("estadoTerreno").value = estadoTexto;
+    document.getElementById("nombreProyectoEditar").textContent = fila.children[1].textContent.trim();
+    document.getElementById("codigoUnidadMostrar").textContent = fila.children[9].textContent.trim();
+    document.getElementById("tipoTerrenoEditar").value = fila.children[6].textContent.trim();
+    document.getElementById("manzanaEditar").value = fila.children[7].textContent.trim();
+    document.getElementById("loteEditar").value = fila.children[8].textContent.trim();
+    document.getElementById("codigo_unidad").value = fila.children[9].textContent.trim();
 
-      document.getElementById("tipoTerreno").value = fila.children[6].textContent.trim();
-      document.getElementById("manzana").value = fila.children[7].textContent.trim();
-      document.getElementById("lote").value = fila.children[8].textContent.trim();
-      document.getElementById("codigo_unidad").value = fila.children[9].textContent.trim();
-      document.getElementById("nombre_proyecto").value = fila.children[1].textContent.trim();
+    // Obtener ID del proyecto desde data-id-proyecto
+    const proyectoId = fila.children[1].getAttribute("data-id-proyecto");
+    document.getElementById("id_proyecto_editar").value = proyectoId;
 
-      modalEditar.classList.add("active");
-      overlay.classList.add("active");
+    if (proyectoId && etapasPorProyecto.hasOwnProperty(proyectoId)) {
+      const maxEtapas = etapasPorProyecto[proyectoId];
+      const inputEtapaEditar = document.getElementById('etapaEditar');
+      inputEtapaEditar.setAttribute('placeholder', 'Máximo de etapas: ' + maxEtapas);
+      inputEtapaEditar.setAttribute('max', maxEtapas);
+      inputEtapaEditar.setAttribute('min', 1);
+      inputEtapaEditar.value = ''; // opcional
     }
 
-    function activarBotonesEditar() {
-      document.querySelectorAll(".btn-editar-terreno").forEach((btn) => {
-        btn.removeEventListener("click", handleEditarTerreno);
-        btn.addEventListener("click", handleEditarTerreno);
-      });
+    const badge = document.getElementById("estadoProyectoBadge");
+    badge.textContent = "Estado: " + estadoTexto.replace(/([A-Z])/g, ' $1').trim();;
+
+    // Limpia clases anteriores
+    badge.className = "badge-estado";
+
+    // Asigna clase según estado
+    const estadoClass = {
+      disponible: "badge-disponible",
+      reservado: "badge-reservado",
+      vendido: "badge-vendido",
+      enproceso: "badge-enproceso",
+      nodisponible: "badge-nodisponible"
+    }[estadoTexto.toLowerCase()] || "";
+
+    if (estadoClass) {
+      badge.classList.add(estadoClass);
     }
 
-    // Llamada inicial
-    activarBotonesEditar();
+    modalEditar.classList.add("active");
+    overlay.classList.add("active");
+  }
+  // Validación en tiempo real del campo etapaEditar
+  const inputEtapaEditar = document.getElementById('etapaEditar');
+  inputEtapaEditar.addEventListener('input', function () {
+    let etapaValue = this.value;
+
+    const proyectoId = document.getElementById('id_proyecto_editar').value;
+    const maxEtapas = etapasPorProyecto[proyectoId];
+
+    etapaValue = etapaValue.replace(/[^0-9]/g, "");
+
+    if (etapaValue.startsWith('0')) {
+      etapaValue = etapaValue.slice(1);
+    }
+
+    if (etapaValue.length > 2) {
+      etapaValue = etapaValue.slice(0, 2);
+    }
+
+    if (parseInt(etapaValue) > maxEtapas) {
+      etapaValue = maxEtapas.toString();
+    }
+
+    this.value = etapaValue;
+  });
+
+  function activarBotonesEditar() {
+    document.querySelectorAll(".btn-editar-terreno").forEach((btn) => {
+      btn.removeEventListener("click", handleEditarTerreno);
+      btn.addEventListener("click", handleEditarTerreno);
+    });
+  }
+
+  const loteEditar = document.getElementById('loteEditar');
+  const areaEditar = document.getElementById('areaEditar');
+  const precioEditar = document.getElementById('precioEditar');
+  
+  loteEditar.addEventListener("input", function () {
+    this.value = this.value.replace(/\D/g, "").slice(0, 3);
+  });
+
+
+  areaEditar.addEventListener("input", function () {
+    let value = this.value;
+
+    // Solo permitir números y un punto
+    value = value.replace(/[^\d.]/g, "");
+
+    // Evitar más de un punto decimal
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts[1]; // eliminar puntos adicionales
+    }
+
+    // Limitar parte entera a 6 dígitos
+    if (parts[0].length > 6) {
+      parts[0] = parts[0].slice(0, 6);
+    }
+
+    // Limitar parte decimal a 2 dígitos
+    if (parts[1]) {
+      parts[1] = parts[1].slice(0, 2);
+    }
+
+    this.value = parts.join(".");
+  });
+
+  areaEditar.addEventListener("blur", function (e) {
+    // Formatear el valor al salir del campo
+    let value = this.value;
+    if (value === "") return;
+    // Si no tiene punto, agregar .00
+    if (value.indexOf(".") === -1) {
+      value += ".00";
+    }
+    // Si tiene punto pero no decimales, agregar 00
+    else if (value.split(".")[1].length === 0) {
+      value += "00";
+    }
+    // Si tiene solo 1 decimal, agregar 0
+    else if (value.split(".")[1].length === 1) {
+      value += "0";
+    }
+    // Actualizamos el valor del input
+    this.value = value;
+  });
+
+  precioEditar.addEventListener("input", function () {
+    let value = this.value;
+
+    value = value.replace(/[^\d.]/g, "");
+
+    const parts = value.split(".");
+    if (parts.length > 2) {
+      value = parts[0] + "." + parts[1];
+    }
+
+    if (parts[0].length > 10) {
+      parts[0] = parts[0].slice(0, 10);
+    }
+
+    if (parts[1]) {
+      parts[1] = parts[1].slice(0, 2);
+    }
+
+    this.value = parts.join(".");
+  });
+
+  precioEditar.addEventListener("blur", function (e) {
+    // Formatear el valor al salir del campo
+    let value = this.value;
+    if (value === "") return;
+    // Si no tiene punto, agregar .00
+    if (value.indexOf(".") === -1) {
+      value += ".00";
+    }
+    // Si tiene punto pero no decimales, agregar 00
+    else if (value.split(".")[1].length === 0) {
+      value += "00";
+    }
+    // Si tiene solo 1 decimal, agregar 0
+    else if (value.split(".")[1].length === 1) {
+      value += "0";
+    }
+    // Actualizamos el valor del input
+    this.value = value;
+  });
+
+  function calcularPrecioEditar() {
+  const tipo = document.getElementById("tipoTerrenoEditar").value;
+  const area = parseFloat(areaEditar.value);
+  const proyectoId = document.getElementById("id_proyecto_editar").value;
+
+  if (!tipo || isNaN(area) || !preciosDict[proyectoId]) {
+    precioEditar.value = "";
+    return;
+  }
+
+  const base = preciosDict[proyectoId][tipo.toLowerCase()] || 0;
+  const total = base * area;
+  precioEditar.value = total.toFixed(2);
+}
+
+  areaEditar.addEventListener("input", calcularPrecioEditar);
+  document.getElementById("tipoTerrenoEditar").addEventListener("change", calcularPrecioEditar);
+  calcularPrecioEditar();  
+  activarBotonesEditar();
 
     // === GUARDAR CAMBIOS DE EDICIÓN ===
-    document.getElementById("btnEditarTerreno").addEventListener("click", async function (e) {
-      e.preventDefault();
-
-      Swal.fire({
-        title: "¿Guardar cambios?",
-        text: "Se actualizará la información del terreno.",
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: "Sí, guardar",
-        cancelButtonText: "Cancelar",
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          const formEditar = document.getElementById("formEditarTerreno");
-          const formData = new FormData(formEditar);
-
-          try {
-            const response = await fetch("/actualizar_terreno", {
-              method: "POST",
-              body: formData,
-              headers: {
-                "X-Requested-With": "XMLHttpRequest",
-              },
-            });
-
-            const result = await response.json();
-            if (result.success) {
-              const t = result.terreno;
-              const fila = document.querySelector(`tr[data-id="${t.id_terreno}"]`);
-              if (fila) {
-                const estadoClase = {
-                  'Disponible': 'disponible',
-                  'Vendido': 'vendido',
-                  'Reservado': 'reservado',
-                  'EnProceso': 'enproceso',
-                  'NoDisponible': 'nodisponible',
-                  'Eliminado': 'eliminado'
-                }[t.estadoTerreno] || 'disponible';
-
-                fila.children[1].textContent = t.nombre_proyecto;
-                fila.children[2].textContent = t.etapa;
-                fila.children[3].textContent = parseFloat(t.area).toFixed(2);
-                fila.children[4].textContent = parseFloat(t.precio).toFixed(2);
-                fila.children[5].innerHTML = `<span class="estado-terreno ${estadoClase}">${t.estadoTerreno}</span>`;
-                fila.children[6].textContent = t.tipoTerreno;
-                fila.children[7].textContent = t.manzana;
-                fila.children[8].textContent = t.lote;
-                fila.children[9].textContent = t.codigo_unidad;
-              }
-
-              Swal.fire("Actualizado", "El terreno ha sido editado correctamente.", "success");
-              cerrarModalEditar();
-            } else {
-              Swal.fire("Error", result.message, "error");
-            }
-          } catch (error) {
-            Swal.fire("Error", "Error en la conexión: " + error.message, "error");
-          }
-        }
-      });
-    });
+    
 
   overlay.addEventListener("click", closeModal);
 }

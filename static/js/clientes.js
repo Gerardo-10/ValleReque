@@ -491,4 +491,51 @@ window.initClientesModals = function () {
     }
 
     paginarTabla();
+
+    // VALIDACIONES EN TIEMPO REAL - AGREGADAS SEGÚN TU SOLICITUD
+
+    // Validación para nombres y apellidos (solo letras, espacios y caracteres especiales - sin números)
+    function validarSoloLetras(e) {
+        const char = String.fromCharCode(e.which);
+        if (!/[A-Za-zÁÉÍÓÚáéíóúÑñ\s]/.test(char)) {
+            e.preventDefault();
+        }
+    }
+
+    // Validación para DNI y teléfono (solo números)
+    function validarSoloNumeros(e) {
+        const char = String.fromCharCode(e.which);
+        if (!/[0-9]/.test(char)) {
+            e.preventDefault();
+        }
+    }
+
+    // Aplicar validaciones a los campos de nombres y apellidos
+    const camposNombres = [
+        'nombreCliente',
+        'apellidoCliente',
+        'nombreFamiliar',
+        'apellidoFamiliar'
+    ];
+
+    camposNombres.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+            campo.addEventListener('keypress', validarSoloLetras);
+        }
+    });
+
+    // Aplicar validaciones a los campos de DNI y teléfono
+    const camposNumeros = [
+        'dniCliente',
+        'telefonoCliente',
+        'dniFamiliar'
+    ];
+
+    camposNumeros.forEach(id => {
+        const campo = document.getElementById(id);
+        if (campo) {
+            campo.addEventListener('keypress', validarSoloNumeros);
+        }
+    });
 };

@@ -162,6 +162,7 @@ window.initSecurityModals = function () {
 
                 this.reset();
                 paginarTabla();
+                cargarVista("/seguridad", initSecurityModals);
             }
         })
         .catch(error => {

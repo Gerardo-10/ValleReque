@@ -45,6 +45,72 @@ window.initDetalleEmpleado = function () {
         modalOverlay.classList.remove('activo');
         document.body.style.overflow = '';
     }
+    //MODIFICO HUGO
+    document.getElementById('nombreActualizar').addEventListener('input', function() {
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        this.value = this.value.slice(0, 50);
+
+        if (this.value.length > 0 && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/.test(this.value)) {
+            this.setCustomValidity('Solo se permiten letras, tildes y la letra "ñ".');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    document.getElementById('apellidoActualizar').addEventListener('input', function() {
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g, '');
+        this.value = this.value.slice(0, 50);
+
+        if (this.value.length > 0 && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/.test(this.value)) {
+            this.setCustomValidity('Solo se permiten letras, tildes y la letra "ñ".');
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+    document.getElementById('telefonoActualizar').addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.length > 0 && this.value[0] !== '9') {
+        }
+        this.value = this.value.slice(0, 9);
+    });
+
+    document.getElementById('emailActualizar').addEventListener('input', function() {
+        const emailInput = this;
+        // La expresión regular del pattern para verificar el formato
+        const emailPattern = new RegExp(emailInput.pattern); 
+
+        // Verificar si el valor actual coincide con el patrón
+        if (!emailPattern.test(emailInput.value)) {
+            // Si no coincide, establece un mensaje de validación personalizado
+            emailInput.setCustomValidity(emailInput.title); // Usa el título como mensaje de error
+        } else {
+            // Si coincide, limpia cualquier mensaje de error personalizado
+            emailInput.setCustomValidity(''); 
+        }
+    });
+
+    document.getElementById('emailActualizar').addEventListener('input', function() {
+        const emailInput = this;
+        // Crea una expresión regular a partir del patrón de HTML
+        const emailPattern = new RegExp(emailInput.pattern); 
+
+        // Si el valor actual del campo NO cumple con el patrón...
+        if (!emailPattern.test(emailInput.value)) {
+            // Establece un mensaje de validación personalizado usando el texto del 'title'
+            emailInput.setCustomValidity(emailInput.title); 
+        } else {
+            // Si el valor sí cumple con el patrón, elimina cualquier mensaje de error personalizado
+            emailInput.setCustomValidity(''); 
+        }
+    });
+
+    document.getElementById('emailActualizar').addEventListener('blur', function() {
+        if (this.checkValidity()) { 
+            this.setCustomValidity('');
+        }
+    });
+
 
     if (botones.agregarEmpleado) botones.agregarEmpleado.addEventListener('click', () => abrirModal(modales.agregarEmpleado));
     if (botones.actualizarInfo) botones.actualizarInfo.addEventListener('click', function () {

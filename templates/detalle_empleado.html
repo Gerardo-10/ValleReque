@@ -121,16 +121,18 @@
                     <div class="form-fila">
                         <div class="form-grupo">
                             <label for="nombreActualizar">Nombre*</label>
-                            <input type="text" id="nombreActualizar" name="nombre"
-                                   pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,100}"
-                                   title="Solo letras, mínimo 3 y máximo 100 caracteres" required>
+                            <input type="text" id="nombreActualizar" name="nombre" required
+                                pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$" 
+                                title="Solo letras, tildes y 'ñ'. Máximo 50 caracteres." 
+                                maxlength="50">
                         </div>
                         <div class="form-grupo">
-                            <label for="apellidoActualizar">Apellidos*</label>
-                            <input type="text" id="apellidoActualizar" name="apellido"
-                                   pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,100}"
-                                   title="Solo letras, mínimo 3 y máximo 100 caracteres" required>
-                        </div>
+                        <label for="apellidoActualizar">Apellidos*</label>
+                        <input type="text" id="apellidoActualizar" name="apellido" required
+                            pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$"
+                            title="Solo letras, tildes y 'ñ'. Máximo 50 caracteres."
+                            maxlength="50">
+                    </div>
                     </div>
                     <div class="form-grupo">
                         <label for="emailActualizar">Correo Electrónico*</label>

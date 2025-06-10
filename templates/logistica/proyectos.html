@@ -21,64 +21,66 @@
     <div class="proy-container">
         <div class="proy-card">
             {% for proyecto in proyectos %}
-            <div class="proy-card-title">{{proyecto.nombre_proyecto}}</div>
-            <div class="proy-card-content">
-                <div class="proy-details">
-                    <h3>Detalles:</h3>
-                    <div class="proy-details-grid">
-                        <div class="proy-detail-row">
-                            <div class="proy-detail-label">Dirección</div>
-                            <div class="proy-detail-value">{{proyecto.direccion}}</div>
-                        </div>
-                        <div class="proy-detail-row">
-                            <div class="proy-detail-label">Etapas</div>
-                            <div class="proy-detail-value">{{proyecto.cantidad_etapas}}</div>
-                        </div>
-                        <div class="proy-detail-row">
-                            <div class="proy-detail-label">N° lotes</div>
-                            <div class="proy-detail-value">{{proyecto.cantidad_lotes}}</div>
-                        </div>
-                        <div class="proy-detail-row">
-                            <div class="proy-detail-label">Nombre Proyecto</div>
-                            <div class="proy-detail-value">{{proyecto.nombre_proyecto}}</div>
-                        </div>
-                        <div class="proy-detail-row">
-                            <div class="proy-detail-label">Inversión</div>
-                            <div class="proy-detail-value">S/ {{ proyecto.inversion }}</div>
+                {% if proyecto.estado == 1 %}
+                <div class="proy-card-title">{{proyecto.nombre_proyecto}}</div>
+                <div class="proy-card-content">
+                    <div class="proy-details">
+                        <h3>Detalles:</h3>
+                        <div class="proy-details-grid">
+                            <div class="proy-detail-row">
+                                <div class="proy-detail-label">Dirección</div>
+                                <div class="proy-detail-value">{{proyecto.direccion}}</div>
+                            </div>
+                            <div class="proy-detail-row">
+                                <div class="proy-detail-label">Etapas</div>
+                                <div class="proy-detail-value">{{proyecto.cantidad_etapas}}</div>
+                            </div>
+                            <div class="proy-detail-row">
+                                <div class="proy-detail-label">N° lotes</div>
+                                <div class="proy-detail-value">{{proyecto.cantidad_lotes}}</div>
+                            </div>
+                            <div class="proy-detail-row">
+                                <div class="proy-detail-label">Nombre Proyecto</div>
+                                <div class="proy-detail-value">{{proyecto.nombre_proyecto}}</div>
+                            </div>
+                            <div class="proy-detail-row">
+                                <div class="proy-detail-label">Inversión</div>
+                                <div class="proy-detail-value">S/ {{ proyecto.inversion }}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="proy-indicators">
-                    <h3>Indicadores:</h3>
-                    <div class="proy-indicator-row">
-                        <div class="proy-indicator-label">Monto Recaudado:</div>
-                        <div class="proy-indicator-value">S/ 0</div>
+                    <div class="proy-indicators">
+                        <h3>Indicadores:</h3>
+                        <div class="proy-indicator-row">
+                            <div class="proy-indicator-label">Monto Recaudado:</div>
+                            <div class="proy-indicator-value">S/ 0</div>
+                        </div>
+                        <div class="proy-indicator-row">
+                            <div class="proy-indicator-label">N° de Ventas:</div>
+                            <div class="proy-indicator-value"><span>0</span></div>
+                        </div>
+                        <div class="proy-indicator-row">
+                            <div class="proy-indicator-label">N° de Reserva:</div>
+                            <div class="proy-indicator-value"><span>0</span></div>
+                        </div>
+                        <div class="proy-indicator-row">
+                            <div class="proy-indicator-label">N° de Devoluciones:</div>
+                            <div class="proy-indicator-value"><span>0</span></div>
+                        </div>
                     </div>
-                    <div class="proy-indicator-row">
-                        <div class="proy-indicator-label">N° de Ventas:</div>
-                        <div class="proy-indicator-value"><span>0</span></div>
-                    </div>
-                    <div class="proy-indicator-row">
-                        <div class="proy-indicator-label">N° de Reserva:</div>
-                        <div class="proy-indicator-value"><span>0</span></div>
-                    </div>
-                    <div class="proy-indicator-row">
-                        <div class="proy-indicator-label">N° de Devoluciones:</div>
-                        <div class="proy-indicator-value"><span>0</span></div>
-                    </div>
-                </div>
 
-                <div class="proy-map">
-                    <img src="{{ url_for('static', filename='img/proyectos/' + proyecto.foto_ref) }}"
-                         alt="{{ proyecto.nombre_proyecto }}"
-                         title="{{ proyecto.nombre_proyecto }}">
+                    <div class="proy-map">
+                        <img src="{{ url_for('static', filename='img/proyectos/' + proyecto.foto_ref) }}"
+                             alt="{{ proyecto.nombre_proyecto }}"
+                             title="{{ proyecto.nombre_proyecto }}">
+                    </div>
                 </div>
-            </div>
-            <div class="proy-actions">
-                <button class="proy-btn-eliminar" data-project-id="1">Eliminar</button>
-                <button class="proy-btn-editar" data-project-id="1">Editar</button>
-            </div>
+                <div class="proy-actions">
+                    <button class="proy-btn-eliminar" data-project-id="1">Eliminar</button>
+                    <button class="proy-btn-editar" data-project-id="1">Editar</button>
+                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>

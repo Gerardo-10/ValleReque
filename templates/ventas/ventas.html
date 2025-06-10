@@ -70,23 +70,24 @@
                     <label for="proyecto-inmobiliario">Seleccione el proyecto</label>
                     <div class="envoltorio-select">
                         <select id="proyecto-inmobiliario" class="control-formulario">
-                            <option selected>VALLE-REQUE</option>
-                            <option>OTRO PROYECTO</option>
+                            {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.id_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                            {% endfor %}
                         </select>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                 </div>
                 <div class="grupo-campo">
                     <label for="codigo-unidad-habitacional">Código de Unidad</label>
-                    <input type="text" id="codigo-unidad-habitacional" value="A-13" class="control-formulario">
+                    <input type="text" id="codigo-unidad-habitacional"  class="control-formulario">
                 </div>
                 <div class="grupo-campo">
                     <label for="etapa-construccion">Etapa</label>
-                    <input type="text" id="etapa-construccion" value="IV" class="control-formulario">
+                    <input type="text" id="etapa-construccion"  class="control-formulario" >
                 </div>
                 <div class="grupo-campo">
                     <label for="disponibilidad-terreno">¿Disponible?</label>
-                    <input type="text" id="disponibilidad-terreno" value="Si" class="control-formulario">
+                    <input type="text" id="disponibilidad-terreno"  class="control-formulario" readonly>
                 </div>
             </div>
 
@@ -95,16 +96,16 @@
                     <label for="precio-propiedad">Precio</label>
                     <div class="prefijo-entrada">
                         <span>s/</span>
-                        <input type="text" id="precio-propiedad" value="10000.00" class="control-formulario">
+                        <input type="text" id="precio-propiedad" value="10000.00" class="control-formulario" readonly>
                     </div>
                 </div>
                 <div class="grupo-campo">
                     <label for="tipo-ubicacion">Tipo</label>
-                    <input type="text" id="tipo-ubicacion" value="CALLE/PARQUE" class="control-formulario">
+                    <input type="text" id="tipo-ubicacion" value="CALLE/PARQUE" class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="area-terreno">Área</label>
-                    <input type="text" id="area-terreno" value="60 m2" class="control-formulario">
+                    <input type="text" id="area-terreno" value="60 m2" class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <!-- Espacio vacío para mantener la alineación -->

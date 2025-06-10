@@ -150,3 +150,40 @@ class ModelTerreno:
         except Exception as e:
             print(f"[ERROR get_by_codigo_unidad]: {e}")
             return None
+
+    @classmethod
+    def buscar_terreno_ventas(cls, db, proyecto_id, codigo_unidad, etapa):
+        try:
+            cursor = db.connection.cursor()
+
+            # DEBUGGING (mantener para verificar la corrección)
+            print(f"DEBUG: Valores recibidos en buscar_terreno_ventas:")
+            print(f"DEBUG:   proyecto_id: {proyecto_id} (tipo: {type(proyecto_id)})")
+            print(f"DEBUG:   codigo_unidad: {codigo_unidad} (tipo: {type(codigo_unidad)})")
+            print(f"DEBUG:   etapa: {etapa} (tipo: {type(etapa)})")
+
+            etapa_str = str(etapa)  # Convertir el entero a la cadena '6'
+
+            cursor.execute("""
+                        CALL sp_buscar_terreno(%s, %s, %s)
+                    """, (proyecto_id, codigo_unidad, etapa_str))
+
+            # Cambiamos fetchall() por fetchone() para obtener solo una fila
+            row = cursor.fetchone()
+
+            # DEBUGGING
+            print(f"DEBUG: Fila encontrada por SP: {row}")
+
+            while cursor.nextset():
+                pass  # Consumir posibles conjuntos de resultados adicionales
+
+            # Si hay una fila, retornamos un objeto Terreno, de lo contrario, None
+            if row:
+                return Terreno(*row)
+            else:
+                return None
+        except Exception as e:
+            print(f"[ERROR buscar_terreno]: {e}")
+            return None  # Devolvemos None en caso de error
+        finally:
+            cursor.close()

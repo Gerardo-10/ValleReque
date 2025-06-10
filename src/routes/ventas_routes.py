@@ -4,14 +4,19 @@ from datetime import datetime
 from flask_login import current_user
 from flask import request, jsonify, current_app
 from src.models.ModelCliente import ModelCliente
+from src.models.ModelProyecto import ModelProyecto
+from src.models.ModelTerreno import ModelTerreno
+
 ventas_routes = Blueprint('ventas_routes', __name__)
 
 @ventas_routes.route('/ventas')
 @login_required
 def ventas():
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
-    asesor_nombre = current_user.username 
-    return render_template('ventas/ventas.html', fecha=fecha_actual, asesor=asesor_nombre)
+    asesor_nombre = current_user.username
+    proyectos = ModelProyecto.get_activos(current_app.db)
+
+    return render_template('ventas/ventas.html', fecha=fecha_actual, asesor=asesor_nombre, proyectos = proyectos)
 
 @ventas_routes.route('/buscar_cliente', methods=['GET'])
 @login_required
@@ -39,3 +44,40 @@ def buscar_cliente():
         })
     else:
         return jsonify({'success': False, 'message': 'Cliente no encontrado.'}), 404
+
+@ventas_routes.route('/buscar_terreno', methods=['GET'])
+@login_required
+def buscar_terreno():
+    proyecto_id_str = request.args.get('proyecto_id')
+    codigo_unidad = request.args.get('codigo_unidad')
+    etapa_str_from_js = request.args.get('etapa') # Renombrar para claridad
+
+    print(f'{proyecto_id_str} , {codigo_unidad}, {etapa_str_from_js}')
+
+    if not all([proyecto_id_str, codigo_unidad, etapa_str_from_js]):
+        return jsonify({'success': False, 'message': 'Faltan parámetros de búsqueda de terreno.'}), 400
+
+    try:
+        proyecto_id = int(proyecto_id_str)
+        etapa = int(etapa_str_from_js) # Convertir a int para pasar a ModelTerreno
+    except ValueError:
+        return jsonify({'success': False, 'message': 'El ID del proyecto y la etapa deben ser números enteros.'}), 400
+
+    # Ahora buscar_terreno_ventas devuelve directamente un objeto Terreno o None
+    terreno = ModelTerreno.buscar_terreno_ventas(current_app.db, proyecto_id, codigo_unidad, etapa)
+
+    print(f"DEBUG: Objeto terreno recibido en la ruta (directo): {terreno}") # Nuevo print
+
+    if terreno:
+        return jsonify({
+            'success': True,
+            'terreno': {
+                'id_terreno': terreno.id_terreno,
+                'estado_terreno': terreno.estado_terreno,
+                'precio': terreno.precio_terreno,
+                'tipo_ubicacion': terreno.tipo_terreno,
+                'area_terreno': terreno.area
+            }
+        })
+    else:
+        return jsonify({'success': False, 'message': 'Terreno no encontrado con los criterios especificados.'}), 404

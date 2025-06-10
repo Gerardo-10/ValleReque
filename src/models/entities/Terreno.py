@@ -11,3 +11,4 @@ class Terreno:
         self.manzana = manzana
         self.numero_lote = numero_lote
         self.codigo_unidad = codigo_unidad
+

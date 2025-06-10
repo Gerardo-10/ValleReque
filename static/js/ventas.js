@@ -331,6 +331,89 @@ function initVentasModals() {
         }
     });
 
+    const selectProyecto = document.getElementById('proyecto-inmobiliario');
+    const inputCodigoUnidad = document.getElementById('codigo-unidad-habitacional');
+    const inputEtapaConstruccion = document.getElementById('etapa-construccion');
+    const inputDisponibilidadTerreno = document.getElementById('disponibilidad-terreno');
+    const inputPrecioPropiedad = document.getElementById('precio-propiedad');
+    const inputTipoUbicacion = document.getElementById('tipo-ubicacion');
+    const inputAreaTerreno = document.getElementById('area-terreno');
+
+    // Función para limpiar los campos del terreno
+    function clearTerrenoInputs() {
+        inputDisponibilidadTerreno.value = '';
+        inputPrecioPropiedad.value = '';
+        inputTipoUbicacion.value = '';
+        inputAreaTerreno.value = '';
+    }
+
+    // Función para buscar el terreno
+    function buscarTerreno() {
+        const proyectoId = selectProyecto.value;
+        const codigoUnidad = inputCodigoUnidad.value.trim();
+        const etapa = inputEtapaConstruccion.value.trim();
+
+        // Solo buscar si todos los campos están llenos
+        if (!proyectoId || !codigoUnidad || !etapa) {
+            clearTerrenoInputs();
+            return; // No hace la búsqueda si faltan datos
+        }
+        fetch(`/buscar_terreno?proyecto_id=${proyectoId}&codigo_unidad=${codigoUnidad}&etapa=${etapa}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const terreno = data.terreno;
+                    if (terreno.estado_terreno === 'Disponible') {
+                        inputDisponibilidadTerreno.value = 'Sí';
+                        // Corrección aquí:
+                        inputPrecioPropiedad.value = terreno.precio.toFixed(2); // No necesita ${} si solo es el valor
+                        inputTipoUbicacion.value = terreno.tipo_ubicacion; // No necesita ${} si solo es el valor
+                        // Esta línea ya estaba correcta porque usas `${}` para la cadena
+                        inputAreaTerreno.value = `${terreno.area_terreno} m2`;
+                        showNotification("Terreno Disponible", "success");
+                    } else {
+                        // Si el terreno no está disponible, mostrar alerta y limpiar campos
+                        showNotification(`Terreno NO Disponible: ${terreno.estado_terreno}`, "error");
+                        clearTerrenoInputs();
+                    }
+                } else {
+                    // Si el terreno no se encuentra, mostrar alerta y limpiar campos
+                    showNotification(data.message, "error");
+                    clearTerrenoInputs();
+                }
+            })
+            .catch(error => {
+                console.error('Error al buscar el terreno:', error);
+                showNotification("Error al buscar el terreno", "error");
+                clearTerrenoInputs();
+            });
+    }
+
+    // Event Listeners para los campos de búsqueda de terreno
+    selectProyecto.addEventListener('change', buscarTerreno);
+    inputCodigoUnidad.addEventListener('input', buscarTerreno); // Usar 'input' para detectar cambios mientras se escribe
+    inputEtapaConstruccion.addEventListener('input', buscarTerreno);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Inicializar calendario
     console.log('Inicializando calendario'); // Debug
     if (calendarioFechas && diasCalendario) {

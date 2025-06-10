@@ -364,10 +364,10 @@ function initVentasModals() {
                 if (data.success) {
                     const terreno = data.terreno;
                     console.log('Terreno encontrado:', terreno);
-                    if (terreno.estado_terreno == 'Disponible') {
+                    if (terreno.estado_terreno === 'Disponible') {
                         inputDisponibilidadTerreno.value = 'Sí';
                         // Corrección aquí:
-                        inputPrecioPropiedad.value = parseFloat(terreno.precio.toFixed(2)); // No necesita ${} si solo es el valor
+                        inputPrecioPropiedad.value = parseFloat(terreno.precio).toFixed(2); // No necesita ${} si solo es el valor
                         inputTipoUbicacion.value = terreno.tipo_ubicacion; // No necesita ${} si solo es el valor
                         // Esta línea ya estaba correcta porque usas `${}` para la cadena
                         inputAreaTerreno.value = `${terreno.area_terreno} m2`;
@@ -394,26 +394,6 @@ function initVentasModals() {
     selectProyecto.addEventListener('change', buscarTerreno);
     inputCodigoUnidad.addEventListener('input', buscarTerreno); // Usar 'input' para detectar cambios mientras se escribe
     inputEtapaConstruccion.addEventListener('input', buscarTerreno);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Inicializar calendario
     console.log('Inicializando calendario'); // Debug

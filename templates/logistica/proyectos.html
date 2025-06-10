@@ -100,6 +100,7 @@
         <div class="proy-modal-body">
             <form id="proy-formNuevoProyecto" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" id="proy-estado" name="estado" value="1">
                 <div class="proy-form-group">
                     <label for="proy-nombreProyecto">Nombre del proyecto*</label>
                     <input type="text" id="proy-nombreProyecto" name="nombreProyecto" required>

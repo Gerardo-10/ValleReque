@@ -12,10 +12,9 @@ terreno_routes = Blueprint('terreno_routes', __name__)
 def terrenos():
     # Obtener listas de terrenos y proyectos
     terrenos = ModelTerreno.get_all(current_app.db)
-    proyectos = ModelProyecto.get_all(current_app.db)
+    proyectos = ModelProyecto.get_activos(current_app.db)
 
     # Crear diccionario: id_proyecto -> nombre_proyecto
-    proyectos_dict = {proy.id_proyecto: proy.nombre_proyecto for proy in proyectos}
     etapas_dict = {p.id_proyecto: p.cantidad_etapas for p in proyectos}
     proyectos_dict = {proy.id_proyecto: proy.nombre_proyecto for proy in proyectos}
     # Crear diccionario de precios por proyecto

@@ -279,58 +279,57 @@ function initVentasModals() {
         }
     }
         
-    document.getElementById('documento-identidad').addEventListener('input', function() {
-    const dni = this.value;
-    // Si el DNI tiene el formato esperado, hacemos la búsqueda
-    if (dni.length === 8) {  // Asumimos que el DNI tiene 8 caracteres
-        fetch(`/buscar_cliente?dni=${dni}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Si encontramos el cliente, completamos los campos
-                    const cliente = data.cliente;
-                    document.getElementById('nombres-comprador').value = cliente.nombre;
-                    document.getElementById('apellidos-comprador').value = cliente.apellido;
-                    const estadoEvaluacion = cliente.estado
-                        .replace("NoDisponible", "No Disponible")
-                        .replace("SinEvaluar", "Sin Evaluar");
-                    document.getElementById('estado-evaluacion').value = estadoEvaluacion;
-                    document.getElementById('ingreso-mensual').value = cliente.ingreso_neto;
-                    document.getElementById('telefono-contacto').value = cliente.telefono;
-                    document.getElementById('ocupacion-laboral').value = cliente.ocupacion;
-                    document.getElementById('dependientes-familiares').value = cliente.carga_familiar;
 
-                    // Notificación de cliente encontrado
-                    showNotification("Cliente encontrado", "success");
-                } else {
-                    // Si no encontramos el cliente, mostramos la notificación y limpiamos los campos
-                    showNotification("Cliente no encontrado", "error");
-                    document.getElementById('nombres-comprador').value = '';
-                    document.getElementById('apellidos-comprador').value = '';
-                    document.getElementById('estado-evaluacion').value = '';
-                    document.getElementById('ingreso-mensual').value = '';
-                    document.getElementById('telefono-contacto').value = '';
-                    document.getElementById('ocupacion-laboral').value = '';
-                    document.getElementById('dependientes-familiares').value = '';
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification("Error al buscar el cliente", "error");
-            });
-    } else {
-        // Si el DNI no tiene 8 caracteres, limpiar los campos
-        document.getElementById('nombres-comprador').value = '';
-        document.getElementById('apellidos-comprador').value = '';
-        document.getElementById('estado-evaluacion').value = '';
-        document.getElementById('ingreso-mensual').value = '';
-        document.getElementById('telefono-contacto').value = '';
-        document.getElementById('ocupacion-laboral').value = '';
-        document.getElementById('dependientes-familiares').value = '';
-    }
-});
-    
+    document.getElementById('documento-identidad').addEventListener('input', function () {
+        const dni = this.value;
 
+        // Eliminar cualquier carácter que no sea número
+        const dniNumerico = dni.replace(/[^0-9]/g, '');
+
+        // Limitar a un máximo de 8 caracteres
+        if (dniNumerico.length > 8) {
+            this.value = dniNumerico.substring(0, 8);
+        } else {
+            this.value = dniNumerico;
+        }
+
+        // Si el DNI tiene 8 caracteres, buscar el cliente
+        if (this.value.length === 8) {
+            fetch(`/buscar_cliente?dni=${this.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const cliente = data.cliente;
+                        document.getElementById('nombres-comprador').value = cliente.nombre;
+                        document.getElementById('apellidos-comprador').value = cliente.apellido;
+                        const estadoEvaluacion = cliente.estado
+                            .replace("NoDisponible", "No Disponible")
+                            .replace("SinEvaluar", "Sin Evaluar");
+                        document.getElementById('estado-evaluacion').value = estadoEvaluacion;
+                        document.getElementById('ingreso-mensual').value = cliente.ingreso_neto;
+                        document.getElementById('telefono-contacto').value = cliente.telefono;
+                        document.getElementById('ocupacion-laboral').value = cliente.ocupacion;
+                        document.getElementById('dependientes-familiares').value = cliente.carga_familiar;
+
+                        // Notificación de cliente encontrado
+                        showNotification("Cliente encontrado", "success");
+                    } else {
+                        showNotification("Cliente no encontrado", "error");
+                        document.getElementById('nombres-comprador').value = '';
+                        document.getElementById('apellidos-comprador').value = '';
+                        document.getElementById('estado-evaluacion').value = '';
+                        document.getElementById('ingreso-mensual').value = '';
+                        document.getElementById('telefono-contacto').value = '';
+                        document.getElementById('ocupacion-laboral').value = '';
+                        document.getElementById('dependientes-familiares').value = '';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification("Error al buscar el cliente", "error");
+                });
+        }
+    });
 
     // Inicializar calendario
     console.log('Inicializando calendario'); // Debug

@@ -33,7 +33,9 @@ def insertar_proyecto():
         precio_esquina = request.form.get('precioEsquina')
         precio_avenida = request.form.get('precioAvenida')
         precio_calle = request.form.get('precioCalle')
+        estado_str = request.form.get('estado')
 
+        estado = True if estado_str == '1' else False
         # Manejar la imagen subida
         foto_ref = None
         if 'fotoReferencia' in request.files:
@@ -62,7 +64,8 @@ def insertar_proyecto():
             precio_calle=precio_calle,
             precio_avenida=precio_avenida,
             precio_esquina_parque=precio_esquina_parque,
-            foto_ref=foto_ref
+            foto_ref=foto_ref,
+            estado = estado
         )
 
         # Insertar en la base de datos

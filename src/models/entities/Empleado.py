@@ -15,3 +15,4 @@ class Empleado:
         self.estado = estado
         self.id_usuario = id_usuario
         self.area = area
+        self.estado = estado

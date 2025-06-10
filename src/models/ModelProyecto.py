@@ -44,7 +44,7 @@ class ModelProyecto:
             cursor = db.connection.cursor()
             # Llamar al procedimiento almacenado con todos los parámetros
             cursor.execute(
-                "CALL sp_insertar_proyecto(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                "CALL sp_insertar_proyecto(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
                     proyecto.nombre_proyecto,
                     proyecto.direccion,
@@ -56,7 +56,8 @@ class ModelProyecto:
                     proyecto.precio_calle,
                     proyecto.precio_avenida,
                     proyecto.precio_esquina_parque,
-                    proyecto.foto_ref
+                    proyecto.foto_ref,
+                    proyecto.estado
                 )
             )
             db.connection.commit()
@@ -71,3 +72,20 @@ class ModelProyecto:
             print(f"[ERROR insert proyecto]: {e}")
             db.connection.rollback()
             return False
+
+    @classmethod
+    def get_activos(cls, db):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL obtener_proyectos_activos()")
+            rows = cursor.fetchall()
+
+            # Liberar el resto del resultado del procedimiento si existe
+            while cursor.nextset():
+                pass
+
+            proyectos = [Proyecto(*row) for row in rows]
+            return proyectos
+        except Exception as e:
+            print(f"[ERROR get_activos proyecto]: {e}")
+            return []

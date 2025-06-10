@@ -319,7 +319,7 @@ selectProyecto.addEventListener('change', function() {
         filtrarTerrenos();
     });
 
-  // === GUARDAR NUEVO TERRENO ===  
+  // === GUARDAR NUEVO TERRENO ===
   btnGuardarNuevoTerreno.addEventListener("click", function (e) {
     e.preventDefault(); // Prevenir el envío del formulario automáticamente
     // Mostrar SweetAlert de confirmación
@@ -346,7 +346,7 @@ selectProyecto.addEventListener('change', function() {
                 });
 
                 const result = await response.json();
-                
+
                 if (result.success) {
                     // Definir las clases de estado en JavaScript
                     const clasesEstado = {
@@ -414,7 +414,7 @@ selectProyecto.addEventListener('change', function() {
     });
   });
 
-  
+
     // === MODAL DE EDICIÓN ===
   const modalEditar = document.getElementById("modalEditarTerreno");
   function cerrarModalEditar() {
@@ -513,7 +513,7 @@ selectProyecto.addEventListener('change', function() {
   const loteEditar = document.getElementById('loteEditar');
   const areaEditar = document.getElementById('areaEditar');
   const precioEditar = document.getElementById('precioEditar');
-  
+
   loteEditar.addEventListener("input", function () {
     this.value = this.value.replace(/\D/g, "").slice(0, 3);
   });
@@ -623,7 +623,7 @@ selectProyecto.addEventListener('change', function() {
   areaEditar.addEventListener("input", calcularPrecioEditar);
   document.getElementById("tipoTerrenoEditar").addEventListener("change", calcularPrecioEditar);
 
-  calcularPrecioEditar();  
+  calcularPrecioEditar();
   activarBotonesEditar();
 
     // === GUARDAR CAMBIOS DE EDICIÓN ===

@@ -20,6 +20,9 @@ window.initClientesModals = function () {
     const btnConfirmarEliminar = document.getElementById('btnConfirmarEliminar');
     const cargaFamiliarSelect = document.getElementById('cargaFamiliarCliente');
     const datosFamiliarContainer = document.getElementById('datosFamiliarContainer');
+    const ocupacionCliente = document.getElementById('ocupacionCliente');
+    const dniFamiliar = document.getElementById('dniFamiliar');
+    const ingresoCliente = document.getElementById('ingresoCliente');
 
     let estadoSeleccionado = null;
 
@@ -69,6 +72,82 @@ window.initClientesModals = function () {
             this.classList.add('seleccionado');
             estadoSeleccionado = this.dataset.estado;
         });
+    });
+
+   // Validación para ocupación (solo letras y espacios, hasta 50 caracteres)
+    ocupacionCliente.addEventListener('keypress', function (e) {
+        const char = String.fromCharCode(e.which);
+        // Acepta solo letras, tildes, ñ, y espacios
+        if (!/[A-Za-zÁÉÍÓÚáéíóúÑñ\s]/.test(char)) {
+            e.preventDefault();
+        }
+    });
+
+    ocupacionCliente.addEventListener('input', function (e) {
+        // Asegurarse de que no se sobrepasen los 50 caracteres
+        if (this.value.length > 50) {
+            this.value = this.value.slice(0, 50);
+        }
+    });
+
+    // Validación para DNI del Familiar (solo números y máximo 8 dígitos)
+    dniFamiliar.addEventListener('keypress', function (e) {
+        const char = String.fromCharCode(e.which);
+        // Acepta solo números
+        if (!/[0-9]/.test(char)) {
+            e.preventDefault();
+        }
+    });
+
+    dniFamiliar.addEventListener('input', function () {
+        // Asegurarse de que el valor no exceda los 8 dígitos
+        if (this.value.length > 8) {
+            this.value = this.value.slice(0, 8);
+        }
+    });
+
+    // Validación para Ingreso Neto (solo números y permite hasta 2 decimales)
+    ingresoCliente.addEventListener('keypress', function (e) {
+        const char = String.fromCharCode(e.which);
+        // Bloquea la letra "e" y otros caracteres especiales
+        if (e.key === "e" || e.key === "+" || e.key === "-" || e.key === ".") {
+            e.preventDefault();
+        }
+    });
+
+    ingresoCliente.addEventListener('input', function () {
+        // Asegurarse de que el valor solo tenga hasta 2 decimales
+        let value = this.value;
+        if (value.indexOf('.') !== -1) {
+            let parts = value.split('.');
+            if (parts[1].length > 2) {
+                this.value = `${parts[0]}.${parts[1].slice(0, 2)}`;
+            }
+        }
+    });
+
+    // Formatear el valor al salir del campo "Ingreso Neto"
+    ingresoCliente.addEventListener('blur', function () {
+        let value = this.value;
+
+        // Si el campo está vacío, no hacer nada
+        if (value === '') return;
+
+        // Si no tiene punto, agregar .00
+        if (value.indexOf('.') === -1) {
+            value += '.00';
+        } 
+        // Si tiene punto pero no decimales, agregar 00
+        else if (value.split('.')[1].length === 0) {
+            value += '00';
+        }
+        // Si tiene solo 1 decimal, agregar 0
+        else if (value.split('.')[1].length === 1) {
+            value += '0';
+        }
+
+        // Actualizar el valor del input
+        this.value = value;
     });
 
     formAgregarCliente.addEventListener('submit', function (e) {
@@ -209,18 +288,33 @@ window.initClientesModals = function () {
                 `;
                 document.getElementById('tabla_clientes_body').appendChild(nuevaFila);
                 cerrarModal(modalAgregarCliente);
-                mostrarExito('Cliente agregado', data.message);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Cliente agregado',
+                    text: data.message || 'Cliente agregado exitosamente'
+                });
                 this.reset();
                 actualizarClientesSeleccionados();
             } else {
-                Swal.fire({ icon: 'error', title: 'Error', text: data.message });
+                console.log(data);  // Verifica los valores de data
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Mensaje de error desconocido'
+                });
             }
         })
         .catch(error => {
             console.error('Error al enviar formulario:', error);
-            Swal.fire({ icon: 'error', title: 'Error inesperado', text: error.message });
+            Swal.fire({
+                icon: 'error',
+                title: 'Error inesperado',
+                text: error.message
+            });
         });
     });
+
+
 
     btnEliminar.addEventListener('click', () => {
         if (obtenerClientesSeleccionados().length === 0) {
@@ -231,56 +325,79 @@ window.initClientesModals = function () {
             });
             return;
         }
-        abrirModal(modalEliminarCliente);
-    });
 
-    btnCancelarEliminar.addEventListener('click', () => cerrarModal(modalEliminarCliente));
+        btnEliminar.addEventListener('click', () => {
+    if (obtenerClientesSeleccionados().length === 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Atención',
+            text: 'Por favor, seleccione al menos un cliente'
+        });
+        return;
+    }
 
-    btnConfirmarEliminar.addEventListener('click', () => {
-        const clientesSeleccionados = obtenerClientesSeleccionados();
-        if (clientesSeleccionados.length === 0) {
+    // Usar SweetAlert2 para la confirmación de eliminación
             Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¿Realmente deseas eliminar los clientes seleccionados y sus familiares?",
                 icon: 'warning',
-                title: 'Atención',
-                text: 'No hay clientes seleccionados'
-            });
-            return;
-        }
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Si el usuario confirma, procedemos con la eliminación
+                    const clientesSeleccionados = obtenerClientesSeleccionados();
+                    const formData = new FormData();
+                    formData.append('clientes', JSON.stringify(clientesSeleccionados));
 
-        const formData = new FormData();
-        formData.append('clientes', JSON.stringify(clientesSeleccionados));
-
-        fetch('/eliminar_clientes', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
-            }
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    clientesSeleccionados.forEach(id => {
-                        const fila = document.querySelector(`tr[data-id="${id}"]`);
-                        if (fila) fila.remove();
+                    fetch('/eliminar_clientes_y_familia', {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
+                        }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            clientesSeleccionados.forEach(id => {
+                                const fila = document.querySelector(`tr[data-id="${id}"]`);
+                                if (fila) fila.remove();
+                            });
+                            // Mostrar SweetAlert2 de éxito
+                            Swal.fire(
+                                '¡Eliminado!',
+                                data.message || 'Los clientes y sus familiares han sido eliminados correctamente.',
+                                'success'
+                            );
+                            actualizarClientesSeleccionados();
+                        } else {
+                            // Mostrar SweetAlert2 de error si la eliminación no fue exitosa en el backend
+                            Swal.fire(
+                                'Error',
+                                data.message || 'Ocurrió un error al eliminar los clientes y sus familiares.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al eliminar clientes:', error);
+                        // Mostrar SweetAlert2 de error en caso de fallo en la petición
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error inesperado',
+                            text: 'Ocurrió un problema al eliminar los clientes y sus familiares'
+                        });
                     });
-                    cerrarModal(modalEliminarCliente);
-                    mostrarExito('Clientes eliminados', data.message);
-                    actualizarClientesSeleccionados();
-                } else {
-                    alert('Error: ' + data.message);
                 }
-            })
-            .catch(error => {
-                console.error('Error al eliminar clientes:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error inesperado',
-                    text: 'Ocurrió un problema al eliminar los clientes'
-                });
             });
+        });
     });
+
 
     btnConfirmarEstado.addEventListener('click', function () {
         const clientesSeleccionados = obtenerClientesSeleccionados();

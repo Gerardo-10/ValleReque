@@ -359,6 +359,7 @@
 <<<<<<< Updated upstream
 2025-06-10 04:56:47,872 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 04:56:49,290 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+<<<<<<< Updated upstream
 =======
 2025-06-10 08:27:36,091 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 08:27:36,417 - INFO - appLogger - Aplicación iniciada en modo desarrollo
@@ -418,4 +419,37 @@
 2025-06-10 10:52:02,777 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 10:54:22,067 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 10:54:22,388 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+>>>>>>> Stashed changes
+=======
+2025-06-10 06:00:23,637 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:00:24,848 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:02:12,638 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:09:32,497 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:09:33,951 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:11:12,057 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:26:32,081 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:26:33,243 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:36:51,860 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:36:52,985 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:39:27,695 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:39:28,761 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:43:13,816 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:43:14,931 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:44:14,954 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:44:16,083 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:46:37,256 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 06:46:38,405 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:27:14,613 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:27:15,867 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:31:25,657 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:31:26,847 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:44:29,953 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:44:31,054 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:47:57,714 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:48:08,331 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 07:48:09,373 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 08:14:32,987 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 08:14:34,177 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 08:36:21,276 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-10 08:36:22,452 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 >>>>>>> Stashed changes

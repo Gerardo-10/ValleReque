@@ -252,3 +252,32 @@ def actualizar_familiar():
         traceback.print_exc()
         return jsonify(success=False, message=f"Error inesperado: {str(e)}"), 500
 
+@cliente_routes.route('/eliminar_clientes_y_familia', methods=['POST'])
+@login_required
+def eliminar_clientes_y_familia():
+    try:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            data = request.form
+            clientes_ids = json.loads(data.get('clientes', '[]'))
+
+            if not clientes_ids:
+                return jsonify({'success': False, 'message': 'No se enviaron IDs'}), 400
+
+            # Eliminar familiares asociados a los clientes
+            for id_cliente in clientes_ids:
+                # Elimina el familiar asociado al cliente
+                if not ModelFamiliar.delete(current_app.db, id_cliente):
+                    return jsonify({'success': False, 'message': 'Error al eliminar los familiares.'})
+
+            # Eliminar los clientes
+            success = ModelCliente.delete(current_app.db, clientes_ids)
+            if success:
+                return jsonify({'success': True, 'message': 'Clientes y familiares eliminados correctamente'})
+            else:
+                return jsonify({'success': False, 'message': 'Error al eliminar clientes'}), 500
+        else:
+            flash('Esta ruta solo acepta peticiones AJAX', 'danger')
+            return redirect(url_for('cliente_routes.clientes'))
+    except Exception as e:
+        logging.error(f"Error al eliminar clientes y familiares: {e}")
+        return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500

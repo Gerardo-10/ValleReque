@@ -161,3 +161,13 @@ class ModelFamiliar:
             print(f"[ERROR update_or_insert Familiar]: {e}")
         raise  # Muy importante: relanzar para que el Blueprint lo capture correctamente
     
+    @classmethod
+    def delete(cls, db, id_cliente):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_eliminar_familiar(%s)", (id_cliente,))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR delete Familiar]: {e}")
+            return False

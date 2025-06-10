@@ -1,5 +1,304 @@
+{% extends "base.html" %}
+
 {% block customCSS %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/seguridad.css') }}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        /* Estilos adicionales para verificación de email */
+        .email-verification-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .email-verification-section:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .email-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .email-verified {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .email-unverified {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .btn-verify-email {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-verify-email:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+        }
+
+        .btn-verify-email:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .verification-code-input {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            letter-spacing: 3px;
+            font-family: 'Courier New', monospace;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        .verification-code-input:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .modal-verification {
+            max-width: 480px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 0 20px;
+        }
+
+        .step {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            margin: 0 8px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .step.inactive {
+            background: #ccc;
+        }
+
+        .step-line {
+            width: 40px;
+            height: 3px;
+            background: #ccc;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .step-line.active {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+
+        .resend-section {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .countdown {
+            font-weight: bold;
+            color: #4CAF50;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Mejorar estilos del modal */
+        .modal-verification .form-control {
+            width: 100%;
+            padding: 15px 18px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .modal-verification .form-control:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .modal-verification .form-grupo {
+            margin-bottom: 20px;
+        }
+
+        .modal-verification .form-grupo label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        /* Estilos para los botones del modal */
+        .modal-verification .btn-confirmar,
+        .modal-verification .btn-cancelar {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-verification .btn-confirmar {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .modal-verification .btn-confirmar:hover {
+            background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .modal-verification .btn-cancelar {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            color: white;
+        }
+
+        .modal-verification .btn-cancelar:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+        }
+
+        .modal-verification .btn-confirmar:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-verification .modal-cuerpo > div {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modal-verification {
+                max-width: 95%;
+                margin: 20px auto;
+            }
+
+            .step-indicator {
+                padding: 0 10px;
+            }
+
+            .step {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .step-line {
+                width: 30px;
+            }
+        }
+
+        /* Asegurarse de que los modales tengan el estilo correcto */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.modal.activo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.modal-overlay.activo {
+  display: block;
+}
+
+/* Asegurarse de que el contenido del modal esté visible */
+.modal-contenido {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1001;
+}
+
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -80,8 +379,7 @@
                             </td>
                             <td style="text-align: center;">
                                 <button class="btn-detalles" data-id="{{ empleado.id_empleado }}" data-tipo="empleado">
-                                    <i
-                                            class="fas fa-eye"></i></button>
+                                    <i class="fas fa-eye"></i></button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -187,6 +485,20 @@
                         <input type="email" id="correoEmpleado" name="correo" placeholder="ejemplo@gmail.com"
                                pattern="^[a-zA-Z0-9._%+-]+@(gmail|hotmail)\.com$"
                                title="Solo se permiten correos @gmail.com o @hotmail.com" required>
+
+                        <!-- Sección de verificación de email -->
+                        <div class="email-verification-section" id="emailVerificationSection" style="display: none;">
+                            <div class="email-status" id="emailStatus">
+                                <i class="fas fa-exclamation-circle email-unverified"></i>
+                                <span class="email-unverified">Email no verificado</span>
+                            </div>
+                            <button type="button" class="btn-verify-email" id="btnVerificarEmail">
+                                <i class="fas fa-shield-alt"></i> Verificar Email
+                            </button>
+                            <small style="display: block; margin-top: 8px; color: #666; font-size: 12px;">
+                                <i class="fas fa-info-circle"></i> La verificación es obligatoria para continuar
+                            </small>
+                        </div>
                     </div>
                     <div class="form-grupo">
                         <label for="areaEmpleado">Área*</label>
@@ -199,17 +511,96 @@
                         </select>
                     </div>
 
-                    <!-- El estado se establecerá automáticamente en "Activo" en el backend -->
-
                     <div class="modal-pie">
                         <button type="button" class="btn-cancelar" id="btnCancelarAgregar">Cancelar</button>
-                        <button type="submit" class="btn-confirmar" id="btnAgregar">Confirmar</button>
+                        <button type="submit" class="btn-confirmar" id="btnConfirmarAgregar" disabled
+                                title="Debes verificar tu email antes de continuar">
+                            <i class="fas fa-check"></i> Confirmar
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Modal de verificación de email -->
+    <div class="modal" id="modalVerificacionEmail">
+        <div class="modal-contenido modal-verification">
+            <div class="modal-encabezado">
+                <div class="modal-icono">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h2 id="tituloVerificacion">🛡️ Verificación de Email</h2>
+                <button class="modal-cerrar" id="cerrarModalVerificacion">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-cuerpo">
+                <!-- Indicador de pasos -->
+                <div class="step-indicator">
+                    <div class="step active" id="step1">1</div>
+                    <div class="step-line" id="line1"></div>
+                    <div class="step inactive" id="step2">2</div>
+                </div>
+
+                <!-- Paso 1: Confirmar email -->
+                <div id="pasoConfirmarEmail">
+                    <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                        <i class="fas fa-paper-plane"></i> Confirma tu email para recibir el código de verificación
+                    </p>
+                    <div class="form-grupo">
+                        <label for="emailConfirmacion">
+                            <i class="fas fa-envelope"></i> Correo Electrónico
+                        </label>
+                        <input type="email" id="emailConfirmacion" class="form-control" readonly>
+                    </div>
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnCancelarVerificacion">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="button" class="btn-confirmar" id="btnEnviarCodigo">
+                            <i class="fas fa-paper-plane"></i> Enviar Código
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Paso 2: Verificar código -->
+                <div id="pasoVerificarCodigo" style="display: none;">
+                    <p style="text-align: center; color: #666; margin-bottom: 15px;">
+                        <i class="fas fa-envelope-open"></i> Hemos enviado un código de 6 dígitos a:
+                    </p>
+                    <p style="text-align: center; font-weight: bold; color: #4CAF50; margin-bottom: 20px;" id="emailMostrado"></p>
+
+                    <div class="form-grupo">
+                        <label for="codigoVerificacion">
+                            <i class="fas fa-key"></i> Código de Verificación
+                        </label>
+                        <input type="text" id="codigoVerificacion" class="form-control verification-code-input"
+                               placeholder="XXX-XXX" maxlength="7" required>
+                        <small style="color: #666; font-size: 12px; display: block; margin-top: 8px;">
+                            <i class="fas fa-info-circle"></i> Los guiones se agregan automáticamente
+                        </small>
+                    </div>
+
+                    <div class="resend-section">
+                        <button type="button" class="btn-verify-email" id="btnReenviarCodigo">
+                            <i class="fas fa-redo"></i> Reenviar código
+                        </button>
+                        <div id="contadorReenvio" class="countdown" style="display: none;"></div>
+                    </div>
+
+                    <div class="modal-pie">
+                        <button type="button" class="btn-cancelar" id="btnVolverEmail">
+                            <i class="fas fa-arrow-left"></i> Cambiar Email
+                        </button>
+                        <button type="button" class="btn-confirmar" id="btnVerificarCodigo">
+                            <i class="fas fa-check"></i> Verificar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal de éxito -->
     <div class="modal" id="modalExito">
@@ -233,5 +624,54 @@
     <div class="modal-overlay" id="modalOverlay"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="../static/js/seguridad.js"></script>
+    <script src="{{ url_for('static', filename='js/email-verification-memory.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/seguridad.js') }}"></script>
+
+    <script>
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Iniciando carga de módulos de seguridad...');
+
+            // Verificar que las funciones existen antes de llamarlas
+            if (typeof window.initSecurityModals === 'function') {
+                try {
+                    window.initSecurityModals();
+                    console.log('✅ initSecurityModals ejecutado correctamente');
+                } catch (error) {
+                    console.error('❌ Error en initSecurityModals:', error);
+                }
+            } else {
+                console.error('❌ initSecurityModals no está definido');
+            }
+
+            // Verificar que EmailVerificationMemory esté disponible
+            if (typeof window.emailVerificationMemory !== 'undefined') {
+                console.log('✅ EmailVerificationMemory inicializado correctamente');
+            } else {
+                console.error('❌ EmailVerificationMemory no está disponible');
+            }
+        });
+
+        // Validación adicional para el formulario
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formAgregarEmpleado');
+            const btnConfirmar = document.getElementById('btnConfirmarAgregar');
+
+            if (form && btnConfirmar) {
+                form.addEventListener('submit', function(e) {
+                    // Verificar que el email esté verificado antes de enviar
+                    if (window.emailVerificationMemory && !window.emailVerificationMemory.isEmailVerified()) {
+                        e.preventDefault();
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Email no verificado',
+                            text: 'Debes verificar tu email antes de continuar',
+                            confirmButtonText: 'Entendido'
+                        });
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}

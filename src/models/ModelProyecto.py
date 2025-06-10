@@ -1,4 +1,5 @@
 from src.models.entities.Proyecto import Proyecto
+from src.models.entities.Terreno import Terreno  # Asegúrate de que esta importación exista
 
 
 class ModelProyecto:
@@ -28,7 +29,6 @@ class ModelProyecto:
             cursor.execute("CALL sp_listar_proyectos()")
             rows = cursor.fetchall()
 
-            # Liberar el resto del resultado del procedimiento si existe
             while cursor.nextset():
                 pass
 
@@ -42,7 +42,6 @@ class ModelProyecto:
     def insert(cls, db, proyecto):
         try:
             cursor = db.connection.cursor()
-            # Llamar al procedimiento almacenado con todos los parámetros
             cursor.execute(
                 "CALL sp_insertar_proyecto(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
                 (
@@ -62,7 +61,6 @@ class ModelProyecto:
             )
             db.connection.commit()
 
-            # Obtener el ID del proyecto insertado (modificado para mayor confiabilidad)
             cursor.execute("SELECT LAST_INSERT_ID()")
             proyecto.id_proyecto = cursor.fetchone()[0]
             cursor.close()
@@ -80,7 +78,6 @@ class ModelProyecto:
             cursor.execute("CALL obtener_proyectos_activos()")
             rows = cursor.fetchall()
 
-            # Liberar el resto del resultado del procedimiento si existe
             while cursor.nextset():
                 pass
 
@@ -89,3 +86,77 @@ class ModelProyecto:
         except Exception as e:
             print(f"[ERROR get_activos proyecto]: {e}")
             return []
+
+    @classmethod
+    def insertar_terrenos_por_etapa(cls, db, id_proyecto, etapas_data, precios_proyecto):
+        try:
+            cursor = db.connection.cursor()
+            AREA_POR_DEFECTO = 90.0
+            ESTADO_POR_DEFECTO = 'Disponible'
+
+            for etapa_info in etapas_data:
+                etapa_num = etapa_info['numero']
+                for manzana_info in etapa_info['manzanas']:
+                    manzana_letra = manzana_info['letra']
+                    lotes_manzana = manzana_info['lotes']
+                    terrenos_tipos = manzana_info['terrenos']
+
+                    # Si no hay tipos de terreno definidos, se asume todo 'Calle'
+                    if not terrenos_tipos:
+                        terrenos_tipos = [{'tipo': 'Calle', 'cantidad': lotes_manzana}]
+
+                    lote_actual_en_manzana = 1
+                    for tipo_terreno_info in terrenos_tipos:
+                        tipo_terreno = tipo_terreno_info['tipo']
+                        cantidad_por_tipo = tipo_terreno_info['cantidad']
+
+                        # Obtener el precio por m² según el tipo de terreno
+                        # Usar .get() para evitar errores si un tipo no existe, aunque ya los validamos
+                        precio_m2 = float(precios_proyecto.get(tipo_terreno, 0.0))
+
+                        for _ in range(cantidad_por_tipo):
+                            precio_terreno = AREA_POR_DEFECTO * precio_m2
+                            codigo_unidad = f"{manzana_letra}-{lote_actual_en_manzana}"
+
+                            # Crear un objeto Terreno (opcional, podrías pasar los parámetros directamente)
+                            terreno = Terreno(
+                                id_terreno=None,  # Se generará en el SP
+                                id_proyecto=id_proyecto,
+                                etapa=etapa_num,
+                                area=AREA_POR_DEFECTO,
+                                precio_terreno=precio_terreno,
+                                estado_terreno=ESTADO_POR_DEFECTO,
+                                tipo_terreno=tipo_terreno,
+                                manzana=manzana_letra,
+                                numero_lote=lote_actual_en_manzana,
+                                codigo_unidad=codigo_unidad
+                            )
+
+                            # Llamar al SP para insertar cada terreno individualmente
+                            cursor.execute(
+                                "CALL sp_insertar_terreno(%s, %s, %s, %s, %s, %s, %s, %s, %s)",
+                                (
+                                    terreno.id_proyecto,
+                                    terreno.etapa,
+                                    terreno.area,
+                                    terreno.precio_terreno,
+                                    terreno.estado_terreno,
+                                    terreno.tipo_terreno,
+                                    terreno.manzana,
+                                    terreno.numero_lote,
+                                    terreno.codigo_unidad
+                                )
+                            )
+                            # Es importante consumir cualquier resultado del SP, incluso si no devuelve nada
+                            while cursor.nextset():
+                                pass
+
+                            lote_actual_en_manzana += 1
+
+            db.connection.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            print(f"[ERROR insertar_terrenos_por_etapa]: {e}")
+            db.connection.rollback()
+            return False

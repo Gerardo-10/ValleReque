@@ -267,7 +267,7 @@ function initProyectosModals() {
     function validarPrecios() {
         const precios = [
             {input: precioParque, nombre: 'Parque'},
-            {input: precioEsquinaParque, nombre: 'Esquina-Parque'},
+            {input: precioEsquinaParque, nombre: 'Esquina_Parque'},
             {input: precioEsquina, nombre: 'Esquina'},
             {input: precioAvenida, nombre: 'Avenida'},
             {input: precioCalle, nombre: 'Calle'}
@@ -361,11 +361,7 @@ function initProyectosModals() {
                         }
 
                         // Guardar el ID del proyecto creado para usarlo luego
-                        const proyectoId = result.proyectoId || null;
-                        if (proyectoId) {
-                            // Puedes almacenar este ID para usarlo en los siguientes pasos
-                            sessionStorage.setItem('proyectoActual', proyectoId);
-                        }
+                        proyectoId = result.proyectoId;
 
                     } else {
                         throw new Error(result.message);
@@ -513,7 +509,7 @@ function initProyectosModals() {
             <option value="Avenida">Avenida</option>
             <option value="Esquina">Esquina</option>
             <option value="Parque">Parque</option>
-            <option value="Esquina-Parque">Esquina-Parque</option>
+            <option value="Esquina_Parque">Esquina-Parque</option>
         `;
 
         tipoTerrenoSelectContainer.appendChild(tipoTerrenoSelect);

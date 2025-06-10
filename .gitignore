@@ -3,3 +3,4 @@ __pycache__/*.pyc
 logs\app.log
 *.pyc
 **/__pycache__/
+src/models/__pycache__/*

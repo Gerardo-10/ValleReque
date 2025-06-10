@@ -81,3 +81,19 @@ class ModelUser:
             cursor.close()
         except Exception as e:
             print(f"[ERROR update_password]: {e}")
+
+    @classmethod
+    def get_by_dni(cls, db, dni):
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_cliente_por_dni(%s)", (dni,))
+            row = cursor.fetchone()
+            while cursor.nextset():
+                pass
+
+            if row is not None:
+                return Cliente(*row)
+            return None
+        except Exception as e:
+            print(f"[ERROR get_by_dni Cliente]: {e}")
+            return None

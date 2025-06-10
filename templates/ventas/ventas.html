@@ -1,7 +1,6 @@
 {% block customCSS %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/ventas.css') }}">
 {% endblock %}
-
 {% block body %}
 <div class="contenedor-principal">
     <form class="formulario-cotizacion-inmobiliaria">
@@ -10,8 +9,8 @@
             <div class="encabezado-seccion">
                 <h2>Información del Comprador</h2>
                 <div class="metadatos-info">
-                    <span>Fecha: 25/10/2025</span>
-                    <span>Asesor: Benito</span>
+                    <span>Fecha: {{fecha}}</span>
+                    <span>Asesor: {{asesor}}</span>
                 </div>
             </div>
             <p class="descripcion-seccion">Verifica que los datos del comprador estén correctos</p>
@@ -19,19 +18,19 @@
             <div class="fila-campos">
                 <div class="grupo-campo">
                     <label for="documento-identidad">DNI</label>
-                    <input type="text" id="documento-identidad" value="76961202" class="control-formulario">
+                    <input type="text" id="documento-identidad" class="control-formulario">
                 </div>
                 <div class="grupo-campo">
                     <label for="nombres-comprador">Nombres</label>
-                    <input type="text" id="nombres-comprador" value="Billy recontra gay" class="control-formulario">
+                    <input type="text" id="nombres-comprador"  class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="apellidos-comprador">Apellidos</label>
-                    <input type="text" id="apellidos-comprador" value="......" class="control-formulario">
+                    <input type="text" id="apellidos-comprador"  class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="estado-evaluacion">Estado del Cliente</label>
-                    <input type="text" id="estado-evaluacion" value="Evaluado" class="control-formulario">
+                    <input type="text" id="estado-evaluacion"  class="control-formulario" readonly>
                 </div>
             </div>
 
@@ -40,20 +39,20 @@
                     <label for="ingreso-mensual">Ingreso Neto</label>
                     <div class="prefijo-entrada">
                         <span>s/</span>
-                        <input type="text" id="ingreso-mensual" value="3500.00" class="control-formulario">
+                        <input type="text" id="ingreso-mensual" class="control-formulario" readonly>
                     </div>
                 </div>
                 <div class="grupo-campo">
                     <label for="telefono-contacto">Teléfono</label>
-                    <input type="text" id="telefono-contacto" value="930805480" class="control-formulario">
+                    <input type="text" id="telefono-contacto" class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="ocupacion-laboral">Ocupación</label>
-                    <input type="text" id="ocupacion-laboral" value="Piruja" class="control-formulario">
+                    <input type="text" id="ocupacion-laboral" class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="dependientes-familiares">Carga Familiar</label>
-                    <input type="text" id="dependientes-familiares" value="Si" class="control-formulario">
+                    <input type="text" id="dependientes-familiares" class="control-formulario" readonly>
                 </div>
             </div>
         </div>

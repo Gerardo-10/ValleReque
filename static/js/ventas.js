@@ -1,4 +1,60 @@
+// Mostrar notificación (tipo: 'success' | 'error')
+// Mostrar notificación (tipo: 'success' | 'error')
+function showNotification(message, type = "success", duration = 3000) {
+    const container = document.getElementById("notification-container");
+    const notification = document.createElement("div");
+    notification.textContent = message;
+    notification.style.padding = "12px 20px";
+    notification.style.marginTop = "10px";
+    notification.style.borderRadius = "5px";
+    notification.style.color = "#fff";
+    notification.style.boxShadow = "0 2px 6px rgba(0,0,0,0.3)";
+    notification.style.fontWeight = "bold";
+    notification.style.opacity = "0";
+    notification.style.transition = "opacity 0.3s ease";
+
+    if (type === "success") {
+        notification.style.backgroundColor = "#4CAF50";
+    } else if (type === "error") {
+        notification.style.backgroundColor = "#F44336";
+    } else {
+        notification.style.backgroundColor = "#333";
+    }
+
+    container.appendChild(notification);
+
+    // Forzar reflow para animación
+    void notification.offsetWidth;
+    notification.style.opacity = "1";
+
+    setTimeout(() => {
+        notification.style.opacity = "0";
+        notification.addEventListener("transitionend", () => {
+            notification.remove();
+        });
+    }, duration);
+}
+
+// Crear contenedor para las notificaciones
+function createNotificationContainer() {
+    if (!document.getElementById("notification-container")) {
+        const container = document.createElement("div");
+        container.id = "notification-container";
+        container.style.position = "fixed";
+        container.style.top = "20px";
+        container.style.right = "20px";
+        container.style.zIndex = "9999";
+        container.style.width = "300px";
+        container.style.maxHeight = "500px";
+        container.style.overflowY = "auto"; // Para scroll si hay muchas notificaciones
+        document.body.appendChild(container);
+    }
+}
+
+
+
 function initVentasModals() {
+    createNotificationContainer();
     // Elementos del DOM para gestión de cotización inmobiliaria
     const btnSubirConstancia = document.getElementById('btn-subir-constancia');
     const archivoConstanciaPdf = document.getElementById('archivo-constancia-pdf');
@@ -222,6 +278,59 @@ function initVentasModals() {
             diasCalendario.appendChild(elementoDia);
         }
     }
+        
+    document.getElementById('documento-identidad').addEventListener('input', function() {
+    const dni = this.value;
+    // Si el DNI tiene el formato esperado, hacemos la búsqueda
+    if (dni.length === 8) {  // Asumimos que el DNI tiene 8 caracteres
+        fetch(`/buscar_cliente?dni=${dni}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Si encontramos el cliente, completamos los campos
+                    const cliente = data.cliente;
+                    document.getElementById('nombres-comprador').value = cliente.nombre;
+                    document.getElementById('apellidos-comprador').value = cliente.apellido;
+                    const estadoEvaluacion = cliente.estado
+                        .replace("NoDisponible", "No Disponible")
+                        .replace("SinEvaluar", "Sin Evaluar");
+                    document.getElementById('estado-evaluacion').value = estadoEvaluacion;
+                    document.getElementById('ingreso-mensual').value = cliente.ingreso_neto;
+                    document.getElementById('telefono-contacto').value = cliente.telefono;
+                    document.getElementById('ocupacion-laboral').value = cliente.ocupacion;
+                    document.getElementById('dependientes-familiares').value = cliente.carga_familiar;
+
+                    // Notificación de cliente encontrado
+                    showNotification("Cliente encontrado", "success");
+                } else {
+                    // Si no encontramos el cliente, mostramos la notificación y limpiamos los campos
+                    showNotification("Cliente no encontrado", "error");
+                    document.getElementById('nombres-comprador').value = '';
+                    document.getElementById('apellidos-comprador').value = '';
+                    document.getElementById('estado-evaluacion').value = '';
+                    document.getElementById('ingreso-mensual').value = '';
+                    document.getElementById('telefono-contacto').value = '';
+                    document.getElementById('ocupacion-laboral').value = '';
+                    document.getElementById('dependientes-familiares').value = '';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification("Error al buscar el cliente", "error");
+            });
+    } else {
+        // Si el DNI no tiene 8 caracteres, limpiar los campos
+        document.getElementById('nombres-comprador').value = '';
+        document.getElementById('apellidos-comprador').value = '';
+        document.getElementById('estado-evaluacion').value = '';
+        document.getElementById('ingreso-mensual').value = '';
+        document.getElementById('telefono-contacto').value = '';
+        document.getElementById('ocupacion-laboral').value = '';
+        document.getElementById('dependientes-familiares').value = '';
+    }
+});
+    
+
 
     // Inicializar calendario
     console.log('Inicializando calendario'); // Debug

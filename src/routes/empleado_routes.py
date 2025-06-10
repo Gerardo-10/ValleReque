@@ -17,7 +17,7 @@ def seguridad():
 
     # Calcular la fecha límite (hace 18 años)
     fecha_hace_18_anios = fecha_hoy.replace(year=fecha_hoy.year - 18).strftime('%Y-%m-%d')
-    return render_template('seguridad.html', empleados=empleados, fecha_hace_18_anios=fecha_hace_18_anios)
+    return render_template('seguridad.html', empleados = empleados, fecha_hace_18_anios=fecha_hace_18_anios)
 
 
 @empleado_routes.route('/perfil')

@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, render_template
 from flask_login import login_required
 from datetime import datetime
@@ -6,6 +7,7 @@ from flask import request, jsonify, current_app
 from src.models.ModelCliente import ModelCliente
 from src.models.ModelProyecto import ModelProyecto
 from src.models.ModelTerreno import ModelTerreno
+from src.models.ModelFinanciamiento import ModelFinanciamiento
 
 ventas_routes = Blueprint('ventas_routes', __name__)
 
@@ -15,8 +17,27 @@ def ventas():
     fecha_actual = datetime.now().strftime("%d/%m/%Y")
     asesor_nombre = current_user.username
     proyectos = ModelProyecto.get_activos(current_app.db)
+    # Convertimos la lista de objetos Financiamiento a diccionarios para JSON
+    financiamientos_list = ModelFinanciamiento.get_all(current_app.db)
 
-    return render_template('ventas/ventas.html', fecha=fecha_actual, asesor=asesor_nombre, proyectos = proyectos)
+    financiamientos_data = []
+    for f in financiamientos_list:
+        financiamientos_data.append({
+            'id_financiamiento': f.id_financiamiento,
+            'nombre': f.nombre,
+            'monto_financiamiento': float(f.monto),  # <-- ¡CAMBIO AQUÍ! Usa f.monto
+            'interes': float(f.interes),
+            'tipo_financiamiento': f.tipo,  # <-- También es `f.tipo`, no `f.tipo_financiamiento`
+            'estado_financiamiento': f.estado  # <--- Y este es `f.estado`
+        })
+
+    return render_template(
+        'ventas/ventas.html',
+        fecha=fecha_actual,
+        asesor=asesor_nombre,
+        proyectos=proyectos,
+        financiamientos_json=json.dumps(financiamientos_data)
+    )
 
 @ventas_routes.route('/buscar_cliente', methods=['GET'])
 @login_required
@@ -81,3 +102,9 @@ def buscar_terreno():
         })
     else:
         return jsonify({'success': False, 'message': 'Terreno no encontrado con los criterios especificados.'}), 404
+
+
+@ventas_routes.route('/financiamientos', methods=['GET'])
+@login_required
+def buscarfinanciamientos():
+    pass

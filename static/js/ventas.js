@@ -278,7 +278,7 @@ function initVentasModals() {
             diasCalendario.appendChild(elementoDia);
         }
     }
-        
+
 
     document.getElementById('documento-identidad').addEventListener('input', function () {
         const dni = this.value;
@@ -363,10 +363,11 @@ function initVentasModals() {
             .then(data => {
                 if (data.success) {
                     const terreno = data.terreno;
-                    if (terreno.estado_terreno === 'Disponible') {
+                    console.log('Terreno encontrado:', terreno);
+                    if (terreno.estado_terreno == 'Disponible') {
                         inputDisponibilidadTerreno.value = 'Sí';
                         // Corrección aquí:
-                        inputPrecioPropiedad.value = terreno.precio.toFixed(2); // No necesita ${} si solo es el valor
+                        inputPrecioPropiedad.value = parseFloat(terreno.precio.toFixed(2)); // No necesita ${} si solo es el valor
                         inputTipoUbicacion.value = terreno.tipo_ubicacion; // No necesita ${} si solo es el valor
                         // Esta línea ya estaba correcta porque usas `${}` para la cadena
                         inputAreaTerreno.value = `${terreno.area_terreno} m2`;

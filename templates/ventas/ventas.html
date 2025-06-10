@@ -96,16 +96,16 @@
                     <label for="precio-propiedad">Precio</label>
                     <div class="prefijo-entrada">
                         <span>s/</span>
-                        <input type="text" id="precio-propiedad" value="10000.00" class="control-formulario" readonly>
+                        <input type="text" id="precio-propiedad" class="control-formulario" readonly>
                     </div>
                 </div>
                 <div class="grupo-campo">
                     <label for="tipo-ubicacion">Tipo</label>
-                    <input type="text" id="tipo-ubicacion" value="CALLE/PARQUE" class="control-formulario" readonly>
+                    <input type="text" id="tipo-ubicacion"  class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <label for="area-terreno">Área</label>
-                    <input type="text" id="area-terreno" value="60 m2" class="control-formulario" readonly>
+                    <input type="text" id="area-terreno" class="control-formulario" readonly>
                 </div>
                 <div class="grupo-campo">
                     <!-- Espacio vacío para mantener la alineación -->
@@ -136,16 +136,16 @@
                     <label for="monto-subsidio">Monto del bono</label>
                     <div class="prefijo-entrada">
                         <span>s/</span>
-                        <input type="text" id="monto-subsidio" value="56000.00" class="control-formulario">
+                        <input type="text" id="monto-subsidio"  class="control-formulario">
                     </div>
                 </div>
                 <div class="grupo-campo">
                     <label for="tasa-interes">Interés</label>
-                    <input type="text" id="tasa-interes" value="0.0%" class="control-formulario">
+                    <input type="text" id="tasa-interes" class="control-formulario">
                 </div>
                 <div class="grupo-campo">
                     <label for="numero-cuotas">Cuotas</label>
-                    <input type="text" id="numero-cuotas" value="36" class="control-formulario">
+                    <input type="text" id="numero-cuotas"  class="control-formulario">
                 </div>
             </div>
 
@@ -153,7 +153,7 @@
                 <div class="grupo-campo">
                     <label for="fecha-vencimiento-cuotas">Fecha de Pagos</label>
                     <div class="contenedor-fecha-calendario">
-                        <input type="text" id="fecha-vencimiento-cuotas" value="07/XX" class="control-formulario"
+                        <input type="text" id="fecha-vencimiento-cuotas"  class="control-formulario"
                                readonly>
                         <button type="button" class="boton-calendario" id="btn-abrir-calendario">
                             <i class="fas fa-calendar-alt"></i>
@@ -272,4 +272,10 @@
         </div>
     </div>
 </div>
+<script>
+    // Variable global para JavaScript que contendrá todos los financiamientos
+    // Jinja2 renderizará el JSON directamente aquí
+    const todosLosFinanciamientosDelBackend = JSON.parse('{{ financiamientos_json | safe }}');
+    // El filtro `safe` es importante para que Jinja2 no escape los caracteres HTML del JSON string.
+</script>
 {% endblock %}

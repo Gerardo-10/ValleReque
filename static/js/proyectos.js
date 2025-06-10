@@ -392,6 +392,8 @@ function initProyectosModals() {
 
     // Función para crear modales de etapas dinámicamente
     function crearModalesEtapas() {
+        lotesDisponiblesGlobal = parseInt(numLotes.value) || 0;
+
         const numEtapasInput = document.getElementById('proy-numEtapas');
         if (!numEtapasInput) {
             console.error('No se encontró el input de número de etapas');
@@ -433,6 +435,27 @@ function initProyectosModals() {
             // Configurar botones de agregar/eliminar manzana
             configurarBotonesManzanas(newModal);
 
+            // --- NEW: Add event listener for the close button (the 'x') ---
+            const closeButton = newModal.querySelector('.proy-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    Swal.fire({
+                        title: '¿Deseas cerrar esta ventana?',
+                        text: 'Los datos de esta etapa podrían no guardarse si no has finalizado el proyecto.',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, cerrar',
+                        cancelButtonText: 'No, quedarme'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            closeModal(newModal);
+                        }
+                    });
+                });
+            }
+
             document.body.appendChild(newModal);
             modalEtapas.push(newModal);
         }
@@ -469,55 +492,6 @@ function initProyectosModals() {
         // Por defecto, mostrar ambos botones pero Eliminar oculto
         btnAddManzana.style.display = 'block';
         btnDeleteManzana.style.display = 'none';
-    }
-
-    // Función para agregar una nueva fila
-    function agregarNuevaFila(modal) {
-        const contenedor = modal.querySelector('.proy-manzanas-container');
-        const primeraFila = modal.querySelector('.proy-manzana-row');
-        const nuevaFila = primeraFila.cloneNode(true);
-
-        // Limpiar campos
-        nuevaFila.querySelector('.proy-input-manzana').value = '';
-        nuevaFila.querySelector('input[type="number"]').value = '';
-
-        // Eliminar campos de terreno si existen
-        eliminarCamposTerreno(nuevaFila, modal);
-
-        // Configurar botones de acciones
-        const btnAdd = nuevaFila.querySelector('.proy-btn-add-row');
-        const btnDelete = nuevaFila.querySelector('.proy-btn-delete-row');
-
-        btnAdd.style.display = 'block'; // Mostrar botón +
-        btnDelete.style.display = 'none'; // Ocultar botón - inicialmente
-
-        // Configurar botón + para agregar tipo de terreno y cantidad
-        btnAdd.addEventListener('click', function () {
-            // Verificar si ya tiene campos de terreno
-            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
-                agregarCamposTerreno(nuevaFila, modal);
-                btnDelete.style.display = 'block'; // Mostrar botón -
-            } else {
-                // Si ya tiene campos, agregar otro conjunto
-                agregarConjuntoTerreno(nuevaFila, modal);
-            }
-        });
-
-        // Configurar botón - para eliminar los campos de terreno
-        btnDelete.addEventListener('click', function () {
-            eliminarUltimoConjuntoTerreno(nuevaFila, modal);
-            // Ocultar botón - si no hay más conjuntos de terreno
-            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
-                btnDelete.style.display = 'none';
-            }
-        });
-
-        // Configurar eventos de los inputs básicos
-        configurarEventosInputs(nuevaFila, modal);
-
-        // Agregar al contenedor
-        contenedor.appendChild(nuevaFila);
-        actualizarResumenEtapa(modal);
     }
 
     // Función para agregar campos de terreno a una fila existente
@@ -654,106 +628,12 @@ function initProyectosModals() {
 
         // Configurar eventos de los inputs básicos
         configurarEventosInputs(fila, modal);
-    }
 
-    // Función para configurar eventos de inputs
-    function configurarEventosInputs(fila, modal) {
-        // Input manzana
-        fila.querySelector('.proy-input-manzana').addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
-            actualizarResumenEtapa(modal);
-        });
-
-        // Input lotes
-        fila.querySelector('input[type="number"]').addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value < 1) this.value = '';
-            actualizarResumenEtapa(modal);
-        });
-
-        // Select tipo terreno
-        const selectTipo = fila.querySelector('.proy-tipo-terreno');
-        if (selectTipo) {
-            selectTipo.addEventListener('change', () => {
-                actualizarResumenEtapa(modal);
-            });
-        }
-
-        // Input cantidad terreno
-        const inputCantidad = fila.querySelector('.proy-cantidad-terreno');
-        if (inputCantidad) {
-            inputCantidad.addEventListener('input', function (e) {
-                this.value = this.value.replace(/[^0-9]/g, '');
-                if (this.value < 1) this.value = '';
-                actualizarResumenEtapa(modal);
-            });
-        }
-    }
-
-    function actualizarResumenEtapa(modal) {
-        const filas = modal.querySelectorAll('.proy-manzana-row');
-        let resumen = [];
-
-        filas.forEach(fila => {
-            const manzana = fila.querySelector('.proy-input-manzana').value || 'A';
-            const lotes = fila.querySelector('input[type="number"]').value || '0';
-
-            // Obtener todos los tipos de terreno y cantidades
-            const tiposTerreno = fila.querySelectorAll('.proy-tipo-terreno');
-            const cantidades = fila.querySelectorAll('.proy-cantidad-terreno');
-
-            let detallesTerrenos = [];
-
-            // Recorrer todos los conjuntos de terreno (puede haber varios)
-            for (let i = 0; i < tiposTerreno.length; i++) {
-                const tipo = tiposTerreno[i]?.value || 'Calle';
-                const cantidad = cantidades[i]?.value || '0';
-
-                if (tipo && cantidad) {
-                    detallesTerrenos.push(`${tipo}: ${cantidad}`);
-                }
-            }
-
-            // Construir línea de resumen para esta fila
-            let lineaResumen = `Manzana ${manzana}: ${lotes} lotes`;
-
-            if (detallesTerrenos.length > 0) {
-                lineaResumen += ` | ${detallesTerrenos.join(', ')}`;
-            }
-
-            resumen.push(lineaResumen);
-        });
-
-        modal.querySelector('.proy-resumen-etapa').value = resumen.join('\n');
-    }
-
-    // Función para configurar los botones de navegación
-    function configurarBotonesNavegacion(modal, index) {
-        const btnAnterior = modal.querySelector('.proy-btn-anterior');
-        const btnSiguiente = modal.querySelector('.proy-btn-siguiente');
-
-        if (index === 1) {
-            btnAnterior.textContent = 'Cancelar';
-            btnAnterior.addEventListener('click', () => {
-                closeModal(modal);
-                closeModal(modalConfigurarPrecios);
-                openModal(modalNuevoProyecto);
-            });
-        } else {
-            btnAnterior.addEventListener('click', () => {
-                closeModal(modal);
-                openModal(modalEtapas[index - 2]);
-            });
-        }
-
-        if (index === totalEtapas) {
-            btnSiguiente.textContent = 'Guardar';
-            btnSiguiente.addEventListener('click', () => guardarEtapas());
-        } else {
-            btnSiguiente.addEventListener('click', () => {
-                closeModal(modal);
-                openModal(modalEtapas[index]);
-            });
+        // Establecer la primera manzana como 'A' y no editable
+        const inputManzanaPrimeraFila = fila.querySelector('.proy-input-manzana');
+        if (inputManzanaPrimeraFila) {
+            inputManzanaPrimeraFila.value = 'A';
+            inputManzanaPrimeraFila.readOnly = true; // Asegurarse de que sea readOnly
         }
     }
 
@@ -765,6 +645,7 @@ function initProyectosModals() {
             input.type = 'text';
             input.className = 'proy-input-manzana';
             input.placeholder = 'A';
+            input.readOnly = true;
             select.replaceWith(input);
         });
     }
@@ -775,9 +656,365 @@ function initProyectosModals() {
         return romanos[num] || num;
     }
 
-    // Función para guardar todas las etapas
-    function guardarEtapas() {
+    // Variables para control de lotes disponibles
+    let lotesDisponiblesGlobal = 0;
+    let proyectoId = null;
+
+    // 1. Validación para evitar la letra "e" en inputs de precios
+    function prevenirLetraE(event) {
+        if (event.key.toLowerCase() === 'e') {
+            event.preventDefault();
+        }
+    }
+
+    // Aplicar a todos los inputs de precios
+    [precioParque, precioEsquinaParque, precioEsquina, precioAvenida, precioCalle].forEach(input => {
+        input.addEventListener('keydown', prevenirLetraE);
+    });
+
+    // 2. Función para manejar el autocompletado de manzanas en orden alfabético
+    function obtenerSiguienteLetra(modal) {
+        const letrasUsadas = [];
+        const filas = modal.querySelectorAll('.proy-manzana-row');
+
+        filas.forEach(fila => {
+            const letra = fila.querySelector('.proy-input-manzana').value;
+            if (letra && letra.length === 1) {
+                letrasUsadas.push(letra.toUpperCase());
+            }
+        });
+
+        if (letrasUsadas.length === 0) return 'A';
+
+        // Ordenar letras y encontrar la siguiente
+        letrasUsadas.sort();
+        const ultimaLetra = letrasUsadas[letrasUsadas.length - 1];
+        const siguienteCharCode = ultimaLetra.charCodeAt(0) + 1;
+
+        // Si pasa de Z, volver a A
+        return siguienteCharCode > 90 ? 'A' : String.fromCharCode(siguienteCharCode);
+    }
+
+    // 3. Modificación en la función agregarNuevaFila para autocompletar manzanas
+    function agregarNuevaFila(modal) {
+        const contenedor = modal.querySelector('.proy-manzanas-container');
+        const primeraFila = modal.querySelector('.proy-manzana-row');
+        const nuevaFila = primeraFila.cloneNode(true);
+
+        // Autocompletar con siguiente letra
+        const inputManzana = nuevaFila.querySelector('.proy-input-manzana');
+        inputManzana.value = obtenerSiguienteLetra(modal);
+        inputManzana.readOnly = true;
+
+        // Limpiar otros campos
+        nuevaFila.querySelector('input[type="number"]').value = '';
+        eliminarCamposTerreno(nuevaFila, modal);
+
+        // Configurar botones y eventos (código existente)
+        const btnAdd = nuevaFila.querySelector('.proy-btn-add-row');
+        const btnDelete = nuevaFila.querySelector('.proy-btn-delete-row');
+
+        btnAdd.style.display = 'block';
+        btnDelete.style.display = 'none';
+
+        btnAdd.addEventListener('click', function () {
+            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
+                agregarCamposTerreno(nuevaFila, modal);
+                btnDelete.style.display = 'block';
+            } else {
+                agregarConjuntoTerreno(nuevaFila, modal);
+            }
+        });
+
+        btnDelete.addEventListener('click', function () {
+            eliminarUltimoConjuntoTerreno(nuevaFila, modal);
+            if (!nuevaFila.querySelector('.proy-tipo-terreno')) {
+                btnDelete.style.display = 'none';
+            }
+        });
+
+        configurarEventosInputs(nuevaFila, modal);
+        contenedor.appendChild(nuevaFila);
+        actualizarResumenEtapa(modal);
+        actualizarLotesDisponibles(modal);
+    }
+
+    // 4. Modificación en configurarEventosInputs para validar manzanas únicas
+    function configurarEventosInputs(fila, modal) {
+        // Input manzana - solo una letra mayúscula y validar única
+        fila.querySelector('.proy-input-manzana').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase().substring(0, 1);
+            validarManzanaUnica(this, modal);
+            actualizarResumenEtapa(modal);
+            actualizarLotesDisponibles(modal);
+        });
+
+        // Input lotes - validar números y consistencia
+        fila.querySelector('input[type="number"]').addEventListener('input', function (e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value < 1) this.value = '';
+
+            // Si no hay campos de terreno, actualizar automáticamente
+            if (!fila.querySelector('.proy-tipo-terreno')) {
+                actualizarResumenEtapa(modal);
+            }
+
+            validarConsistenciaLotes(fila);
+            actualizarLotesDisponibles(modal);
+        });
+
+        // Resto de eventos (select tipo terreno e input cantidad)
+        const selectTipo = fila.querySelector('.proy-tipo-terreno');
+        if (selectTipo) {
+            selectTipo.addEventListener('change', () => {
+                validarConsistenciaLotes(fila);
+                actualizarResumenEtapa(modal);
+                actualizarLotesDisponibles(modal);
+            });
+        }
+
+        const inputCantidad = fila.querySelector('.proy-cantidad-terreno');
+        if (inputCantidad) {
+            inputCantidad.addEventListener('input', function (e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value < 1) this.value = '';
+                validarConsistenciaLotes(fila);
+                actualizarResumenEtapa(modal);
+                actualizarLotesDisponibles(modal);
+            });
+        }
+    }
+
+    // 5. Función para validar manzanas únicas
+    function validarManzanaUnica(input, modal) {
+        const letraActual = input.value;
+        if (!letraActual) return;
+
+        const filas = modal.querySelectorAll('.proy-manzana-row');
+        let contador = 0;
+
+        filas.forEach(fila => {
+            const letra = fila.querySelector('.proy-input-manzana').value;
+            if (letra === letraActual) contador++;
+        });
+
+        if (contador > 1) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Manzana duplicada',
+                text: `La letra ${letraActual} ya está en uso. Por favor usa otra.`,
+                confirmButtonText: 'Entendido'
+            }).then(() => {
+                input.value = obtenerSiguienteLetra(modal);
+                input.focus();
+            });
+        }
+    }
+
+    // 6. Función para validar consistencia de lotes
+    function validarConsistenciaLotes(fila) {
+        const inputLotes = fila.querySelector('input[type="number"]');
+        const lotesManzana = parseInt(inputLotes.value) || 0;
+
+        // Si no hay campos de terreno, no hay nada que validar
+        if (!fila.querySelector('.proy-tipo-terreno')) return true;
+
+        // Sumar todas las cantidades de terrenos
+        let totalTerrenos = 0;
+        const inputsCantidad = fila.querySelectorAll('.proy-cantidad-terreno');
+
+        inputsCantidad.forEach(input => {
+            totalTerrenos += parseInt(input.value) || 0;
+        });
+
+        if (totalTerrenos !== lotesManzana) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Inconsistencia en lotes',
+                text: `La suma de terrenos (${totalTerrenos}) no coincide con los lotes de la manzana (${lotesManzana})`,
+                confirmButtonText: 'Entendido'
+            });
+            return false;
+        }
+        return true;
+    }
+
+    // 7. Modificación en actualizarResumenEtapa para manejar caso por defecto
+    function actualizarResumenEtapa(modal) {
+        const filas = modal.querySelectorAll('.proy-manzana-row');
+        let resumen = [];
+        let totalLotesEtapa = 0;
+
+        filas.forEach(fila => {
+            const manzana = fila.querySelector('.proy-input-manzana').value || 'A';
+            const lotes = parseInt(fila.querySelector('input[type="number"]').value) || 0;
+            totalLotesEtapa += lotes;
+
+            let detallesTerrenos = [];
+            const tiposTerreno = fila.querySelectorAll('.proy-tipo-terreno');
+            const cantidades = fila.querySelectorAll('.proy-cantidad-terreno');
+
+            // Caso por defecto: si no hay campos de terreno, usar "Calle" con todos los lotes
+            if (tiposTerreno.length === 0) {
+                detallesTerrenos.push(`Calle: ${lotes}`);
+            } else {
+                // Caso con campos de terreno definidos
+                for (let i = 0; i < tiposTerreno.length; i++) {
+                    const tipo = tiposTerreno[i]?.value || 'Calle';
+                    const cantidad = cantidades[i]?.value || '0';
+                    if (tipo && cantidad) detallesTerrenos.push(`${tipo}: ${cantidad}`);
+                }
+            }
+
+            resumen.push(`Manzana ${manzana}: ${lotes} lotes | ${detallesTerrenos.join(', ')}`);
+        });
+
+        modal.querySelector('.proy-resumen-etapa').value = resumen.join('\n');
+        return totalLotesEtapa;
+    }
+
+    // 8. Función para actualizar el contador de lotes disponibles
+    function actualizarLotesDisponibles(modal) {
+        if (!modal) return;
+
+        // Calcular lotes asignados en TODAS las etapas
+        let totalLotesAsignados = 0;
+        modalEtapas.forEach(m => {
+            const filas = m.querySelectorAll('.proy-manzana-row');
+            filas.forEach(fila => {
+                totalLotesAsignados += parseInt(fila.querySelector('input[type="number"]').value) || 0;
+            });
+        });
+
+        const totalLotesProyecto = parseInt(numLotes.value) || 0;
+        lotesDisponiblesGlobal = totalLotesProyecto - totalLotesAsignados;
+
+        // Actualizar en TODOS los modales
+        modalEtapas.forEach(m => {
+            let contador = m.querySelector('.proy-lotes-disponibles');
+            if (!contador) {
+                contador = document.createElement('div');
+                contador.className = 'proy-lotes-disponibles';
+                // ... (estilos igual que antes)
+                const buttonsContainer = m.querySelector('.proy-manzanas-container .d-flex.justify-content-end');
+                if (buttonsContainer) {
+                    buttonsContainer.parentNode.insertBefore(contador, buttonsContainer.nextSibling);
+                }
+            }
+
+            contador.innerHTML = `Lotes disponibles: <span style="color: ${lotesDisponiblesGlobal < 0 ? 'red' : 'green'}">${lotesDisponiblesGlobal}</span> / ${totalLotesProyecto}`;
+        });
+
+        return lotesDisponiblesGlobal;
+    }
+
+    // 9. Modificación en configurarBotonesNavegacion para validar antes de avanzar
+    function configurarBotonesNavegacion(modal, index) {
+        const btnAnterior = modal.querySelector('.proy-btn-anterior');
+        const btnSiguiente = modal.querySelector('.proy-btn-siguiente');
+
+        if (index === 1) {
+            btnAnterior.textContent = 'Cancelar';
+            btnAnterior.addEventListener('click', () => {
+                // Replace native confirm with SweetAlert
+                Swal.fire({
+                    title: '¿Cancelar la creación del proyecto?',
+                    text: 'Los datos no guardados se perderán.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, cancelar',
+                    cancelButtonText: 'No, continuar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        closeModal(modal);
+                        closeModal(modalConfigurarPrecios); // Assuming this is defined elsewhere
+                        openModal(modalNuevoProyecto); // Assuming this is defined elsewhere
+                    }
+                });
+            });
+        } else {
+            btnAnterior.addEventListener('click', () => {
+                closeModal(modal);
+                openModal(modalEtapas[index - 2]);
+            });
+        }
+
+        if (index === totalEtapas) {
+            btnSiguiente.textContent = 'Guardar';
+            btnSiguiente.addEventListener('click', () => guardarEtapas(true)); // Guardar final
+        } else {
+            btnSiguiente.addEventListener('click', () => {
+                if (validarEtapaCompleta(modal)) {
+                    closeModal(modal);
+                    openModal(modalEtapas[index]);
+                }
+            });
+        }
+    }
+
+    // 10. Función para validar etapa completa antes de avanzar
+    function validarEtapaCompleta(modal) {
+        // Validar que todas las manzanas estén completas
+        const filas = modal.querySelectorAll('.proy-manzana-row');
+        let totalLotesEtapa = 0;
+
+        for (const fila of filas) {
+            const manzana = fila.querySelector('.proy-input-manzana').value;
+            const lotes = parseInt(fila.querySelector('input[type="number"]').value) || 0;
+
+            if (!manzana) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Manzana incompleta',
+                    text: 'Todas las manzanas deben tener una letra asignada',
+                    confirmButtonText: 'Entendido'
+                });
+                return false;
+            }
+
+            if (lotes <= 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lotes inválidos',
+                    text: 'Cada manzana debe tener al menos un lote',
+                    confirmButtonText: 'Entendido'
+                });
+                return false;
+            }
+
+            // Validar consistencia entre lotes y terrenos
+            if (!validarConsistenciaLotes(fila)) {
+                return false;
+            }
+
+            totalLotesEtapa += lotes;
+        }
+
+        // Validar que no se excedan los lotes disponibles
+        const lotesRestantes = actualizarLotesDisponibles(modal);
+        if (lotesRestantes < 0) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Lotes excedidos',
+                text: `Has asignado ${-lotesRestantes} lotes más de los disponibles`,
+                confirmButtonText: 'Entendido'
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    // 11. Modificación de guardarEtapas para permitir guardado parcial
+    function guardarEtapas(completo = false) {
+        if (!validarEtapaCompleta(modalEtapas[modalEtapas.length - 1])) {
+            return;
+        }
+
         const etapasData = [];
+        let totalLotesAsignados = 0;
 
         modalEtapas.forEach((modal, index) => {
             const filas = modal.querySelectorAll('.proy-manzana-row');
@@ -787,33 +1024,121 @@ function initProyectosModals() {
             };
 
             filas.forEach(fila => {
-                etapa.manzanas.push({
-                    letra: fila.querySelector('.proy-input-manzana').value,
-                    lotes: parseInt(fila.querySelector('input[type="number"]').value || 0),
-                    tipoTerreno: fila.querySelector('.proy-tipo-terreno').value,
-                    cantidad: parseInt(fila.querySelectorAll('input[type="number"]')[1].value || 0)
-                });
+                const manzana = fila.querySelector('.proy-input-manzana').value;
+                const lotes = parseInt(fila.querySelector('input[type="number"]').value) || 0;
+                totalLotesAsignados += lotes;
+
+                const manzanaData = {
+                    letra: manzana,
+                    lotes: lotes,
+                    terrenos: []
+                };
+
+                // Caso por defecto: si no hay campos de terreno
+                const tiposTerreno = fila.querySelectorAll('.proy-tipo-terreno');
+                if (tiposTerreno.length === 0) {
+                    manzanaData.terrenos.push({
+                        tipo: 'Calle',
+                        cantidad: lotes
+                    });
+                } else {
+                    // Caso con campos de terreno definidos
+                    const cantidades = fila.querySelectorAll('.proy-cantidad-terreno');
+                    for (let i = 0; i < tiposTerreno.length; i++) {
+                        manzanaData.terrenos.push({
+                            tipo: tiposTerreno[i].value,
+                            cantidad: parseInt(cantidades[i].value) || 0
+                        });
+                    }
+                }
+
+                etapa.manzanas.push(manzanaData);
             });
 
             etapasData.push(etapa);
         });
 
-        console.log('Datos de etapas:', etapasData);
-        // Aquí puedes implementar el envío al servidor
+        // Validar consistencia total de lotes
+        const totalLotesProyecto = parseInt(numLotes.value) || 0;
+        if (totalLotesAsignados !== totalLotesProyecto && completo) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en lotes',
+                text: `La suma total de lotes (${totalLotesAsignados}) no coincide con el proyecto (${totalLotesProyecto})`,
+                confirmButtonText: 'Entendido'
+            });
+            return;
+        }
+
+        // Mostrar confirmación diferente para guardado parcial/completo
+        const confirmText = completo ?
+            '¿Guardar todas las etapas y finalizar el proyecto?' :
+            '¿Guardar el progreso actual? Podrás continuar más tarde.';
 
         Swal.fire({
-            icon: 'success',
-            title: '¡Proyecto completado!',
-            text: 'Todas las etapas han sido configuradas correctamente',
-            confirmButtonText: 'Aceptar'
-        }).then(() => {
-            // Cerrar todos los modales
-            modalEtapas.forEach(modal => closeModal(modal));
-            closeModal(modalConfigurarPrecios);
-            closeModal(modalNuevoProyecto);
-
-            // Recargar o redirigir
-            window.location.reload();
+            title: 'Confirmar',
+            text: confirmText,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                enviarDatosEtapas(etapasData, completo);
+            }
         });
+    }
+
+    // 12. Función para enviar datos al servidor (guardado parcial/completo)
+    async function enviarDatosEtapas(etapasData, completo) {
+        try {
+            Swal.fire({
+                title: 'Guardando...',
+                html: 'Por favor espera mientras guardamos los datos',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
+            });
+
+            const formData = new FormData();
+            formData.append('proyectoId', proyectoId);
+            formData.append('etapas', JSON.stringify(etapasData));
+            formData.append('completo', completo);
+
+            const response = await fetch('/guardar_etapas', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: completo ? '¡Proyecto completado!' : 'Progreso guardado',
+                    text: result.message,
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    if (completo) {
+                        // Cerrar todos los modales y recargar
+                        modalEtapas.forEach(modal => closeModal(modal));
+                        closeModal(modalConfigurarPrecios);
+                        closeModal(modalNuevoProyecto);
+                        window.location.reload();
+                    }
+                });
+            } else {
+                throw new Error(result.message || 'Error al guardar');
+            }
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message,
+                confirmButtonText: 'Entendido'
+            });
+        }
     }
 }

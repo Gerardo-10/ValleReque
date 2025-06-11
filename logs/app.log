@@ -507,6 +507,7 @@
 2025-06-10 16:57:20,135 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 16:57:20,514 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 >>>>>>> Stashed changes
+<<<<<<< Updated upstream
 2025-06-10 17:00:19,079 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 17:00:19,406 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 17:04:21,437 - INFO - appLogger - Aplicación iniciada en modo desarrollo
@@ -540,3 +541,13 @@
 2025-06-10 18:04:43,153 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 18:56:24,805 - INFO - appLogger - Aplicación iniciada en modo desarrollo
 2025-06-10 18:56:26,229 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+=======
+2025-06-10 20:06:06,815 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2013, 'Lost connection to server during query')
+2025-06-10 20:06:06,816 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:09,393 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:09,394 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:13,825 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:13,825 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:13,835 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+2025-06-10 20:06:13,835 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10051)")
+>>>>>>> Stashed changes

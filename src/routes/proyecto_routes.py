@@ -8,7 +8,6 @@ from werkzeug.utils import secure_filename
 
 from src.models.ModelProyecto import ModelProyecto
 from src.models.entities.Proyecto import Proyecto
-from src.models.entities.Terreno import Terreno
 
 proyecto_routes = Blueprint('proyecto_routes', __name__)
 
@@ -134,3 +133,57 @@ def guardar_etapas():
     except Exception as e:
         print(f"[ERROR guardar_etapas]: {e}")
         return jsonify({'success': False, 'message': f'Error interno del servidor: {str(e)}'}), 500
+
+@proyecto_routes.route('/eliminar_proyecto', methods=['POST'])
+@login_required
+def eliminar_proyecto():
+    try:
+        data = request.get_json()
+        id_proyecto = data.get('id_proyecto')
+        print(f"id_proyecto recibido: {data.get('id_proyecto')}")
+
+        if not id_proyecto:
+            return jsonify({'success': False, 'message': 'ID de proyecto no proporcionado.'}), 400
+
+        success = ModelProyecto.delete(current_app.db, id_proyecto)
+
+        if success:
+            return jsonify({'success': True, 'message': 'Proyecto marcado como inactivo exitosamente.'})
+        else:
+            return jsonify({'success': False, 'message': 'No se pudo marcar el proyecto como inactivo.'}), 500
+    except Exception as e:
+        print(f"Error al eliminar proyecto: {e}")
+        return jsonify({'success': False, 'message': 'Ocurrió un error interno del servidor.'}), 500
+
+@proyecto_routes.route('/editar_proyecto', methods=['POST'])
+@login_required
+def editar_proyecto():
+    try:
+        data = request.get_json()
+        print(f"Datos recibidos en Flask: {data}")
+        if data:
+            print(f"id_proyecto recibido: {data.get('id_proyecto')}")
+            print(f"nombre_proyecto recibido: {data.get('nombre_proyecto')}")
+            print(f"direccion recibido: {data.get('direccion')}")
+
+
+        if not data:
+            return jsonify({'success': False, 'message': 'No se recibieron datos JSON válidos.'}), 400
+
+
+        id_proyecto = data.get('id_proyecto')
+        nombre_proyecto = data.get('nombre_proyecto')
+        direccion = data.get('direccion')
+
+        if not all([id_proyecto, nombre_proyecto, direccion]):
+            return jsonify({'success': False, 'message': 'Faltan datos requeridos para la edición.'}), 400
+
+        success = ModelProyecto.update(current_app.db, id_proyecto, nombre_proyecto, direccion)
+
+        if success:
+            return jsonify({'success': True, 'message': 'Proyecto actualizado exitosamente.'})
+        else:
+            return jsonify({'success': False, 'message': 'No se pudo actualizar el proyecto.'}), 500
+    except Exception as e:
+        print(f"Error al editar proyecto: {e}")
+        return jsonify({'success': False, 'message': 'Ocurrió un error interno del servidor.'}), 500

@@ -1137,4 +1137,159 @@ function initProyectosModals() {
             });
         }
     }
+
+    // --- Funcionalidad de Eliminar Proyecto ---
+    document.querySelectorAll('.proy-btn-eliminar').forEach(button => {
+        button.addEventListener('click', function () {
+            const projectId = this.dataset.projectId;
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto! El proyecto se marcará como inactivo.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminarlo',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('/eliminar_proyecto', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                        },
+                        body: JSON.stringify({id_proyecto: projectId})
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire(
+                                    '¡Eliminado!',
+                                    'El proyecto ha sido marcado como inactivo.',
+                                    'success'
+                                ).then(() => {
+                                    cargarVista("/proyectos", initProyectosModals);
+                                });
+                            } else {
+                                Swal.fire(
+                                    'Error',
+                                    data.message || 'No se pudo eliminar el proyecto.',
+                                    'error'
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error al eliminar el proyecto:', error);
+                            Swal.fire(
+                                'Error',
+                                'Ocurrió un error al intentar eliminar el proyecto.',
+                                'error'
+                            );
+                        });
+                }
+            });
+        });
+    });
+
+    // --- Funcionalidad de Editar Proyecto ---
+    const editModal = document.getElementById('proy-modalEditarProyecto');
+    const closeButtons = document.querySelectorAll('.proy-close, .proy-btn-secondary[data-modal="proy-modalEditarProyecto"]');
+    const formEditProject = document.getElementById('proy-formEditarProyecto');
+    const saveEditButton = document.getElementById('proy-btnGuardarEdicion');
+    let currentProjectId = null; // Para almacenar el ID del proyecto que se está editando
+
+    // Abrir modal de edición
+    document.querySelectorAll('.proy-btn-editar').forEach(button => {
+        button.addEventListener('click', function () {
+            currentProjectId = this.dataset.projectId;
+            // Aquí podrías hacer una llamada AJAX para obtener los datos actuales del proyecto
+            // y precargar el formulario si lo necesitas.
+            // Por ahora, simplemente abrimos el modal.
+            editModal.style.display = 'block';
+
+            // Ejemplo: Cargar datos dummy (idealmente, cargarías desde el servidor)
+            document.getElementById('proy-editNombreProyecto').value = "Nombre del Proyecto " + currentProjectId;
+            document.getElementById('proy-editDireccion').value = "Dirección del Proyecto " + currentProjectId;
+        });
+    });
+
+    // Cerrar modal
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == editModal) {
+            editModal.style.display = 'none';
+        }
+    });
+
+    // Guardar cambios del proyecto
+    saveEditButton.addEventListener('click', function () {
+        const nombreProyecto = document.getElementById('proy-editNombreProyecto').value;
+        const direccion = document.getElementById('proy-editDireccion').value;
+
+        if (!nombreProyecto || !direccion) {
+            Swal.fire('Atención', 'Por favor, completa todos los campos requeridos.', 'warning');
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Confirmar edición?',
+            text: "¿Estás seguro de guardar los cambios?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, guardar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/editar_proyecto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': document.querySelector('input[name="csrf_token"]').value
+                    },
+                    body: JSON.stringify({
+                        id_proyecto: currentProjectId,
+                        nombre_proyecto: nombreProyecto,
+                        direccion: direccion
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                '¡Actualizado!',
+                                'Los detalles del proyecto han sido actualizados.',
+                                'success'
+                            ).then(() => {
+                                editModal.style.display = 'none';
+                                // Opcional: recargar la página o actualizar el elemento del DOM
+                                cargarVista("/proyectos", initProyectosModals);
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                data.message || 'No se pudo actualizar el proyecto.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al actualizar el proyecto:', error);
+                        Swal.fire(
+                            'Error',
+                            'Ocurrió un error al intentar actualizar el proyecto.',
+                            'error'
+                        );
+                    });
+            }
+        });
+    });
 }

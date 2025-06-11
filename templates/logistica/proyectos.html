@@ -77,8 +77,8 @@
                     </div>
                 </div>
                 <div class="proy-actions">
-                    <button class="proy-btn-eliminar" data-project-id="1">Eliminar</button>
-                    <button class="proy-btn-editar" data-project-id="1">Editar</button>
+                    <button class="proy-btn-eliminar" data-project-id="{{proyecto.id_proyecto}}">Eliminar</button>
+                    <button class="proy-btn-editar" data-project-id="{{proyecto.id_proyecto}}">Editar</button>
                 </div>
                 {% endif %}
             {% endfor %}
@@ -383,95 +383,20 @@
         </div>
         <div class="proy-modal-body">
             <form id="proy-formEditarProyecto">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="proy-form-group">
                     <label for="proy-editNombreProyecto">Nombre Proyecto*</label>
-                    <input type="text" id="proy-editNombreProyecto" value="Valle Reque" required>
+                    <input type="text" id="proy-editNombreProyecto" name="nombre_proyecto" value="Valle Reque" required>
                 </div>
                 <div class="proy-form-group">
                     <label for="proy-editDireccion">Dirección*</label>
-                    <input type="text" id="proy-editDireccion" value="Av. Panamericana #556" required>
-                </div>
-                <div class="proy-form-group">
-                    <label for="proy-editInversion">Inversión*</label>
-                    <input type="text" id="proy-editInversion" value="S/ 155,842" required>
-                </div>
-                <div class="proy-form-group">
-                    <label for="proy-editFotoReferencia">Foto de referencia*</label>
-                    <div class="proy-upload-container">
-                        <input type="file" id="proy-editFotoReferencia" accept="image/*" style="display: none;">
-                        <div class="proy-upload-button"
-                             onclick="document.getElementById('proy-editFotoReferencia').click()">
-                            <i class="fas fa-upload"></i>
-                            <span class="proy-upload-text">Click to upload</span>
-                        </div>
-                        <div class="proy-upload-info">Insertar imagen de Google Maps<br>(SVG, PNG, JPG o GIF max.
-                            800x450px)
-                        </div>
-                    </div>
-                    <div class="proy-map-preview">
-                        <img src="{{ url_for('static', filename='img/proyectos/mapa.png') }}"
-                             alt="Mapa del proyecto">
-                    </div>
+                    <input type="text" id="proy-editDireccion" name="direccion" value="Av. Panamericana #556" required>
                 </div>
             </form>
         </div>
         <div class="proy-modal-footer">
             <button type="button" class="proy-btn-secondary" data-modal="proy-modalEditarProyecto">Cancelar</button>
             <button type="button" class="proy-btn-primary" id="proy-btnGuardarEdicion">Guardar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Éxito -->
-<div id="proy-modalExito" class="proy-modal">
-    <div class="proy-modal-content proy-modal-sm">
-        <div class="proy-modal-header proy-success">
-            <div class="proy-modal-title">
-                <i class="fas fa-check-circle"></i>
-                <h3>¡Proyecto guardado exitosamente!</h3>
-            </div>
-            <span class="proy-close" data-modal="proy-modalExito">&times;</span>
-        </div>
-        <div class="proy-modal-body proy-text-center">
-            <p>Para poder editar las características específicas de los terrenos asignados, visitar la pestaña de
-                <strong>Terrenos</strong>.</p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Confirmar Eliminación -->
-<div id="proy-modalConfirmarEliminar" class="proy-modal">
-    <div class="proy-modal-content proy-modal-sm">
-        <div class="proy-modal-header proy-danger">
-            <div class="proy-modal-title">
-                <i class="fas fa-exclamation-triangle"></i>
-                <h3>¿Desea eliminar este Proyecto?</h3>
-            </div>
-            <span class="proy-close" data-modal="proy-modalConfirmarEliminar">&times;</span>
-        </div>
-        <div class="proy-modal-body">
-            <p>Tenga en cuenta que al eliminar todo el proyecto, las etapas, manzanas y terrenos asociados a este.
-                También serán eliminados.</p>
-        </div>
-        <div class="proy-modal-footer">
-            <button type="button" class="proy-btn-secondary" data-modal="proy-modalConfirmarEliminar">Cancelar</button>
-            <button type="button" class="proy-btn-danger" id="proy-btnConfirmarEliminar">Eliminar</button>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Eliminado con Éxito -->
-<div id="proy-modalEliminadoExito" class="proy-modal">
-    <div class="proy-modal-content proy-modal-sm">
-        <div class="proy-modal-header proy-eliminar">
-            <div class="proy-modal-title">
-                <i class="fas fa-check-circle"></i>
-                <h3>¡Se ha eliminado el Proyecto!</h3>
-            </div>
-            <span class="proy-close" data-modal="proy-modalEliminadoExito">&times;</span>
-        </div>
-        <div class="proy-modal-body proy-text-center">
-            <p>Puede verificar en la pestaña Terrenos.</p>
         </div>
     </div>
 </div>

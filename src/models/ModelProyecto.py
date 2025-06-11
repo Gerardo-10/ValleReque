@@ -1,3 +1,4 @@
+from src.models.ModelTerreno import ModelTerreno
 from src.models.entities.Proyecto import Proyecto
 from src.models.entities.Terreno import Terreno  # Asegúrate de que esta importación exista
 
@@ -160,3 +161,36 @@ class ModelProyecto:
             print(f"[ERROR insertar_terrenos_por_etapa]: {e}")
             db.connection.rollback()
             return False
+
+    @classmethod
+    def delete(cls, db, id_proyecto):
+        cursor = None
+        try:
+            cursor = db.connection.cursor()
+            cursor.execute("CALL sp_eliminar_proyecto(%s)", (id_proyecto,))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR ModelTerreno.delete general]: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+
+    @classmethod
+    def update(cls, db, id_proyecto, nombre_proyecto, direccion):
+        cursor = None
+        try:
+            cursor = db.connection.cursor()
+            id_proyecto_int = int(id_proyecto)
+            cursor.execute("CALL sp_actualizar_proyecto(%s, %s, %s)", (id_proyecto_int, nombre_proyecto, direccion))
+            db.connection.commit()
+            return True
+        except Exception as e:
+            print(f"[ERROR actualizar Proyecto general]: {e}")
+            if db.connection:
+                db.connection.rollback()
+            return False
+        finally:
+            if cursor:
+                cursor.close()

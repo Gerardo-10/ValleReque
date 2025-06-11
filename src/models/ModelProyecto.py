@@ -117,7 +117,7 @@ class ModelProyecto:
 
                         for _ in range(cantidad_por_tipo):
                             precio_terreno = AREA_POR_DEFECTO * precio_m2
-                            codigo_unidad = f"{manzana_letra}-{lote_actual_en_manzana}"
+                            codigo_unidad = f"{manzana_letra} - {lote_actual_en_manzana}"
 
                             # Crear un objeto Terreno (opcional, podrías pasar los parámetros directamente)
                             terreno = Terreno(

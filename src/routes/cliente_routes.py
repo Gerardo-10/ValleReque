@@ -35,7 +35,7 @@ def insertar_cliente():
             'telefono': form['telefono'],
             'ocupacion': form['ocupacion'],
             'ingreso_neto': form['ingreso_neto'],
-            'estado': form['estado'],
+            'estado_cliente': form['estado_cliente'],
             'carga_familiar': form['carga_familiar']
         }
 
@@ -199,7 +199,7 @@ def obtener_cliente(id_cliente):
         'telefono': cliente.telefono,
         'ocupacion': cliente.ocupacion,
         'ingreso_neto': cliente.ingreso_neto,
-        'estado': cliente.estado,
+        'estado_cliente': cliente.estado_cliente,
         'carga_familiar': cliente.carga_familiar
     }
 

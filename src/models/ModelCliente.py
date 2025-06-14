@@ -52,7 +52,7 @@ class ModelCliente:
                 data['telefono'],
                 data['ocupacion'],
                 data['ingreso_neto'],
-                data['estado'],
+                data['estado_cliente'],
                 data['carga_familiar']
             ))
             cursor.execute("SELECT LAST_INSERT_ID()")
@@ -78,7 +78,7 @@ class ModelCliente:
                 data['telefono'],
                 data['ocupacion'],
                 float(data['ingreso_neto']),
-                data['estado'],
+                data['estado_cliente'],
                 int(data['carga_familiar'])
             ))
             db.connection.commit()

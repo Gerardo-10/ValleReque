@@ -1,10 +1,17 @@
-{% extends './base.html' %} {% block title %}Valle Reque - Inicio de Sesión{%
-endblock %} {% block customCSS %}
+{% extends './base.html' %}
+
+{% block title %}
+Valle Reque - Inicio de Sesión{%
+endblock %}
+
+{% block customCSS %}
 <link
   rel="stylesheet"
   href="{{ url_for('static', filename='css/login.css') }}"
 />
-{% endblock %} {% block body %}
+{% endblock %}
+
+{% block body %}
 <div class="container">
   <div class="login-card">
     <div class="login-form">
@@ -144,7 +151,7 @@ endblock %} {% block customCSS %}
         <p class="email-sent" id="emailSent"></p>
         <form id="codeForm">
           <div class="form-group">
-            <label for="verificationCode">Código de Verificación</label>
+            <label>Código de Verificación</label>
             <div class="code-input-container">
               <input type="text" id="code1" maxlength="3" placeholder="XXX" />
               <span class="code-separator">-</span>
@@ -318,5 +325,5 @@ endblock %} {% block customCSS %}
     </div>
   </div>
 </div>
-<script src="../../static/js/login.js"></script>
+<script src="{{ url_for('static', filename='js/login.js') }}"></script>
 {% endblock %}

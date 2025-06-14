@@ -728,9 +728,9 @@ window.initClientesModals = () => {
             NoDisponible: "no-disponible",
             SinEvaluar: "sin-evaluar",
           }
-          const claseEstado = clasesEstado[cliente.estado] || "sin-evaluar"
+          const claseEstado = clasesEstado[cliente.estado_cliente] || "sin-evaluar"
           nuevaFila.setAttribute("data-id", cliente.id_cliente)
-          nuevaFila.setAttribute("data-estado", cliente.estado.toLowerCase())
+          nuevaFila.setAttribute("data-estado", cliente.estado_cliente.toLowerCase())
           nuevaFila.innerHTML = `
                     <td><input type="checkbox" class="checkbox-cliente" data-id="${cliente.id_cliente}"></td>
                     <td>${cliente.id_cliente}</td>
@@ -739,7 +739,7 @@ window.initClientesModals = () => {
                     <td>${cliente.direccion}</td>
                     <td>${cliente.telefono}</td>
                     <td>${cliente.ingreso_neto}</td>
-                    <td><span class="estado-badge ${claseEstado}">${cliente.estado}</span></td>
+                    <td><span class="estado-badge ${claseEstado}">${cliente.estado_cliente}</span></td>
                     <td style="text-align: center;">
                         <button class="btn-detalles" data-id="${cliente.id_cliente}"><i class="fas fa-eye"></i></button>
                     </td>

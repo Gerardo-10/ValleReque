@@ -18,8 +18,8 @@ window.initDetalleCliente = function () {
     const familiarForm = document.getElementById('familiarForm');
 
     function validarTextoAlfabetico(texto) {
-    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$/;
-    return regex.test(texto);
+        const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,50}$/;
+        return regex.test(texto);
     }
 
     function validarDireccion(texto) {
@@ -44,8 +44,8 @@ window.initDetalleCliente = function () {
     }
 
     function validarFamiliarApellido(apellido) {
-    return validarTextoAlfabetico(apellido);
-}
+        return validarTextoAlfabetico(apellido);
+    }
 
     function validarFamiliarDNI(dni) {
         return /^\d{8}$/.test(dni);
@@ -214,18 +214,18 @@ window.initDetalleCliente = function () {
 
     function mostrarModalConDatos(cliente) {
         const fields = [
-            { id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden' },
-            { id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text' },
-            { id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text' },
-            { id: 'dni', label: 'DNI', value: cliente.dni, type: 'text' },
-            { id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text' },
-            { id: 'correo', label: 'Correo', value: cliente.correo, type: 'text' },
-            { id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text' },
-            { id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text' },
-            { id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number' },
+            {id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden'},
+            {id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text'},
+            {id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text'},
+            {id: 'dni', label: 'DNI', value: cliente.dni, type: 'text'},
+            {id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text'},
+            {id: 'correo', label: 'Correo', value: cliente.correo, type: 'text'},
+            {id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text'},
+            {id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text'},
+            {id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number'},
             {
-                id: 'estado', label: 'Estado',
-                value: cliente.estado,
+                id: 'estado_cliente', label: 'Estado',
+                value: cliente.estado_cliente,
                 type: 'select',
                 options: ['Activo', 'Evaluado', 'NoDisponible', 'SinEvaluar']
             },
@@ -243,118 +243,117 @@ window.initDetalleCliente = function () {
 
 
         function mostrarModalConDatos(cliente) {
-    const fields = [
-        { id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden' },
-        { id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text' },
-        { id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text' },
-        { id: 'dni', label: 'DNI', value: cliente.dni, type: 'text' },
-        { id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text' },
-        { id: 'correo', label: 'Correo', value: cliente.correo, type: 'text' },
-        { id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text' },
-        { id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text' },
-        { id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number' },
-        {
-            id: 'estado', label: 'Estado',
-            value: cliente.estado,
-            type: 'select',
-            options: ['Activo', 'Evaluado', 'NoDisponible', 'SinEvaluar']
-        },
-        {
-            id: 'carga_familiar', label: 'Carga Familiar',
-            value: cliente.carga_familiar == 1 ? 'Sí' : 'No',
-            type: 'select',
-            options: ['Sí', 'No']
-        }
-    ];
-
-    modalTitle.textContent = 'Editar Datos del Cliente';
-    generateFormFields(fields);
-    openModal(editModal);
-
-        // REASIGNAR submit dinámicamente
-        setTimeout(() => {
-            const editForm = document.getElementById('editForm');
-            if (!editForm) {
-                console.error("❌ No se encontró #editForm");
-                return;
-            }
-
-            // Remover cualquier submit previo
-            const newForm = editForm.cloneNode(true);
-            editForm.parentNode.replaceChild(newForm, editForm);
-
-            newForm.addEventListener('submit', function (e) {
-                e.preventDefault();
-                console.log("✅ Evento submit capturado correctamente");
-
-                const nombre = document.getElementById('nombre')?.value.trim();
-                const apellido = document.getElementById('apellido')?.value.trim();
-                const direccion = document.getElementById('direccion')?.value.trim();
-                const ingreso_neto = document.getElementById('ingreso_neto')?.value.trim();
-                const dni = document.getElementById('dni')?.value.trim();
-                const telefono = document.getElementById('telefono')?.value.trim();
-                const ocupacion = document.getElementById('ocupacion')?.value.trim();
-                const estado = document.getElementById('estado')?.value;
-                const carga_familiar = document.getElementById('carga_familiar')?.value;
-                const correo = document.getElementById('correo')?.value.trim();
-                const id_cliente = document.getElementById('id_cliente')?.value;
-
-                if (!validarTextoAlfabetico(nombre)) {
-                    return Swal.fire('Error', 'Nombre inválido.', 'error');
+            const fields = [
+                {id: 'id_cliente', label: 'ID', value: cliente.id_cliente, type: 'hidden'},
+                {id: 'nombre', label: 'Nombre', value: cliente.nombre, type: 'text'},
+                {id: 'apellido', label: 'Apellido', value: cliente.apellido, type: 'text'},
+                {id: 'dni', label: 'DNI', value: cliente.dni, type: 'text'},
+                {id: 'direccion', label: 'Dirección', value: cliente.direccion, type: 'text'},
+                {id: 'correo', label: 'Correo', value: cliente.correo, type: 'text'},
+                {id: 'telefono', label: 'Teléfono', value: cliente.telefono, type: 'text'},
+                {id: 'ocupacion', label: 'Ocupación', value: cliente.ocupacion, type: 'text'},
+                {id: 'ingreso_neto', label: 'Ingreso Neto', value: cliente.ingreso_neto, type: 'number'},
+                {
+                    id: 'estado_cliente', label: 'Estado',
+                    value: cliente.estado_cliente,
+                    type: 'select',
+                    options: ['Activo', 'Evaluado', 'NoDisponible', 'SinEvaluar']
+                },
+                {
+                    id: 'carga_familiar', label: 'Carga Familiar',
+                    value: cliente.carga_familiar == 1 ? 'Sí' : 'No',
+                    type: 'select',
+                    options: ['Sí', 'No']
                 }
-                // ... demás validaciones ...
+            ];
 
-                const data = {
-                    id_cliente,
-                    nombre,
-                    apellido,
-                    direccion,
-                    ingreso_neto: parseFloat(ingreso_neto),
-                    dni,
-                    telefono,
-                    ocupacion,
-                    correo,
-                    estado,
-                    carga_familiar: carga_familiar === 'Sí' ? 1 : 0
-                };
+            modalTitle.textContent = 'Editar Datos del Cliente';
+            generateFormFields(fields);
+            openModal(editModal);
 
-                fetch('/actualizar_clientes', {
-                    method: 'POST',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRFToken": document.querySelector('input[name="csrf_token"]').value
-                    },
-                    body: JSON.stringify(data)
-                })
-                .then(res => res.json())
-                .then(result => {
-                    if (result.success) {
-                        Swal.fire('Éxito', result.message, 'success').then(() => {
-                            closeModal(editModal);
-                            actualizarCampo("nombre", data.nombre);
-                            actualizarCampo("apellido", data.apellido);
-                            actualizarCampo("dni", data.dni);
-                            actualizarCampo("direccion", data.direccion);
-                            actualizarCampo("correo", data.correo);
-                            actualizarCampo("telefono", data.telefono);
-                            actualizarCampo("ocupacion", data.ocupacion);
-                            actualizarCampo("ingreso_neto", data.ingreso_neto);
-                            actualizarCampo("estado", data.estado);
-                            actualizarCampo("carga_familiar", data.carga_familiar === 1 ? "Sí" : "No");
-                        });
-                    } else {
-                        Swal.fire('Error', result.message, 'error');
+            // REASIGNAR submit dinámicamente
+            setTimeout(() => {
+                const editForm = document.getElementById('editForm');
+                if (!editForm) {
+                    console.error("❌ No se encontró #editForm");
+                    return;
+                }
+
+                // Remover cualquier submit previo
+                const newForm = editForm.cloneNode(true);
+                editForm.parentNode.replaceChild(newForm, editForm);
+
+                newForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    console.log("✅ Evento submit capturado correctamente");
+
+                    const nombre = document.getElementById('nombre')?.value.trim();
+                    const apellido = document.getElementById('apellido')?.value.trim();
+                    const direccion = document.getElementById('direccion')?.value.trim();
+                    const ingreso_neto = document.getElementById('ingreso_neto')?.value.trim();
+                    const dni = document.getElementById('dni')?.value.trim();
+                    const telefono = document.getElementById('telefono')?.value.trim();
+                    const ocupacion = document.getElementById('ocupacion')?.value.trim();
+                    const estado_cliente = document.getElementById('estado_cliente')?.value;
+                    const carga_familiar = document.getElementById('carga_familiar')?.value;
+                    const correo = document.getElementById('correo')?.value.trim();
+                    const id_cliente = document.getElementById('id_cliente')?.value;
+
+                    if (!validarTextoAlfabetico(nombre)) {
+                        return Swal.fire('Error', 'Nombre inválido.', 'error');
                     }
-                })
-                .catch(err => {
-                    console.error("❌ Error en la solicitud:", err);
-                    Swal.fire('Error', 'Error inesperado al guardar.', 'error');
-                });
-            });
-        }, 150);
-    }
-}
+                    // ... demás validaciones ...
 
+                    const data = {
+                        id_cliente,
+                        nombre,
+                        apellido,
+                        direccion,
+                        ingreso_neto: parseFloat(ingreso_neto),
+                        dni,
+                        telefono,
+                        ocupacion,
+                        correo,
+                        estado_cliente,
+                        carga_familiar: carga_familiar === 'Sí' ? 1 : 0
+                    };
+
+                    fetch('/actualizar_clientes', {
+                        method: 'POST',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": document.querySelector('input[name="csrf_token"]').value
+                        },
+                        body: JSON.stringify(data)
+                    })
+                        .then(res => res.json())
+                        .then(result => {
+                            if (result.success) {
+                                Swal.fire('Éxito', result.message, 'success').then(() => {
+                                    closeModal(editModal);
+                                    actualizarCampo("nombre", data.nombre);
+                                    actualizarCampo("apellido", data.apellido);
+                                    actualizarCampo("dni", data.dni);
+                                    actualizarCampo("direccion", data.direccion);
+                                    actualizarCampo("correo", data.correo);
+                                    actualizarCampo("telefono", data.telefono);
+                                    actualizarCampo("ocupacion", data.ocupacion);
+                                    actualizarCampo("ingreso_neto", data.ingreso_neto);
+                                    actualizarCampo("estado_cliente", data.estado_cliente);
+                                    actualizarCampo("carga_familiar", data.carga_familiar === 1 ? "Sí" : "No");
+                                });
+                            } else {
+                                Swal.fire('Error', result.message, 'error');
+                            }
+                        })
+                        .catch(err => {
+                            console.error("❌ Error en la solicitud:", err);
+                            Swal.fire('Error', 'Error inesperado al guardar.', 'error');
+                        });
+                });
+            }, 150);
+        }
+    }
 
 
     editButtons.forEach(button => {
@@ -418,7 +417,7 @@ window.initDetalleCliente = function () {
         const dni = document.getElementById('dni')?.value.trim();
         const telefono = document.getElementById('telefono')?.value.trim();
         const ocupacion = document.getElementById('ocupacion')?.value.trim();
-        const estado = document.getElementById('estado')?.value;
+        const estado_cliente = document.getElementById('estado_cliente')?.value;
         const carga_familiar = document.getElementById('carga_familiar')?.value;
         const correo = document.getElementById('correo')?.value.trim();
         const id_cliente = document.getElementById('id_cliente')?.value;
@@ -459,7 +458,7 @@ window.initDetalleCliente = function () {
             telefono,
             ocupacion,
             correo,
-            estado,
+            estado_cliente,
             carga_familiar: carga_familiar === 'Sí' ? 1 : 0
         };
 
@@ -471,39 +470,39 @@ window.initDetalleCliente = function () {
             },
             body: JSON.stringify(data)
         })
-        .then(async res => {
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                const result = await res.json();
-                if (result.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Cliente actualizado',
-                        text: result.message || 'Los datos del cliente fueron actualizados correctamente.'
-                    }).then(() => {
-                        closeModal(editModal);
-                        actualizarCampo("nombre", data.nombre);
-                        actualizarCampo("apellido", data.apellido);
-                        actualizarCampo("dni", data.dni);
-                        actualizarCampo("direccion", data.direccion);
-                        actualizarCampo("correo", data.correo);
-                        actualizarCampo("telefono", data.telefono);
-                        actualizarCampo("ocupacion", data.ocupacion);
-                        actualizarCampo("ingreso_neto", data.ingreso_neto);
-                        actualizarCampo("estado", data.estado);
-                        actualizarCampo("carga_familiar", data.carga_familiar === 1 ? "Sí" : "No");
-                    });
+            .then(async res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await res.json();
+                    if (result.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Cliente actualizado',
+                            text: result.message || 'Los datos del cliente fueron actualizados correctamente.'
+                        }).then(() => {
+                            closeModal(editModal);
+                            actualizarCampo("nombre", data.nombre);
+                            actualizarCampo("apellido", data.apellido);
+                            actualizarCampo("dni", data.dni);
+                            actualizarCampo("direccion", data.direccion);
+                            actualizarCampo("correo", data.correo);
+                            actualizarCampo("telefono", data.telefono);
+                            actualizarCampo("ocupacion", data.ocupacion);
+                            actualizarCampo("ingreso_neto", data.ingreso_neto);
+                            actualizarCampo("estado", data.estado_cliente);
+                            actualizarCampo("carga_familiar", data.carga_familiar === 1 ? "Sí" : "No");
+                        });
+                    } else {
+                        Swal.fire({icon: 'error', title: 'Error', text: result.message});
+                    }
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Error', text: result.message });
+                    Swal.fire({icon: 'error', title: 'Error inesperado', text: 'Respuesta no válida del servidor.'});
                 }
-            } else {
-                Swal.fire({ icon: 'error', title: 'Error inesperado', text: 'Respuesta no válida del servidor.' });
-            }
-        })
-        .catch(error => {
-            console.error("Error en la solicitud:", error);
-            Swal.fire({ icon: 'error', title: 'Error inesperado', text: 'Ocurrió un problema al guardar.' });
-        });
+            })
+            .catch(error => {
+                console.error("Error en la solicitud:", error);
+                Swal.fire({icon: 'error', title: 'Error inesperado', text: 'Ocurrió un problema al guardar.'});
+            });
     });
 
     familiarForm?.addEventListener('submit', function (e) {
@@ -535,34 +534,34 @@ window.initDetalleCliente = function () {
                 'X-CSRFToken': document.querySelector('input[name=csrf_token]').value
             }
         })
-        .then(async res => {
-            const contentType = res.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                const data = await res.json();
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Familiar actualizado',
-                        text: data.message
-                    }).then(() => {
-                        closeModal(familiarModal);
-                        actualizarCampo("familiar_nombre", formData.get('nombre'));
-                        actualizarCampo("familiar_apellido", formData.get('apellido'));
-                        actualizarCampo("familiar_documento", formData.get('documento'));
-                    });
+            .then(async res => {
+                const contentType = res.headers.get("content-type");
+                if (contentType && contentType.includes("application/json")) {
+                    const data = await res.json();
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Familiar actualizado',
+                            text: data.message
+                        }).then(() => {
+                            closeModal(familiarModal);
+                            actualizarCampo("familiar_nombre", formData.get('nombre'));
+                            actualizarCampo("familiar_apellido", formData.get('apellido'));
+                            actualizarCampo("familiar_documento", formData.get('documento'));
+                        });
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
                 } else {
-                    Swal.fire('Error', data.message, 'error');
+                    const text = await res.text();
+                    console.error("⚠️ Respuesta inesperada (no es JSON):", text);
+                    Swal.fire('Error', 'Respuesta inesperada del servidor.', 'error');
                 }
-            } else {
-                const text = await res.text();
-                console.error("⚠️ Respuesta inesperada (no es JSON):", text);
-                Swal.fire('Error', 'Respuesta inesperada del servidor.', 'error');
-            }
-        })
-        .catch(error => {
-            console.error("❌ Error al actualizar familiar:", error);
-            Swal.fire('Error', error?.message || 'Ocurrió un error al actualizar.', 'error');
-        });
+            })
+            .catch(error => {
+                console.error("❌ Error al actualizar familiar:", error);
+                Swal.fire('Error', error?.message || 'Ocurrió un error al actualizar.', 'error');
+            });
     });
 
     cancelButtons.forEach(button => {

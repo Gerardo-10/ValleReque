@@ -565,3 +565,43 @@
 2025-06-10 20:33:19,475 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (138)")
 2025-06-10 20:33:19,489 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10065)")
 2025-06-10 20:33:19,490 - ERROR - appLogger - [ERROR load_user]: [ERROR get_by_id]: (2002, "Can't connect to server on '137.131.136.183' (10065)")
+2025-06-17 11:46:38,327 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:46:38,689 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:48:28,702 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:48:29,169 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:00,890 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:01,222 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:16,800 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:17,213 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:58,076 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:49:58,418 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:51:32,353 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:51:32,798 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:59:43,474 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 11:59:43,895 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:03:45,779 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:03:46,227 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:05:03,135 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:05:03,470 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:10:00,542 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:10:00,881 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:10:59,268 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:10:59,605 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:11:33,673 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:11:34,083 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:14:03,752 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:14:04,098 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:16:09,734 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:16:10,145 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:16:44,114 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:16:44,875 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:17:30,290 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:17:30,718 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:17:54,489 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:17:54,845 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:19:03,818 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:19:04,229 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:19:35,250 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:19:35,601 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:20:04,814 - INFO - appLogger - Aplicación iniciada en modo desarrollo
+2025-06-17 12:20:05,221 - INFO - appLogger - Aplicación iniciada en modo desarrollo
